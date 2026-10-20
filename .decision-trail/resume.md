@@ -1,3 +1,5 @@
+> Superseded. This note was written before the operator replaced Supabase with a NestJS API. The current backend is described in `README.md` and `docs/api.md`.
+
 # 4OUR Estate resume note
 
 Read this first if you are picking the build up in a fresh session or cloud agent.

@@ -9,6 +9,9 @@ import { toMember, type AuthUser } from './auth-user.js';
 import type { LoginDto, SignupDto } from './dto/auth.dto.js';
 import { BCRYPT_COST } from './password.js';
 
+// Compared against when the email is unknown so both login failures cost one bcrypt round.
+const UNKNOWN_USER_HASH = bcrypt.hashSync('unknown-user-timing-pad', BCRYPT_COST);
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -39,7 +42,7 @@ export class AuthService {
 
   async login(dto: LoginDto): Promise<AuthSession> {
     const user = await this.prisma.user.findUnique({ where: { email: dto.email } });
-    const matches = user ? await bcrypt.compare(dto.password, user.passwordHash) : false;
+    const matches = await bcrypt.compare(dto.password, user?.passwordHash ?? UNKNOWN_USER_HASH);
     if (!user || !matches) throw unauthorized('Email or password is incorrect.');
     return this.session(user);
   }

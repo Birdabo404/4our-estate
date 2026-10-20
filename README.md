@@ -46,7 +46,7 @@ API (`api/.env`):
 | Variable | Example | Purpose |
 | --- | --- | --- |
 | `DATABASE_URL` | `postgresql://estate:estate@localhost:5432/estate` | Postgres connection. |
-| `JWT_SECRET` | 32+ random characters | Signs access tokens. The API refuses to boot if it is missing or short. |
+| `JWT_SECRET` | a long random string | Signs access tokens. The API refuses to boot if it is missing or shorter than 16 characters. Use 32 or more in any shared environment. |
 | `JWT_EXPIRES_IN` | `7d` | Token lifetime. |
 | `PORT` | `4000` | API port. |
 | `CORS_ORIGIN` | `http://localhost:3000` | The only browser origin the API accepts. |
@@ -105,7 +105,7 @@ Guest is anyone without a token. Buyer, Agent and Admin are stored on the user a
 | Open a sold listing by link | yes | yes | yes | yes |
 | Send an inquiry | yes | yes | yes | yes |
 | Save favorites | no | yes | yes | yes |
-| Create and edit listings, upload photos | no | no | own listings | any listing |
+| Create and edit listings, upload photos | no | no | own listings | any listing (the admin desk reaches them through moderation) |
 | Submit a draft for review, mark sold, archive | no | no | own listings | yes |
 | Publish a pending listing | no | no | no | yes |
 | Feature a listing | no | no | no | yes |
@@ -148,10 +148,10 @@ A request passes helmet and CORS, then the global `JwtAuthGuard` (routes are pro
 
 ### Authentication
 
-- Passwords are hashed with bcrypt (cost 12). Login gives the same message for an unknown email and a wrong password.
+- Passwords are hashed with bcrypt (cost 12). Login gives the same message, and takes the same bcrypt work, for an unknown email and a wrong password.
 - Login and signup return a signed JWT (`{ sub, role }`, 7 days). The Next server stores it in an httpOnly, SameSite=Lax cookie (`estate_session`), so page scripts cannot read it. It sends the token as a Bearer header on every API call.
 - `JwtStrategy` reloads the user on each request and ignores the role inside the token. A role change or a deleted account takes effect immediately.
-- `src/proxy.ts` sends visitors without a valid, unexpired session to `/login?next=…` before any dashboard renders. Each dashboard page also calls `requireRole(...)`, and the API checks the role again. A UI check alone is never trusted.
+- `src/proxy.ts` sends visitors without an unexpired session cookie to `/login?next=…` before any dashboard renders. It only reads the token's expiry. It does not verify the signature, so it is a fast redirect, not a security check. Each dashboard page then calls `requireRole(...)`, which asks the API who the token belongs to, and the API verifies the signature and checks the role on every request.
 
 ### Database schema
 

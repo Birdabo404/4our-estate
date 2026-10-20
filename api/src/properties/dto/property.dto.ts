@@ -254,6 +254,7 @@ export class PropertyContentDto {
   @IsNumber({ maxDecimalPlaces: 6 })
   @Min(-180)
   @Max(180)
+  @CoordinatesMatch()
   longitude?: number | null;
 
   @IsOptional()
@@ -390,6 +391,7 @@ export class UpdatePropertyDto {
   @IsNumber({ maxDecimalPlaces: 6 })
   @Min(-180)
   @Max(180)
+  @CoordinatesMatch()
   longitude?: number | null;
 
   @ValidateIf((_, value) => value !== undefined)

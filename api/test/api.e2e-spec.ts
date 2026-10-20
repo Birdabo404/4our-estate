@@ -510,6 +510,17 @@ describe('estate API', () => {
     expectError(gone, 401, 'UNAUTHORIZED');
   });
 
+  it('requires latitude and longitude together', async () => {
+    for (const coordinates of [{ longitude: 121.03 }, { latitude: 14.55 }]) {
+      const res = await request(app.getHttpServer())
+        .post(`${API}/properties`)
+        .set(bearer(agentA.token))
+        .send({ ...draftBody('Half located house'), ...coordinates });
+      expectError(res, 400, 'VALIDATION_FAILED');
+      expect(Object.values(res.body.error.fields)).toContain('Enter both latitude and longitude.');
+    }
+  });
+
   it('answers health with the database up', async () => {
     const health = await request(app.getHttpServer()).get(`${API}/health`);
     expect(health.status).toBe(200);
