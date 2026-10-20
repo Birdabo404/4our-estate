@@ -1,5 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
+import { contrastRatio, readTokens } from "../../src/lib/contrast";
 import { ease, type EaseName } from "../../src/lib/motion";
 
 type Use = "text" | "large" | "ui";
@@ -25,23 +26,12 @@ const PAIRS: ReadonlyArray<{ fg: string; bg: string; use: Use; role: string }> =
   { fg: "danger", bg: "paper-raised", use: "text", role: "Field errors in panels" },
 ];
 
-const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
+const tokens = readTokens(readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8"));
 
 function token(name: string): string {
-  const match = css.match(new RegExp(`--${name}:\\s*([^;]+);`));
-  if (!match) throw new Error(`Missing token --${name} in globals.css`);
-  return match[1].trim();
-}
-
-function luminance(hex: string): number {
-  const [r, g, b] = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
-  const lin = (c: number) => (c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4);
-  return 0.2126 * lin(r) + 0.7152 * lin(g) + 0.0722 * lin(b);
-}
-
-function contrast(a: string, b: string): number {
-  const [hi, lo] = [luminance(a), luminance(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
+  const value = tokens.get(name);
+  if (!value) throw new Error(`Missing token --${name} in globals.css`);
+  return value;
 }
 
 const failures: string[] = [];
@@ -51,7 +41,7 @@ console.log("| --- | --- | --- | --- | --- |");
 for (const { fg, bg, use, role } of PAIRS) {
   const fgHex = token(`color-${fg}`);
   const bgHex = token(`color-${bg}`);
-  const ratio = contrast(fgHex, bgHex);
+  const ratio = contrastRatio(fgHex, bgHex);
   const needed = MIN_RATIO[use];
   const pass = ratio >= needed;
   if (!pass) failures.push(`${fg} on ${bg}: ${ratio.toFixed(2)} < ${needed}`);
