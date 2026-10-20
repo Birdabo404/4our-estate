@@ -212,10 +212,10 @@ async function main() {
     await page.goto(`${BASE}/dashboard/agent/listings`, { waitUntil: "networkidle" });
     const archive = page.getByRole("listitem").filter({ hasText: "Published" }).first().getByRole("button", { name: "Archive" });
     await archive.click();
-    await page.getByRole("heading", { name: "Archive this residence?" }).waitFor();
+    await page.getByRole("heading", { name: "Archive this listing?" }).waitFor();
     await shot(page, "confirm-archive");
     await page.getByRole("button", { name: "Keep it" }).click();
-    await page.getByRole("heading", { name: "Archive this residence?" }).waitFor({ state: "hidden" });
+    await page.getByRole("heading", { name: "Archive this listing?" }).waitFor({ state: "hidden" });
 
     await signOut(page);
     await signIn(page, adminEmail, demoPassword);

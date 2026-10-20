@@ -17,7 +17,7 @@ export default async function AdminUsersPage() {
       <PageHeader
         eyebrow={firstName(member.fullName)}
         title="People"
-        lede="Buyers, agents, and the few who keep the house."
+        lede="Every account on 4OUR and what it is allowed to do. Only an admin can change a role."
       />
       <UserDirectory users={users} />
     </>

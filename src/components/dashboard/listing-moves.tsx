@@ -75,7 +75,7 @@ function DirectMove({ id, to, primary }: { id: string; to: ListingStatus; primar
     <form action={action}>
       <input type="hidden" name="id" value={id} />
       <input type="hidden" name="to" value={to} />
-      <Button type="submit" size="sm" variant={primary ? "primary" : "ghost"} disabled={pending}>
+      <Button type="submit" size="sm" variant={primary ? "primary" : "secondary"} disabled={pending}>
         {pending ? "Saving…" : TRANSITION_LABEL[to]}
       </Button>
     </form>

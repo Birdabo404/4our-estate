@@ -25,7 +25,7 @@ export function SavedResidences({ properties }: { properties: PropertySummary[] 
     if (!result.ok) {
       setHidden((current) => current.filter((id) => id !== property.id));
       setUndo((current) => (current?.id === property.id ? null : current));
-      toast({ title: result.formError ?? "Could not update saved residences.", tone: "danger" });
+      toast({ title: result.formError ?? "Could not update saved homes.", tone: "danger" });
     }
   }
 
@@ -37,7 +37,7 @@ export function SavedResidences({ properties }: { properties: PropertySummary[] 
     const result = await toggleFavorite(null, formData);
     if (!result.ok) {
       setHidden((current) => [...current, property.id]);
-      toast({ title: result.formError ?? "Could not restore that residence.", tone: "danger" });
+      toast({ title: result.formError ?? "Could not restore that home.", tone: "danger" });
       return;
     }
     toast({ title: "Saved again", description: property.title, tone: "positive" });
@@ -49,9 +49,9 @@ export function SavedResidences({ properties }: { properties: PropertySummary[] 
         <EmptyState
           icon="favorites"
           title="Nothing saved yet"
-          action={<ButtonLink href="/properties">Browse residences</ButtonLink>}
+          action={<ButtonLink href="/properties">Browse homes</ButtonLink>}
         >
-          When a house stays with you, keep it here.
+          Tap the heart on any listing and it lands here, ready to compare.
         </EmptyState>
         {undo ? <UndoNotice property={undo} onUndo={() => void restore(undo)} onDismiss={() => setUndo(null)} /> : null}
       </>
@@ -60,7 +60,7 @@ export function SavedResidences({ properties }: { properties: PropertySummary[] 
 
   return (
     <>
-      <ul className="grid gap-x-8 gap-y-16 sm:grid-cols-2 xl:grid-cols-3">
+      <ul className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         {visible.map((property, index) => (
           <li key={property.id}>
             <PropertyCard
@@ -71,9 +71,9 @@ export function SavedResidences({ properties }: { properties: PropertySummary[] 
                   type="button"
                   onClick={() => void remove(property)}
                   aria-label={`Remove ${property.title} from saved`}
-                  className="grid size-10 place-items-center rounded-full bg-paper text-ink shadow-float transition-colors duration-300 ease-settle hover:bg-white"
+                  className="grid size-9 place-items-center rounded-md bg-paper-raised text-ink ring-1 ring-ink/10 transition-colors duration-300 ease-settle hover:bg-ink hover:text-paper"
                 >
-                  <X size={14} weight="regular" />
+                  <X size={14} weight="bold" />
                 </button>
               }
             />
@@ -98,12 +98,12 @@ function UndoNotice({
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-(--z-toast) flex justify-center p-4 sm:justify-end sm:p-6">
       <div
         role="status"
-        className="pointer-events-auto flex w-full max-w-sm items-center gap-4 rounded-[1.25rem] bg-night px-5 py-4 text-on-night shadow-float ring-1 ring-white/10"
+        className="pointer-events-auto flex w-full max-w-sm items-center gap-4 rounded-panel bg-night px-5 py-4 text-on-night shadow-float ring-1 ring-white/10"
       >
         <p className="min-w-0 flex-1 text-small">
           Removed <span className="text-on-night-muted">{property.title}</span>
         </p>
-        <button type="button" onClick={onUndo} className="text-small font-medium text-accent-soft">
+        <button type="button" onClick={onUndo} className="text-small font-semibold text-accent-soft">
           Undo
         </button>
         <button type="button" onClick={onDismiss} aria-label="Dismiss notification" className="text-on-night-muted">

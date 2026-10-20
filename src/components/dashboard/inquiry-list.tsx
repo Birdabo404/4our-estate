@@ -17,29 +17,32 @@ export function InquiryList({
   if (inquiries.length === 0) return empty;
 
   return (
-    <ul className="flex flex-col">
+    <ul className="flex flex-col gap-3">
       {inquiries.map((inquiry) => (
-        <li key={inquiry.id} className="border-t border-ink/10 py-8 first:border-t-0 first:pt-0">
-          <article className="grid gap-4 md:grid-cols-[minmax(0,1fr)_auto] md:gap-10">
+        <li key={inquiry.id} className="rounded-panel bg-paper-raised p-4 ring-1 ring-ink/10 md:p-5">
+          <article className="grid gap-4 md:grid-cols-[minmax(0,1fr)_16rem] md:gap-8">
             <div className="min-w-0">
               <div className="flex flex-wrap items-center gap-3">
                 <StatusPill kind="inquiry" status={inquiry.status} />
-                <time dateTime={inquiry.createdAt} className="text-small text-ink-muted">
+                <time dateTime={inquiry.createdAt} className="font-mono text-[0.75rem] text-ink-muted">
                   {formatRelativeDate(inquiry.createdAt)}
                 </time>
               </div>
-              <h2 className="mt-4 font-display text-heading">
-                <Link href={`/properties/${inquiry.propertySlug}`} className="underline decoration-ink/15 underline-offset-4">
+              <h2 className="mt-3 font-display text-title font-semibold">
+                <Link href={`/properties/${inquiry.propertySlug}`} className="underline decoration-ink/15 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-ink">
                   {inquiry.propertyTitle}
                 </Link>
               </h2>
-              <p className="mt-4 max-w-[62ch] text-body text-ink-soft">{inquiry.message}</p>
+              <p className="mt-3 max-w-[64ch] border-l-2 border-accent pl-3 text-body text-ink-soft">{inquiry.message}</p>
               {inquiry.preferredViewingDate ? (
-                <p className="mt-3 text-small text-ink-muted">Viewing {inquiry.preferredViewingDate}</p>
+                <p className="mt-3 inline-flex rounded-[0.25rem] bg-sky px-2 py-0.5 font-mono text-[0.6875rem] uppercase text-ink">
+                  Viewing {inquiry.preferredViewingDate}
+                </p>
               ) : null}
             </div>
-            <div className="flex flex-col items-start gap-2 text-small md:items-end md:pt-1">
-              <p className="text-ink">{inquiry.name}</p>
+            <div className="flex flex-col items-start gap-1.5 rounded-md bg-paper-sunken/60 p-3 text-small">
+              <p className="text-micro uppercase text-ink-muted">From</p>
+              <p className="font-semibold text-ink">{inquiry.name}</p>
               <a className="text-accent-ink underline decoration-accent-ink/30 underline-offset-4" href={`mailto:${inquiry.email}`}>
                 {inquiry.email}
               </a>
@@ -48,7 +51,7 @@ export function InquiryList({
                   {inquiry.phone}
                 </a>
               ) : null}
-              {action ? action(inquiry) : null}
+              {action ? <div className="mt-2">{action(inquiry)}</div> : null}
             </div>
           </article>
         </li>

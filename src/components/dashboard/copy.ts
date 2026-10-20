@@ -40,11 +40,11 @@ export function transitionNeedsConfirm(to: ListingStatus): boolean {
 
 export const TRANSITION_CONFIRM: Partial<Record<ListingStatus, { title: string; body: string }>> = {
   sold: {
-    title: "Mark this residence sold?",
+    title: "Mark this listing sold?",
     body: "It leaves the active catalog and stays on the public record as sold.",
   },
   archived: {
-    title: "Archive this residence?",
+    title: "Archive this listing?",
     body: "It leaves the site. You can return it to a draft later.",
   },
 };

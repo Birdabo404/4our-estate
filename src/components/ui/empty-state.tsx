@@ -33,10 +33,10 @@ export function EmptyState({
   const Glyph = EMPTY_ICONS[icon];
   return (
     <div className={cn("mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center", className)}>
-      <span className="grid size-16 place-items-center rounded-full ring-1 ring-inset ring-ink/10">
-        <Glyph aria-hidden size={26} weight="light" className="text-ink-soft" />
+      <span className="grid size-16 place-items-center rounded-md bg-sky text-ink ring-1 ring-inset ring-ink/10">
+        <Glyph aria-hidden size={26} weight="bold" />
       </span>
-      <h3 className="mt-8 font-display text-heading">{title}</h3>
+      <h3 className="mt-8 font-display text-heading font-semibold">{title}</h3>
       {children && <div className="mt-3 text-body text-ink-muted">{children}</div>}
       {action && <div className="mt-9">{action}</div>}
     </div>
