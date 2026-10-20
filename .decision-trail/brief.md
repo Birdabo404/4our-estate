@@ -73,3 +73,4 @@ use Philippine data if possible and we have other clean UI/UX skills to help. ju
 
 - "go insane": raise the ambition on visual and motion quality.
 - Add **GSAP** and **Anime.js** alongside Framer Motion. Use the installed GSAP skills.
+- **Backend replaced (supersedes the Supabase lines above).** The backend is NestJS + TypeScript + PostgreSQL (Prisma) with JWT auth, role guards, class-validator, and bcrypt. **Supabase and every other BaaS are forbidden.** Do not touch or redesign the frontend unless a change is strictly required to connect to the backend.
