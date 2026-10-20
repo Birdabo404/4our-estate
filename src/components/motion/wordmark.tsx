@@ -74,7 +74,7 @@ export function Wordmark({
       role="img"
       aria-label="4OUR Estate"
       data-draw={animated ? "pending" : "done"}
-      className={cn("inline-flex items-end gap-3 leading-none", className)}
+      className={cn("inline-flex items-end gap-[max(0.3em,0.625rem)] leading-none", className)}
     >
       {variant === "full" ? (
         <>
