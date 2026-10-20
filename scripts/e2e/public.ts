@@ -117,6 +117,21 @@ async function captureScreens(context: BrowserContext, viewport: ViewportName) {
   await page.close();
 }
 
+async function checkMissingResidence(browser: Browser) {
+  await check("detail: a missing residence answers 404 with the editorial not-found", async () => {
+    const response = await fetch(`${BASE}/properties/not-a-real-house`);
+    expect(response.status).toBe(404);
+    // Chromium logs a failed-resource error for any 404 document, so this page stays outside the console watch.
+    const page = await browser.newPage({ ...VIEWPORTS.desktop, baseURL: BASE });
+    await page.goto("/properties/not-a-real-house", { waitUntil: "networkidle" });
+    await page.addStyleTag({ content: HIDE_DEV_OVERLAY });
+    await expect(page.getByRole("heading", { level: 1 })).toContainText("no longer");
+    await page.evaluate(() => document.fonts.ready);
+    await page.screenshot({ path: `${OUT}/not-found-desktop.png` });
+    await page.close();
+  });
+}
+
 function resultCount(page: Page) {
   return page.locator('p[aria-live="polite"] .tabular').first();
 }
@@ -260,6 +275,8 @@ async function main() {
     await captureScreens(context, viewport);
     await context.close();
   }
+
+  await checkMissingResidence(browser);
 
   const desktop = await newContext(browser, "desktop");
   await checkFilters(desktop);
