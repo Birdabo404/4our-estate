@@ -280,9 +280,15 @@ async function main() {
   const seededPage = await seeded.newPage();
   await check("home and listings show a seeded residence", async () => {
     await seededPage.goto("/", { waitUntil: "networkidle" });
+    const featured = seededPage.getByText("Villa off Cloud 9, Siargao").first();
+    await featured.scrollIntoViewIfNeeded();
+    await expect(featured).toBeVisible();
+    await seededPage.goto("/properties?q=Siargao", { waitUntil: "networkidle" });
     await expect(seededPage.getByText("Villa off Cloud 9, Siargao").first()).toBeVisible();
     await seededPage.goto("/properties", { waitUntil: "networkidle" });
-    await expect(seededPage.getByText("Villa off Cloud 9, Siargao").first()).toBeVisible();
+    const listed = seededPage.getByText("Acacia Avenue, Ayala Alabang").first();
+    await listed.scrollIntoViewIfNeeded();
+    await expect(listed).toBeVisible();
   });
   await seeded.close();
 

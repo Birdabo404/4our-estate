@@ -134,7 +134,7 @@ async function main() {
     await page.getByRole("button", { name: "Create account" }).click();
     await page.getByText("Enter your full name.").waitFor();
     await page.getByText("Enter a valid email.").waitFor();
-    await page.getByText("Use 8 to 72 characters, including a letter and a number.").waitFor();
+    await page.locator("[id$='-error']").filter({ hasText: "Use 8 to 72 characters, including a letter and a number." }).waitFor();
     const described = await page.locator("[aria-invalid='true']").count();
     if (described < 1) throw new Error("Signup validation did not mark a field invalid.");
 
