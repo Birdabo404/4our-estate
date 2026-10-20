@@ -85,7 +85,15 @@ const QUERIES: Record<PhotoCategory, readonly string[]> = {
   pool: ["infinity pool", "villa pool", "swimming pool modern house", "tropical pool"],
   "view-sea": ["ocean view from villa", "sea view terrace", "calm sea horizon", "tropical sea aerial"],
   "view-city": ["city view apartment window", "city skyline night window", "manila skyline", "penthouse view"],
-  "view-highland": ["taal volcano", "misty mountains pine forest", "highland mist morning", "cordillera mountains"],
+  "view-highland": [
+    "taal volcano",
+    "misty mountains pine forest",
+    "highland mist morning",
+    "cordillera mountains",
+    "sagada",
+    "benguet",
+    "banaue rice terraces",
+  ],
   "land-lot": ["open land aerial", "rice field aerial", "coconut plantation", "empty field green", "hillside lot"],
   detail: [
     "wood texture interior",

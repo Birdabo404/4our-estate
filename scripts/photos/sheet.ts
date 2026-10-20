@@ -1,11 +1,11 @@
 import { chromium } from "@playwright/test";
-import { mkdirSync, writeFileSync } from "node:fs";
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { PHOTOS, photosBy, type PhotoCategory } from "../../src/lib/photography/catalog";
 import { WORK_DIR, readCandidates } from "./unsplash";
 
 // Usage:
-//   tsx sheet.ts candidates <category> [page]   numbered review sheet of scraped candidates
-//   tsx sheet.ts zoom <category> <index...>     larger tiles of shortlisted candidates
+//   tsx sheet.ts candidates <category> [page] [ph]  numbered review sheet of scraped candidates, optionally Philippines-only
+//   tsx sheet.ts zoom <sheet> <index...>        larger tiles of shortlisted candidates, e.g. zoom view-highland-ph 3 7
 //   tsx sheet.ts catalog <category...> <name>   sheet of curated photos, e.g. heroes and places
 
 type Tile = { id: string; label: string; src: string };
@@ -13,9 +13,9 @@ type Tile = { id: string; label: string; src: string };
 const TILES_PER_SHEET = 30;
 const PH = /philippines|pilipinas/i;
 
-function candidateTiles(category: string): Tile[] {
+function candidateTiles(category: string, philippinesOnly = category.startsWith("place-")): Tile[] {
   const pool = readCandidates().filter((c) => c.category === category);
-  const filtered = category.startsWith("place-") ? pool.filter((c) => PH.test(`${c.location} ${c.alt}`)) : pool;
+  const filtered = philippinesOnly ? pool.filter((c) => PH.test(`${c.location} ${c.alt}`)) : pool;
   return filtered
     .sort((a, b) => b.likes - a.likes)
     .map((c, i) => ({
@@ -68,22 +68,26 @@ async function main() {
   const [mode, ...rest] = process.argv.slice(2);
   mkdirSync(`${WORK_DIR}/sheets`, { recursive: true });
   if (mode === "candidates") {
-    const [category, page = "0"] = rest;
+    const [category, page = "0", ph] = rest;
     const start = Number(page) * TILES_PER_SHEET;
-    const tiles = candidateTiles(category);
-    writeFileSync(`${WORK_DIR}/sheets/${category}.json`, JSON.stringify(tiles.map((t) => t.id)));
+    const tiles = candidateTiles(category, ph === "ph" || undefined);
+    writeFileSync(`${WORK_DIR}/sheets/${category}${ph ? "-ph" : ""}.json`, JSON.stringify(tiles.map((t) => t.id)));
     console.log(`${category}: ${tiles.length} eligible candidates`);
-    await render(tiles.slice(start, start + TILES_PER_SHEET), `${category}-${page}`);
+    await render(tiles.slice(start, start + TILES_PER_SHEET), `${category}-${page}${ph ? "-ph" : ""}`);
   } else if (mode === "zoom") {
-    const [category, ...indices] = rest;
-    const tiles = candidateTiles(category).map((t) => ({ ...t, src: t.src.replace("w=420", "w=1200") }));
-    const picked = indices.map((i) => tiles[Number(i)]);
-    await render(picked, `${category}-zoom`, 3, 600);
+    const [sheet, ...indices] = rest;
+    const ids: string[] = JSON.parse(readFileSync(`${WORK_DIR}/sheets/${sheet}.json`, "utf8"));
+    const picked = indices.map((i) => ({
+      id: ids[Number(i)],
+      label: `${i} · ${ids[Number(i)]}`,
+      src: `https://images.unsplash.com/${ids[Number(i)]}?w=1200&q=60`,
+    }));
+    await render(picked, `${sheet}-zoom`, 3, 600);
   } else if (mode === "catalog") {
     const name = rest.pop()!;
     await render(catalogTiles(rest), name);
   } else {
-    throw new Error("usage: sheet.ts candidates <category> [page] | zoom <category> <index...> | catalog <category...> <name>");
+    throw new Error("usage: sheet.ts candidates <category> [page] [ph] | zoom <sheet> <index...> | catalog <category...> <name>");
   }
 }
 

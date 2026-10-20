@@ -26,7 +26,7 @@ function main() {
         url: `https://images.unsplash.com/${pick.id}`,
         category,
         alt: pick.alt,
-        photographer: meta.photographer,
+        photographer: meta.photographer.replace(/\s+/g, " ").trim(),
         width: meta.width,
         height: meta.height,
         tone: pick.tone,
