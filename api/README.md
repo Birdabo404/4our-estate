@@ -11,4 +11,4 @@ npx prisma db seed
 npm run start:dev
 ```
 
-The API listens on port 4000. `npm run test:e2e` uses the `estate_test` database.
+The API listens on port 4000. Swagger UI is at `/api/docs`. `npm run test:e2e` uses the `estate_test` database. Production start is `npm run start:prod`, which applies migrations and then listens. The Render Blueprint is `render.yaml` at the repo root.

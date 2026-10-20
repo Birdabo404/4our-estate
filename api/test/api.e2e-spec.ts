@@ -526,7 +526,131 @@ describe('estate API', () => {
     expect(health.status).toBe(200);
     expect(health.body).toEqual({ data: { status: 'ok', db: 'up' } });
   });
+
+  it('publishes OpenAPI 3 for every route, with bearer auth and the login envelope', async () => {
+    const res = await request(app.getHttpServer()).get('/api/docs-json');
+    expect(res.status).toBe(200);
+    const spec = res.body as OpenApiDocument;
+    expect(spec.openapi).toMatch(/^3\./);
+    expect(spec.components?.securitySchemes?.bearer).toMatchObject({ type: 'http', scheme: 'bearer' });
+
+    const registered = expressApiRoutes(app);
+    const expected = API_ROUTES.map(openApiRoute).sort();
+    expect(registered.map(openApiRoute).sort()).toEqual(expected);
+    for (const route of expected) {
+      const space = route.indexOf(' ');
+      const method = route.slice(0, space).toLowerCase();
+      const path = route.slice(space + 1);
+      expect(spec.paths[path]?.[method], route).toBeDefined();
+    }
+
+    const login = spec.paths['/api/v1/auth/login']?.post?.responses?.['200']?.content?.['application/json']?.schema;
+    expect(schemaRefs(login)).toContain('#/components/schemas/SuccessEnvelope');
+  });
 });
+
+const API_ROUTES = [
+  'POST /api/v1/auth/signup',
+  'POST /api/v1/auth/login',
+  'GET /api/v1/auth/me',
+  'GET /api/v1/properties',
+  'GET /api/v1/properties/featured',
+  'GET /api/v1/properties/cities',
+  'GET /api/v1/properties/stats',
+  'GET /api/v1/properties/id/:id',
+  'GET /api/v1/properties/:slug/similar',
+  'GET /api/v1/properties/:slug',
+  'POST /api/v1/properties',
+  'PATCH /api/v1/properties/:id',
+  'POST /api/v1/properties/:id/transitions',
+  'PATCH /api/v1/properties/:id/featured',
+  'POST /api/v1/properties/:id/images',
+  'DELETE /api/v1/properties/:id/images/:imageId',
+  'POST /api/v1/properties/:id/images/:imageId/cover',
+  'GET /api/v1/me/favorites',
+  'GET /api/v1/me/favorites/ids',
+  'PUT /api/v1/me/favorites/:propertyId',
+  'DELETE /api/v1/me/favorites/:propertyId',
+  'POST /api/v1/inquiries',
+  'GET /api/v1/me/inquiries',
+  'GET /api/v1/agent/inquiries',
+  'GET /api/v1/agent/listings',
+  'PATCH /api/v1/inquiries/:id/status',
+  'GET /api/v1/me/profile',
+  'PATCH /api/v1/me/profile',
+  'GET /api/v1/admin/stats',
+  'GET /api/v1/admin/moderation',
+  'GET /api/v1/admin/users',
+  'PATCH /api/v1/admin/users/:id/role',
+  'GET /api/v1/health',
+] as const;
+
+type HttpRoute = { method: string; path: string };
+
+type OpenApiOperation = {
+  responses?: Record<string, { content?: Record<string, { schema?: unknown }> }>;
+};
+
+type OpenApiDocument = {
+  openapi: string;
+  paths: Record<string, Record<string, OpenApiOperation | undefined> | undefined>;
+  components?: { securitySchemes?: Record<string, { type?: string; scheme?: string }> };
+};
+
+type ExpressLayer = {
+  route?: { path: string | string[]; methods: Record<string, boolean> };
+  handle?: { stack?: ExpressLayer[] };
+  path?: string;
+};
+
+function openApiRoute(route: string | HttpRoute): string {
+  const method = typeof route === 'string' ? route.slice(0, route.indexOf(' ')) : route.method;
+  const path = typeof route === 'string' ? route.slice(route.indexOf(' ') + 1) : route.path;
+  return `${method} ${path.replace(/:([A-Za-z0-9_]+)/g, '{$1}')}`;
+}
+
+function schemaRefs(value: unknown): string[] {
+  const found: string[] = [];
+  const visit = (node: unknown): void => {
+    if (Array.isArray(node)) {
+      for (const item of node) visit(item);
+      return;
+    }
+    if (typeof node !== 'object' || node === null) return;
+    for (const [key, child] of Object.entries(node)) {
+      if (key === '$ref' && typeof child === 'string') found.push(child);
+      else visit(child);
+    }
+  };
+  visit(value);
+  return found;
+}
+
+function collectExpressRoutes(stack: ExpressLayer[] | undefined, out: HttpRoute[]): void {
+  if (!stack) return;
+  for (const layer of stack) {
+    if (layer.route) {
+      const paths = Array.isArray(layer.route.path) ? layer.route.path : [layer.route.path];
+      for (const path of paths) {
+        for (const [method, enabled] of Object.entries(layer.route.methods)) {
+          if (enabled && method !== 'head') out.push({ method: method.toUpperCase(), path });
+        }
+      }
+      continue;
+    }
+    if (layer.handle?.stack) collectExpressRoutes(layer.handle.stack, out);
+  }
+}
+
+function expressApiRoutes(app: INestApplication): HttpRoute[] {
+  const server = app.getHttpAdapter().getInstance() as {
+    router?: { stack?: ExpressLayer[] };
+    _router?: { stack?: ExpressLayer[] };
+  };
+  const found: HttpRoute[] = [];
+  collectExpressRoutes(server.router?.stack ?? server._router?.stack, found);
+  return found.filter((route) => route.path.startsWith('/api/v1'));
+}
 
 function draftBody(title: string) {
   return {

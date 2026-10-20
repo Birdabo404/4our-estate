@@ -24,7 +24,7 @@ npx prisma db seed
 npm run start:dev
 ```
 
-`npm run start:dev` generates the Prisma client, then watches `api/src`. The process listens on `PORT`.
+`npm run start:dev` generates the Prisma client, then watches `api/src`. The process listens on `0.0.0.0` and `PORT`.
 
 Seed again whenever you want the same nine accounts and 24 listings. The second run updates rows in place and does not insert duplicates. The demo password is `Estate!2026`.
 
@@ -46,13 +46,23 @@ npx tsc --noEmit
 | `PORT` | HTTP port. Default `4000`. |
 | `CORS_ORIGIN` | Browser origin allowed to call the API. Default `http://localhost:3000`. |
 | `PUBLIC_API_ORIGIN` | Absolute origin written into uploaded image URLs. Default `http://localhost:4000`. No trailing slash. |
+| `SWAGGER_ENABLED` | Serves Swagger UI at `/api/docs` and the OpenAPI document at `/api/docs-json` when `true`. Default `true`. Set `false` to leave those routes unmounted. |
+
+## Interactive docs
+
+With the API running, open `http://localhost:4000/api/docs`. The raw document is `http://localhost:4000/api/docs-json`.
+
+The page title is 4OUR Estate API. Operations are grouped by tag. Use **Authorize** with the `accessToken` from `POST /auth/login`. The header is `Authorization: Bearer <token>`.
+
+`npm run build` and `nest start` run the `@nestjs/swagger` CLI plugin. Field lists then come from the DTO classes and the `class-validator` decorators. Vitest does not run that plugin. During `npm run test:e2e`, `/api/docs-json` still lists every route, the bearer scheme, and the login envelope. The field lists are in the document produced by `nest build`.
 
 ## Architecture
 
 ```text
 api/src
   main.ts                     listen, after configureApp
-  configure-app.ts            helmet, CORS, prefix, static files, ValidationPipe
+  configure-app.ts            helmet, CORS, prefix, static files, ValidationPipe, Swagger
+  openapi/                    response models, envelope decorator, Swagger setup
   app.module.ts               module graph and global guard, filter, interceptor
   config/env.ts               boot-time env schema
   common/                     contracts, envelope, errors, phone, uploads
@@ -322,7 +332,8 @@ An agent moving their own draft to `sold`:
 - Prisma `P2002` on a user email is `409` `An account with this email already exists.` `P2025` is `404`. Other database failures are `500` with a fixed sentence. The filter logs the driver message and does not send the stack or SQL.
 - Listing copy, phones, prices, and dates are checked with class-validator before a service runs. The database checks are a second boundary.
 - Image bytes are limited to 8 MB by multer and by `MaxFileSizeValidator`. `FileTypeValidator` allows JPEG, PNG, WebP, and AVIF.
-- Helmet is on. `crossOriginResourcePolicy` is `cross-origin` so the Next app on port 3000 can display `/uploads` files. CORS allows `CORS_ORIGIN` and credentials.
+- Helmet is on. `crossOriginResourcePolicy` is `cross-origin` so the Next app on port 3000 can display `/uploads` files. CORS allows `CORS_ORIGIN` and credentials. `/api/docs` uses a looser content security policy so Swagger UI can load its scripts and styles. Every other route keeps Helmet's default policy.
+- In production, or when `RENDER=true`, the app sets `trust proxy` to 1. The throttler then uses the client address forwarded by Render.
 - The inquiry email limit is a database count under an advisory lock, so two concurrent requests cannot both become the fifth send. The IP limits are in-memory and apply to one process.
 
 ## Demo accounts
@@ -338,3 +349,32 @@ An agent moving their own draft to `sold`:
 | `camille.uy@4our.estate` | buyer |
 | `joaquin.tan@4our.estate` | buyer |
 | `bea.lim@4our.estate` | buyer |
+
+## Deploy to Render
+
+`render.yaml` at the repo root is a Render Blueprint. It defines the Node web service `4our-estate-api` and the Postgres instance `4our-estate-db`. Both use the free plan. The service `rootDir` is `api`.
+
+1. In the Render Dashboard, create a Blueprint from this repo.
+2. When Render asks, set `CORS_ORIGIN` to the Vercel URL of the Next.js app.
+3. Set `PUBLIC_API_ORIGIN` to the Render service URL, with no trailing slash.
+4. Apply the Blueprint.
+
+Render generates `JWT_SECRET`, sets `JWT_EXPIRES_IN` to `7d`, sets `NODE_VERSION` to `22`, sets `SWAGGER_ENABLED` to `true`, and copies the private database connection string into `DATABASE_URL`.
+
+The build command is `npm ci && npm run build`. `npm ci` runs `postinstall`, which runs `prisma generate`. `npm run build` runs `prisma generate` again, then `nest build`. The start command is `npm run start:prod`. That runs `npx prisma migrate deploy`, then `node dist/main`. Render checks `GET /api/v1/health`.
+
+After the first successful deploy, seed once from your machine. A free web service has no shell and cannot run a one-off job. Use the external database URL from the Render Postgres page. The service itself reads the private connection string Render injects as `DATABASE_URL`.
+
+```bash
+cd api
+DATABASE_URL="postgresql://USER:PASSWORD@HOST/DATABASE" npm run db:seed
+```
+
+Running the seed again updates the same demo rows.
+
+Free plan limits, from Render's free instance documentation:
+
+- The web service disk is ephemeral. Uploaded photos disappear when the service redeploys, restarts, or spins down. Free web services cannot attach a persistent disk.
+- The web service spins down after 15 minutes without a request. The next request waits about a minute while the process starts.
+- Free Postgres expires 30 days after creation. You then have 14 days to move it to a paid plan. After that, Render deletes the database. Free Postgres has no backups.
+- A free web service cannot open a shell or run a one-off job. That is why the seed command runs on your machine.
