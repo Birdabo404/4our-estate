@@ -27,9 +27,14 @@ Public screens against http://localhost:3000
   pass  favorites: a guest is invited to sign in and come back
   pass  buyer login lands on the buyer dashboard
   pass  favorites: a buyer's toggle persists across a reload
+  pass  favorites: a redux toggle shows on the button before reload
   pass  inquiry: a signed-in buyer sees their name and email prefilled
+  pass  credits: the footer links to /credits at 1440
+  pass  credits: /credits lists a photographer at 1440
+  pass  credits: the footer links to /credits at 390
+  pass  credits: /credits lists a photographer at 390
   pass  no console errors on any page
 DELETE 1
 cleanup removed 1 inquiries
 
-30/30 checks passed. Screenshots in /tmp/shots/fe-public.
+35/35 checks passed. Screenshots in /tmp/shots/fe-public.

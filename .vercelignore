@@ -1,0 +1,6 @@
+/api/*
+!/api/prisma
+/api/prisma/*
+!/api/prisma/seed-data
+/.decision-trail
+/docs

@@ -106,7 +106,7 @@ Two shapes were considered. One module per HTTP resource makes the Nest pieces e
 | Send an inquiry on a published listing | yes, `buyerId` null | `buyerId` set | `buyerId` set | `buyerId` set |
 | Read own inquiries | no | own rows | no | no |
 | Read inquiries on own listings | no | no | yes | own listings only |
-| Update inquiry status | no | no | own listings | own listings |
+| Update inquiry status | no | no | own listings | any listing |
 | Upload or delete a listing photo | no | no | own listing | any listing |
 | Admin stats, moderation queue, user directory | no | no | no | yes |
 

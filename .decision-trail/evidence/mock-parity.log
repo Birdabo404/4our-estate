@@ -1,0 +1,71 @@
+note  aligned createdAt for 9 users from Postgres
+note  aligned createdAt and updatedAt for 24 listings from Postgres
+note  aligned createdAt for 6 inquiries from Postgres
+note  favorite not in seed data, excluded from the live side: camille.uy@4our.estate saved rockwell-proscenium-residence
+note  excluded 1 live favorites that are not in the seed
+stableUuid user:admin@4our.estate 62b850bb-a02d-4201-b727-25fffc6df9d3
+ok   list newest page 1                         match
+ok   list newest page 2                         match
+ok   list Makati sale price desc                match
+ok   list q siargao                             match
+ok   list rent beds size                        match
+ok   list villa price asc                       match
+ok   list price order invalid                   match
+ok   featured                                   match
+ok   featured limit 2                           match
+ok   cities                                     match
+ok   stats                                      match
+ok   published detail                           match
+ok   sold detail                                match
+ok   private slug guest                         match
+ok   similar siargao                            match
+ok   similar mactan                             match
+ok   signup validation                          match
+ok   login camille.uy@4our.estate               match
+ok   login isabel.santos@4our.estate            match
+ok   login admin@4our.estate                    match
+ok   buyer me                                   match
+ok   agent me                                   match
+ok   admin me                                   match
+ok   buyer favorite ids                         match
+ok   agent listings                             match
+ok   admin stats                                match
+ok   admin moderation                           match
+ok   admin users                                match
+ok   buyer admin stats                          match
+ok   guest agent listings                       match
+ok   stableUuid equals admin id                 match
+
+case                                       result
+list newest page 1                         match
+list newest page 2                         match
+list Makati sale price desc                match
+list q siargao                             match
+list rent beds size                        match
+list villa price asc                       match
+list price order invalid                   match
+featured                                   match
+featured limit 2                           match
+cities                                     match
+stats                                      match
+published detail                           match
+sold detail                                match
+private slug guest                         match
+similar siargao                            match
+similar mactan                             match
+signup validation                          match
+login camille.uy@4our.estate               match
+login isabel.santos@4our.estate            match
+login admin@4our.estate                    match
+buyer me                                   match
+agent me                                   match
+admin me                                   match
+buyer favorite ids                         match
+agent listings                             match
+admin stats                                match
+admin moderation                           match
+admin users                                match
+buyer admin stats                          match
+guest agent listings                       match
+stableUuid equals admin id                 match
+31/31 match

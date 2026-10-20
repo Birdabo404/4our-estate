@@ -26,10 +26,10 @@ saved /tmp/shots/fe-app/admin-users-1440.png
 saved /tmp/shots/fe-app/admin-users-390.png
 saved /tmp/shots/fe-app/admin-moderation-1440.png
 saved /tmp/shots/fe-app/admin-moderation-390.png
-published e2e-casa-mvgtb5fm
+published e2e-casa-mvgyou5c
 DELETE 0
 DELETE 1
-cleanup removed property 2a958c23-547f-4d39-aa24-92063ed8ba09
+cleanup removed property d6070929-336d-4424-9e7d-e8757256d1f0
 DELETE 2
-cleanup removed e2e.buyer.mvgtb5fm@4our.test and e2e.agent.mvgtb5fm@4our.test
+cleanup removed e2e.buyer.mvgyou5c@4our.test and e2e.agent.mvgyou5c@4our.test
 e2e passed
