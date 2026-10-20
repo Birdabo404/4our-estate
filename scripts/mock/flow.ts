@@ -27,7 +27,7 @@ async function main() {
   await agentPage.getByLabel("Floor area").fill("80");
   await agentPage.getByLabel("Parking").fill("1");
   await agentPage.getByLabel("Neighborhood").fill("Probe");
-  await agentPage.getByLabel("City").fill("Makati");
+  await agentPage.getByRole("textbox", { name: /^City\b/ }).fill("Makati");
   await agentPage.getByLabel("Province").fill("Metro Manila");
   await agentPage.getByLabel("Street address").fill("2 Probe Street");
   await agentPage.getByLabel("Description").fill("A lane house kept so mock mode can publish a draft.");
