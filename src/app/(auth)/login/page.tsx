@@ -24,11 +24,11 @@ export default async function LoginPage({
 
   return (
     <div>
-      <Eyebrow>Members</Eyebrow>
+      <Eyebrow>Sign in</Eyebrow>
       <h1 className="mt-5 text-display-3">
         Welcome <em>back</em>.
       </h1>
-      <p className="mt-4 text-lead text-ink-soft">Sign in to the residences you saved and the desk you keep.</p>
+      <p className="mt-4 text-lead text-ink-soft">Pick up your saved homes, inquiries and listings.</p>
       <div className="mt-8">
         <LoginForm next={next || undefined} />
       </div>

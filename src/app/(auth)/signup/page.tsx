@@ -26,11 +26,11 @@ export default async function SignupPage({
 
   return (
     <div>
-      <Eyebrow>Membership</Eyebrow>
+      <Eyebrow>Create account</Eyebrow>
       <h1 className="mt-4 text-display-3">
         Open an <em>account</em>.
       </h1>
-      <p className="mt-4 text-lead text-ink-soft">Buyers keep a private list. Agents keep a desk.</p>
+      <p className="mt-4 text-lead text-ink-soft">Buyers save homes and message agents. Agents list and answer leads.</p>
       <div className="mt-6">
         <SignupForm next={next || undefined} initialRole={role} />
       </div>
