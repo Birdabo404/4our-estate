@@ -472,18 +472,397 @@ export const PICKS: Record<PhotoCategory, readonly Pick[]> = {
       alt: "Mid-century glass pavilion with a thin flat roof beyond a green pool, a city spread below under scattered cloud",
     },
   ],
-  "view-sea": [],
-  "view-city": [],
-  "view-highland": [],
-  "land-lot": [],
-  detail: [],
-  "place-makati": [],
-  "place-bgc": [],
-  "place-cebu": [],
-  "place-siargao": [],
-  "place-boracay": [],
-  "place-palawan": [],
-  "place-tagaytay": [],
-  "place-baguio": [],
-  "place-la-union": [],
+  "view-sea": [
+    {
+      id: "photo-1457195740896-7f345efef228",
+      tone: "cool",
+      alt: "Open sea under a pale morning sky, the horizon a single clean line",
+    },
+    {
+      id: "photo-1464376810568-596bdd5a1897",
+      tone: "warm",
+      alt: "Still ocean at dusk fading from soft green water to a blush-pink sky",
+    },
+    {
+      id: "photo-1474540412665-1cdae210ae6b",
+      tone: "warm",
+      alt: "Glassy sea reflecting a sunset sky in bands of violet, pink and blue",
+    },
+    {
+      id: "photo-1468324187476-c4e804213545",
+      tone: "cool",
+      alt: "Deep blue ocean stretching to the horizon beneath bright scattered cloud",
+    },
+    {
+      id: "photo-1504814532849-cff240bbc503",
+      tone: "neutral",
+      alt: "Aerial view of a white-sand beach where turquoise water meets a fringe of palms",
+    },
+    {
+      id: "photo-1594235206348-f03d8c4ebda0",
+      tone: "neutral",
+      alt: "Overhead view of pale sand and shallow turquoise water with soft breaking surf",
+    },
+    {
+      id: "photo-1494879540385-bc170b0878a7",
+      tone: "cool",
+      alt: "Aerial view of a rocky shoreline washed by clear aquamarine water and white foam",
+    },
+    {
+      id: "photo-1525231012935-c8ce899cf47b",
+      tone: "cool",
+      alt: "Aerial view of a dark beach edge where pale blue shallows drop into deep navy sea",
+    },
+  ],
+  "view-city": [
+    {
+      id: "photo-1568115286680-d203e08a8be6",
+      tone: "neutral",
+      alt: "High-floor room with floor-to-ceiling glass looking out over a city of towers",
+    },
+    {
+      id: "photo-1501890664351-4ef399c1524f",
+      tone: "warm",
+      alt: "City skyline in silhouette against a dusk sky streaked with pink cloud",
+    },
+    {
+      id: "photo-1586012480859-cf3571524b8d",
+      tone: "neutral",
+      alt: "Cluster of Metro Manila high-rises rising above low-rise neighborhoods under white cloud",
+    },
+    {
+      id: "photo-1598258710957-db8614c2881e",
+      tone: "cool",
+      alt: "Wide Metro Manila skyline spread beneath a broad blue sky",
+    },
+    {
+      id: "photo-1602253396430-e805dc528e97",
+      tone: "cool",
+      alt: "Manila skyline at night with tower lights reflected in still bay water",
+    },
+    {
+      id: "photo-1581216340441-d47cad9210a4",
+      tone: "neutral",
+      alt: "Dense Manila skyline at night with lit towers above the surrounding streets",
+    },
+    {
+      id: "photo-1535498730771-e735b998cd64",
+      tone: "warm",
+      alt: "Waterfront high-rises across a calm bay under a pink and violet sunset",
+    },
+    {
+      id: "photo-1462558813106-ae2d242f4ff8",
+      tone: "neutral",
+      alt: "Aerial view of a sprawling city of low rooftops and scattered towers in daylight",
+    },
+  ],
+  "view-highland": [
+    {
+      id: "photo-1585761347573-0b9b767801cb",
+      tone: "cool",
+      alt: "Layered Cordillera ridges with a sea of clouds settled in the valleys below",
+    },
+    {
+      id: "photo-1685720320152-064dec597cb5",
+      tone: "neutral",
+      alt: "Pine-covered foreground opening onto rolling green mountain ranges in the Cordillera",
+    },
+    {
+      id: "photo-1548710332-3e03e8220a79",
+      tone: "neutral",
+      alt: "Stepped rice terraces climbing a misty mountain amphitheater in the Cordillera",
+    },
+    {
+      id: "photo-1653481861929-ce428fd6a340",
+      tone: "cool",
+      alt: "Taal Lake and its volcanic island seen over a ridge of dense green forest",
+    },
+    {
+      id: "photo-1685720360392-59eea3c681aa",
+      tone: "warm",
+      alt: "Pine branches framing a warm-lit mountain valley in the northern highlands",
+    },
+    {
+      id: "photo-1714746093194-90606d562049",
+      tone: "neutral",
+      alt: "Bright green rice terraces at the foot of steep mountains under a blue sky",
+    },
+    {
+      id: "photo-1716863451342-f279ecac3d2b",
+      tone: "neutral",
+      alt: "Lush highland valley with scattered houses among trees and distant blue ridges",
+    },
+    {
+      id: "photo-1714746093227-42b425c0f133",
+      tone: "neutral",
+      alt: "Terraced rice paddies curving below a village tucked into a mountain valley",
+    },
+  ],
+  "land-lot": [
+    {
+      id: "photo-1583231474295-72a6600bcf04",
+      tone: "neutral",
+      alt: "Open agricultural land in bright green parcels divided by tree lines, seen from above",
+    },
+    {
+      id: "photo-1587500945923-c64d8142df65",
+      tone: "neutral",
+      alt: "Flat green field edged by a stand of coconut palms under a hazy sky",
+    },
+    {
+      id: "photo-1475082622110-f0e90ff503ff",
+      tone: "neutral",
+      alt: "Aerial view of rectangular green parcels beside a road, crossed by long tree shadows",
+    },
+    {
+      id: "photo-1480996408299-fc0e830b5db1",
+      tone: "neutral",
+      alt: "Aerial view of rice terraces in layered bands of lime and deep green",
+    },
+    {
+      id: "photo-1558005137-d9619a5c539f",
+      tone: "neutral",
+      alt: "Overhead view of a rice field meeting a grove of coconut palms",
+    },
+    {
+      id: "photo-1529381029145-e3b99a5c1f35",
+      tone: "cool",
+      alt: "Long undeveloped beachfront with rolling surf beside open dry land",
+    },
+    {
+      id: "photo-1703504260184-bd5c5b3719c2",
+      tone: "neutral",
+      alt: "Aerial view of plantation rows forming curving geometric parcels",
+    },
+    {
+      id: "photo-1698070010730-6e0b7483a78b",
+      tone: "neutral",
+      alt: "Grove of tall coconut palms on a grassy lot in soft daylight",
+    },
+  ],
+  detail: [
+    {
+      id: "photo-1571327352610-1c5484ccc840",
+      tone: "warm",
+      alt: "Timber shutters on a lime-washed wall dappled with palm-frond shadows",
+    },
+    {
+      id: "photo-1784652587224-062bd5f231bf",
+      tone: "warm",
+      alt: "Mottled cream stone floor crossed by soft window shadows",
+    },
+    {
+      id: "photo-1760624493115-46380c9d2280",
+      tone: "warm",
+      alt: "Tall timber slats casting stripes of light across a pale floor",
+    },
+    {
+      id: "photo-1649367879032-8903d3c886cd",
+      tone: "warm",
+      alt: "Late sun throwing angular shadows across a textured terracotta plaster wall",
+    },
+    {
+      id: "photo-1760237655540-8197ef24838b",
+      tone: "warm",
+      alt: "Curving timber ribs in an abstract geometric pattern under warm light",
+    },
+    {
+      id: "photo-1683803246983-f25c809557cb",
+      tone: "neutral",
+      alt: "Sheer linen curtains in sand and cream tones with light passing through",
+    },
+    {
+      id: "photo-1607975869331-0fc901d8b5a9",
+      tone: "warm",
+      alt: "Close view of a hand-woven rattan basket radiating from its center",
+    },
+    {
+      id: "photo-1584091747852-1f36cb0f3bee",
+      tone: "cool",
+      alt: "Bands of sunlight from window blinds falling across a plain wall",
+    },
+  ],
+  "place-makati": [
+    {
+      id: "photo-1580465446156-0a5b3eee11ae",
+      tone: "warm",
+      alt: "Makati skyline in silhouette beneath billowing late-afternoon clouds",
+    },
+    {
+      id: "photo-1597285952775-1382215fbff0",
+      tone: "neutral",
+      alt: "Glass and stone office towers of the Makati central business district",
+    },
+    {
+      id: "photo-1648403818593-f372676cb6c4",
+      tone: "neutral",
+      alt: "Winding paths through mature trees in Ayala Triangle Gardens, towers beyond",
+    },
+  ],
+  "place-bgc": [
+    {
+      id: "photo-1596564309076-01c1868b07a4",
+      tone: "cool",
+      alt: "Aerial view of Bonifacio Global City's grid of modern towers in soft haze",
+    },
+    {
+      id: "photo-1586832609279-2d7bb0800804",
+      tone: "neutral",
+      alt: "Tree-lined avenue in Bonifacio Global City with residential towers against a blue sky",
+    },
+    {
+      id: "photo-1691077265816-431514a93f95",
+      tone: "cool",
+      alt: "Bonifacio Global City towers lit at night beneath a low, cloudy sky",
+    },
+    {
+      id: "photo-1518835633655-f1e358a1d685",
+      tone: "neutral",
+      alt: "Aerial view of dense Metro Manila high-rises stretching to the horizon",
+    },
+  ],
+  "place-cebu": [
+    {
+      id: "photo-1495161963834-ce3d2023df2a",
+      tone: "cool",
+      alt: "Small forested island ringed by reef, with outrigger boats moored nearby",
+    },
+    {
+      id: "photo-1580742314608-23d8db11fa60",
+      tone: "cool",
+      alt: "Aerial view of a green island fringed by wide turquoise reef flats in the Visayas",
+    },
+    {
+      id: "photo-1718560171948-08d6ac9ee837",
+      tone: "warm",
+      alt: "Outrigger bangka boats at anchor on a calm sea under a pastel evening sky",
+    },
+    {
+      id: "photo-1558029573-2de0fd6f62f9",
+      tone: "cool",
+      alt: "Cebu City business district at blue hour with lit towers above a low-rise mall",
+    },
+  ],
+  "place-siargao": [
+    {
+      id: "photo-1565565978731-f9e8cd35a317",
+      tone: "neutral",
+      alt: "Straight road cutting through an unbroken coconut forest in Siargao",
+    },
+    {
+      id: "photo-1533656118793-f31053731265",
+      tone: "cool",
+      alt: "Turquoise lagoon enclosed by mangrove-covered limestone, seen from above",
+    },
+    {
+      id: "photo-1736776256361-360f071c2540",
+      tone: "cool",
+      alt: "Aerial view of a bare white sandbar island ringed by pale blue shallows",
+    },
+  ],
+  "place-boracay": [
+    {
+      id: "photo-1605941674177-6e3e2da25937",
+      tone: "cool",
+      alt: "Pale pastel shallows off Boracay with a lone paraw sailboat on the horizon",
+    },
+    {
+      id: "photo-1668090509106-342502f62adc",
+      tone: "cool",
+      alt: "Blue-sailed paraw on Boracay's deep blue water beneath towering white cloud",
+    },
+    {
+      id: "photo-1676089775615-cceedcdf96e5",
+      tone: "neutral",
+      alt: "Hillside villas above a quiet Boracay cove with clear turquoise water",
+    },
+    {
+      id: "photo-1601433115426-4bf5c02312a6",
+      tone: "neutral",
+      alt: "Boracay's White Beach curving along palm-lined shore under a wide blue sky",
+    },
+  ],
+  "place-palawan": [
+    {
+      id: "photo-1518509562904-e7ef99cdcc86",
+      tone: "cool",
+      alt: "Limestone cliffs and a white-sand cove in El Nido framing a deep blue bay",
+    },
+    {
+      id: "photo-1531761535209-180857e963b9",
+      tone: "neutral",
+      alt: "Aerial view of El Nido town wrapped around a turquoise bay below karst peaks",
+    },
+    {
+      id: "photo-1542533382-b42a59d8bd39",
+      tone: "cool",
+      alt: "Jagged karst islets rising from a clear blue lagoon in Palawan",
+    },
+    {
+      id: "photo-1565113180093-077f1e8f1c74",
+      tone: "cool",
+      alt: "Forested limestone island in Coron rising from still water under grey cloud",
+    },
+  ],
+  "place-tagaytay": [
+    {
+      id: "photo-1633670057397-b12fc5289e96",
+      tone: "warm",
+      alt: "Taal Volcano and lake seen from the Tagaytay ridge through golden grasses",
+    },
+    {
+      id: "photo-1655098493107-a9876195ec44",
+      tone: "cool",
+      alt: "Taal Volcano island in a deep blue lake beneath soft white cloud",
+    },
+    {
+      id: "photo-1652788867857-0e75c2e78aeb",
+      tone: "neutral",
+      alt: "Green Tagaytay hillsides falling away to Taal Lake under a cloudy sky",
+    },
+    {
+      id: "photo-1665467805754-5064338a90ba",
+      tone: "neutral",
+      alt: "Infinity pool reflecting a hazy sun and dark tree line on the Tagaytay ridge",
+    },
+  ],
+  "place-baguio": [
+    {
+      id: "photo-1580127252363-1d29a1ff0603",
+      tone: "warm",
+      alt: "Baguio's pine-covered hills catching late light below layered mountain ridges",
+    },
+    {
+      id: "photo-1704633112930-4d0e91db77e9",
+      tone: "cool",
+      alt: "Baguio spread across forested slopes with clouds pooled among distant mountains",
+    },
+    {
+      id: "photo-1682988827786-b99a2e97f714",
+      tone: "neutral",
+      alt: "Colorful Baguio rooftops stacked on a hillside as mist drifts through",
+    },
+    {
+      id: "photo-1627268770654-654e98b0a72b",
+      tone: "cool",
+      alt: "Misty footpath beneath an avenue of old trees in Baguio",
+    },
+  ],
+  "place-la-union": [
+    {
+      id: "photo-1552912809-fb011ec55fa4",
+      tone: "warm",
+      alt: "Rolling surf off the La Union coast under soft pink evening clouds",
+    },
+    {
+      id: "photo-1559053257-1f870197c8ce",
+      tone: "warm",
+      alt: "Sunset over the West Philippine Sea from the rocky La Union shore",
+    },
+    {
+      id: "photo-1557537386-b41ac63e8756",
+      tone: "neutral",
+      alt: "Rack of surfboards under a bamboo shelter above the rocky La Union shoreline",
+    },
+  ],
 };
