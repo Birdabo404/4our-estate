@@ -2,7 +2,7 @@ import "server-only";
 
 import { cache } from "react";
 import { headers } from "next/headers";
-import { redirect } from "next/navigation";
+import { redirect, unstable_rethrow } from "next/navigation";
 
 import { ApiError, apiFetch, sessionToken } from "@/lib/api/client";
 import { dashboardPath } from "@/lib/auth/paths";
@@ -44,6 +44,7 @@ export const getViewer = cache(async (): Promise<Viewer> => {
     const { data } = await apiFetch<unknown>("/auth/me");
     return asMember(data) ?? { kind: "guest" };
   } catch (error) {
+    unstable_rethrow(error);
     if (error instanceof ApiError && error.statusCode === 401) return { kind: "guest" };
     throw new Error("Could not load your account.");
   }
