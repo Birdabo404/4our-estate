@@ -80,7 +80,7 @@ export function DashboardShell({ account, children }: { account: DashboardAccoun
     <div className="min-h-dvh lg:grid lg:grid-cols-[16.5rem_minmax(0,1fr)]">
       <aside className="sticky top-0 hidden h-dvh flex-col border-r border-ink/10 px-6 py-8 lg:flex">
         <Link href="/" className="text-ink" aria-label="4OUR Estate, home">
-          <Wordmark animated className="text-[1.45rem]" />
+          <Wordmark className="text-[1.45rem]" />
         </Link>
         <div className="mt-12">
           <NavLinks account={account} pathname={pathname} />

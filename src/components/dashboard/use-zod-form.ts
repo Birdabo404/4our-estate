@@ -1,6 +1,6 @@
 "use client";
 
-import { type FocusEvent, type FormEvent, useActionState, useEffect, useState } from "react";
+import { type FocusEvent, type FormEvent, startTransition, useActionState, useEffect, useState } from "react";
 
 import type { ActionResult } from "@/lib/actions/result";
 
@@ -44,13 +44,15 @@ export function useZodForm<T>(
     const errors = parse(formData);
     setClientErrors(errors);
     setSubmitted(true);
-    const key = firstInvalid(errors, order);
+    const key = firstInvalid(errors, order) ?? Object.keys(errors)[0];
     if (key) {
       focusNamed(key);
       return;
     }
     beforeAction?.(formData);
-    formAction(formData);
+    startTransition(() => {
+      formAction(formData);
+    });
   }
 
   const formError = state && !state.ok ? state.formError : undefined;

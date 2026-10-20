@@ -4,6 +4,7 @@ import { headers } from "next/headers";
 import type { ReactNode } from "react";
 
 import { Wordmark } from "@/components/motion/wordmark";
+import { cn } from "@/lib/cn";
 import { photoUrl, photosBy, type Photo } from "@/lib/photography/catalog";
 
 const SCENES: Record<"login" | "signup", { photo: Photo; kicker: string; line: string }> = {
@@ -22,12 +23,14 @@ const SCENES: Record<"login" | "signup", { photo: Photo; kicker: string; line: s
 export default async function AuthLayout({ children }: { children: ReactNode }) {
   const headerList = await headers();
   const path = headerList.get("x-4our-pathname") ?? "";
-  const scene = path.startsWith("/signup") ? SCENES.signup : SCENES.login;
+  const compact = path.startsWith("/signup");
+  const scene = compact ? SCENES.signup : SCENES.login;
   const src = photoUrl(scene.photo, 1800);
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
-      <div className="relative h-64 sm:h-80 lg:sticky lg:top-0 lg:h-dvh">
+      <div className="h-64 sm:h-80 lg:sticky lg:top-0 lg:h-dvh">
+        <div className="relative h-full">
         <Image
           src={src}
           alt={scene.photo.alt}
@@ -45,8 +48,9 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
           <p className="mt-3 max-w-[14ch] font-display text-heading text-white">{scene.line}</p>
           <p className="mt-4 text-small text-white/75">{scene.photo.photographer}</p>
         </div>
+        </div>
       </div>
-      <div className="flex flex-col px-5 py-8 sm:px-10 lg:px-16 lg:py-10">
+      <div className={cn("flex flex-col px-5 sm:px-10 lg:px-16", compact ? "py-5 lg:py-6" : "py-8 lg:py-10")}>
         <header className="flex items-center justify-between gap-6">
           <Link href="/" className="text-ink" aria-label="4OUR Estate, home">
             <Wordmark className="text-[1.65rem]" />
@@ -58,7 +62,14 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
             Back to the site
           </Link>
         </header>
-        <main id="main" tabIndex={-1} className="mx-auto flex w-full max-w-[28rem] flex-1 flex-col justify-center py-12 outline-none lg:py-16">
+        <main
+          id="main"
+          tabIndex={-1}
+          className={cn(
+            "mx-auto flex w-full max-w-[28rem] flex-1 flex-col outline-none",
+            compact ? "justify-start py-2" : "justify-center py-8 lg:py-10",
+          )}
+        >
           {children}
         </main>
       </div>

@@ -22,7 +22,7 @@ export function ListingMoves({
   role: Role;
 }) {
   const targets = nextStatuses(status, role);
-  const forward = primaryTransition(targets);
+  const forward = primaryTransition(status, targets);
   const [confirming, setConfirming] = useState<ListingStatus | null>(null);
   const closeConfirm = useCallback(() => setConfirming(null), []);
 

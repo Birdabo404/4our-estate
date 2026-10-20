@@ -115,21 +115,23 @@ export function ListingForm({ property }: { property: PropertyDetail | null }) {
 
   return (
     <form noValidate onSubmit={onSubmit} onBlur={onBlur} className="flex flex-col gap-8">
-      {property ? <input type="hidden" name="id" value={property.id} /> : null}
+      <input type="hidden" name="id" value={property?.id ?? ""} />
       <Section title="Basics" lede="The name a buyer will remember.">
         <div className="md:col-span-2">
           <Field label="Title" error={errorFor("title")} required>
             <Input name="title" defaultValue={property?.title ?? ""} />
           </Field>
         </div>
-        <Field label="Listing" error={errorFor("listingType")} required>
-          <SegmentedControl
-            name="listingType"
-            aria-label="Listing"
-            defaultValue={property?.listingType ?? "sale"}
-            options={LISTING_TYPES.map((value) => ({ value, label: LISTING_LABEL[value] }))}
-          />
-        </Field>
+        <div className="md:col-span-2">
+          <Field label="Listing" error={errorFor("listingType")} required>
+            <SegmentedControl
+              name="listingType"
+              aria-label="Listing"
+              defaultValue={property?.listingType ?? "sale"}
+              options={LISTING_TYPES.map((value) => ({ value, label: LISTING_LABEL[value] }))}
+            />
+          </Field>
+        </div>
         <Field label="Type" error={errorFor("propertyType")} required>
           <Select name="propertyType" defaultValue={property?.propertyType ?? "house"}>
             {PROPERTY_TYPES.map((value) => (

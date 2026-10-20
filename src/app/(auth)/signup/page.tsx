@@ -27,11 +27,11 @@ export default async function SignupPage({
   return (
     <div>
       <Eyebrow>Membership</Eyebrow>
-      <h1 className="mt-5 text-display-3">
+      <h1 className="mt-4 text-display-3">
         Open an <em>account</em>.
       </h1>
       <p className="mt-4 text-lead text-ink-soft">Buyers keep a private list. Agents keep a desk.</p>
-      <div className="mt-10">
+      <div className="mt-6">
         <SignupForm next={next || undefined} initialRole={role} />
       </div>
       <p className="mt-8 text-small text-ink-soft">

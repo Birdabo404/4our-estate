@@ -29,7 +29,7 @@ export default async function LoginPage({
         Welcome <em>back</em>.
       </h1>
       <p className="mt-4 text-lead text-ink-soft">Sign in to the residences you saved and the desk you keep.</p>
-      <div className="mt-10">
+      <div className="mt-8">
         <LoginForm next={next || undefined} />
       </div>
       <p className="mt-8 text-small text-ink-soft">

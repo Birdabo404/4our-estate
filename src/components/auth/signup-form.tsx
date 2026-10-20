@@ -54,7 +54,7 @@ export function SignupForm({ next, initialRole }: { next?: string; initialRole: 
 
   return (
     <Panel>
-      <form noValidate onSubmit={onSubmit} onBlur={onBlur} className="flex flex-col gap-6">
+      <form noValidate onSubmit={onSubmit} onBlur={onBlur} className="flex flex-col gap-4">
         {next ? <input type="hidden" name="next" value={next} /> : null}
         <div className="flex flex-col gap-3">
           <p className="text-small font-medium text-ink" id="signup-role-label">

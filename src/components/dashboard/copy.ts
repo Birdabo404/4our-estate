@@ -49,7 +49,15 @@ export const TRANSITION_CONFIRM: Partial<Record<ListingStatus, { title: string; 
   },
 };
 
-export function primaryTransition(targets: readonly ListingStatus[]): ListingStatus | undefined {
+const FORWARD_STATUS: Partial<Record<ListingStatus, ListingStatus>> = {
+  draft: "pending",
+  pending: "published",
+  archived: "draft",
+};
+
+export function primaryTransition(from: ListingStatus, targets: readonly ListingStatus[]): ListingStatus | undefined {
+  const forward = FORWARD_STATUS[from];
+  if (forward && targets.includes(forward)) return forward;
   return targets.find((status) => !transitionNeedsConfirm(status));
 }
 
