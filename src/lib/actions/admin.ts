@@ -1,13 +1,13 @@
 "use server";
 
+import { apiFetch } from "@/lib/api/client";
 import { requireRole } from "@/lib/data/viewer";
 import type { Role } from "@/lib/domain/types";
-import { createClient } from "@/lib/supabase/server";
 import { readUserRole, userRoleSchema } from "@/lib/validation/profile";
 
-import { humanize } from "./errors";
+import { failure } from "./failure";
 import { revalidateListing } from "./revalidate";
-import { fail, invalid, ok, type ActionResult } from "./result";
+import { invalid, ok, type ActionResult } from "./result";
 
 export async function setUserRole(
   _prev: ActionResult<{ id: string; role: Role }> | null,
@@ -17,16 +17,14 @@ export async function setUserRole(
   if (!parsed.success) return invalid(parsed.error);
   await requireRole("admin");
 
-  const supabase = await createClient();
-  const { data, error } = await supabase
-    .from("profiles")
-    .update({ role: parsed.data.role })
-    .eq("id", parsed.data.userId)
-    .select("id, role")
-    .maybeSingle();
-  if (error) return fail(humanize(error));
-  if (!data) return fail("That user was not found.");
-
-  revalidateListing();
-  return ok({ id: data.id, role: data.role });
+  try {
+    const { data } = await apiFetch<{ id: string; role: Role }>(
+      `/admin/users/${encodeURIComponent(parsed.data.userId)}/role`,
+      { method: "PATCH", json: { role: parsed.data.role } },
+    );
+    revalidateListing();
+    return ok(data);
+  } catch (error) {
+    return failure(error);
+  }
 }

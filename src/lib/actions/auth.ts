@@ -2,17 +2,18 @@
 
 import { redirect } from "next/navigation";
 
+import { apiFetch, clearSession, setSession } from "@/lib/api/client";
 import { dashboardPath, safeNext } from "@/lib/auth/paths";
-import type { Role } from "@/lib/domain/types";
-import { createClient } from "@/lib/supabase/server";
+import type { Viewer } from "@/lib/domain/types";
 import { loginSchema, readLogin, readSignup, signupSchema } from "@/lib/validation/auth";
 
-import { humanize } from "./errors";
-import { fail, invalid, type ActionResult } from "./result";
+import { failure } from "./failure";
+import { invalid, type ActionResult } from "./result";
 
-function isRole(value: string): value is Role {
-  return value === "buyer" || value === "agent" || value === "admin";
-}
+type Session = {
+  accessToken: string;
+  user: Extract<Viewer, { kind: "member" }>;
+};
 
 export async function signUp(
   _prev: ActionResult<null> | null,
@@ -21,29 +22,24 @@ export async function signUp(
   const parsed = signupSchema.safeParse(readSignup(formData));
   if (!parsed.success) return invalid(parsed.error);
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email: parsed.data.email,
-    password: parsed.data.password,
-    options: {
-      data: {
-        role: parsed.data.role,
-        full_name: parsed.data.fullName,
-        phone: parsed.data.phone ?? "",
-        agency: parsed.data.agency ?? "",
-      },
-    },
-  });
+  const input = parsed.data;
+  const json: Record<string, string> = {
+    role: input.role,
+    fullName: input.fullName,
+    email: input.email,
+    password: input.password,
+  };
+  if (input.phone) json.phone = input.phone;
+  if (input.agency) json.agency = input.agency;
+  if (input.licenseNo) json.licenseNo = input.licenseNo;
 
-  if (error) return fail(humanize(error));
-  if (data.user && data.user.identities && data.user.identities.length === 0) {
-    return fail("An account with this email already exists.");
+  try {
+    const { data } = await apiFetch<Session>("/auth/signup", { method: "POST", json, auth: false });
+    await setSession(data.accessToken);
+    redirect(safeNext(formData.get("next"), dashboardPath(data.user.role)));
+  } catch (error) {
+    return failure(error);
   }
-  if (!data.session) {
-    return fail("Confirm your email before signing in.");
-  }
-
-  redirect(safeNext(formData.get("next"), dashboardPath(parsed.data.role)));
 }
 
 export async function signIn(
@@ -53,22 +49,17 @@ export async function signIn(
   const parsed = loginSchema.safeParse(readLogin(formData));
   if (!parsed.success) return invalid(parsed.error);
 
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email: parsed.data.email,
-    password: parsed.data.password,
-  });
-  if (error || !data.user) {
-    return fail(error ? humanize(error) : "Email or password is incorrect.");
+  try {
+    const { data } = await apiFetch<Session>("/auth/login", {
+      method: "POST",
+      json: { email: parsed.data.email, password: parsed.data.password },
+      auth: false,
+    });
+    await setSession(data.accessToken);
+    redirect(safeNext(formData.get("next"), dashboardPath(data.user.role)));
+  } catch (error) {
+    return failure(error);
   }
-
-  const profile = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", data.user.id)
-    .maybeSingle();
-  const role = profile.data && isRole(profile.data.role) ? profile.data.role : "buyer";
-  redirect(safeNext(formData.get("next"), dashboardPath(role)));
 }
 
 export async function signOut(
@@ -77,8 +68,6 @@ export async function signOut(
 ): Promise<ActionResult<null>> {
   void prev;
   void formData;
-  const supabase = await createClient();
-  const { error } = await supabase.auth.signOut();
-  if (error) return fail(humanize(error));
+  await clearSession();
   redirect("/");
 }

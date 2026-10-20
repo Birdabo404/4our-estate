@@ -1,10 +1,10 @@
+import { execFileSync } from "node:child_process";
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
 import { chromium, type ConsoleMessage, type Page } from "@playwright/test";
-import { createClient } from "@supabase/supabase-js";
 
-const BASE = process.env.BASE_URL ?? "http://127.0.0.1:3202";
+const BASE = process.env.BASE_URL ?? "http://localhost:3000";
 const OUT = "/tmp/shots/fe-app";
 const PHOTO = "/tmp/fe-app-photo.jpg";
 const DESKTOP = { width: 1440, height: 900 };
@@ -12,6 +12,7 @@ const MOBILE = { width: 390, height: 844 };
 
 const stamp = Date.now().toString(36);
 const buyerEmail = `e2e.buyer.${stamp}@4our.test`;
+const agentSignupEmail = `e2e.agent.${stamp}@4our.test`;
 const buyerPassword = "Harbor!2026";
 const listingTitle = `E2E Casa ${stamp}`;
 const agentEmail = "isabel.santos@4our.estate";
@@ -81,39 +82,28 @@ async function savePhoto() {
   writeFileSync(PHOTO, bytes);
 }
 
+function sqlText(value: string): string {
+  return `'${value.replaceAll("'", "''")}'`;
+}
+
+function psql(statement: string) {
+  execFileSync(
+    "docker",
+    ["exec", "estate-postgres", "psql", "-U", "estate", "-d", "estate", "-v", "ON_ERROR_STOP=1", "-c", statement],
+    { stdio: "inherit" },
+  );
+}
+
 async function cleanup() {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!url || !key) {
-    console.log("cleanup skipped: service role env is missing");
-    return;
-  }
-  const admin = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
-
+  const emails = [buyerEmail, agentSignupEmail].map(sqlText).join(", ");
   if (created.propertyId) {
-    const images = await admin.from("property_images").select("storage_path").eq("property_id", created.propertyId);
-    const paths = (images.data ?? []).map((row) => row.storage_path).filter((path): path is string => Boolean(path));
-    if (paths.length > 0) await admin.storage.from("property-images").remove(paths);
-    await admin.from("inquiries").delete().eq("property_id", created.propertyId);
-    const removed = await admin.from("properties").delete().eq("id", created.propertyId);
-    console.log(removed.error ? `cleanup property failed: ${removed.error.message}` : `cleanup removed property ${created.propertyId}`);
+    const id = sqlText(created.propertyId);
+    psql(`DELETE FROM inquiries WHERE "propertyId" = ${id};`);
+    psql(`DELETE FROM properties WHERE id = ${id};`);
+    console.log(`cleanup removed property ${created.propertyId}`);
   }
-
-  let page = 1;
-  let userId = "";
-  while (!userId && page < 10) {
-    const listed = await admin.auth.admin.listUsers({ page, perPage: 200 });
-    if (listed.error) {
-      console.log(`cleanup users failed: ${listed.error.message}`);
-      return;
-    }
-    userId = listed.data.users.find((user) => user.email === buyerEmail)?.id ?? "";
-    if (listed.data.users.length < 200) break;
-    page += 1;
-  }
-  if (!userId) return;
-  const deleted = await admin.auth.admin.deleteUser(userId);
-  console.log(deleted.error ? `cleanup user failed: ${deleted.error.message}` : `cleanup removed ${buyerEmail}`);
+  psql(`DELETE FROM users WHERE email IN (${emails});`);
+  console.log(`cleanup removed ${buyerEmail} and ${agentSignupEmail}`);
 }
 
 async function main() {
@@ -144,7 +134,7 @@ async function main() {
     await page.getByRole("button", { name: "Create account" }).click();
     await page.getByText("Enter your full name.").waitFor();
     await page.getByText("Enter a valid email.").waitFor();
-    await page.getByText("Use at least 8 characters.").waitFor();
+    await page.locator("[id$='-error']").filter({ hasText: "Use 8 to 72 characters, including a letter and a number." }).waitFor();
     const described = await page.locator("[aria-invalid='true']").count();
     if (described < 1) throw new Error("Signup validation did not mark a field invalid.");
 
@@ -168,6 +158,16 @@ async function main() {
     await page.goto(`${BASE}/dashboard/buyer/profile`, { waitUntil: "networkidle" });
     await page.getByRole("heading", { name: "Profile", exact: true }).waitFor();
     await shot(page, "buyer-profile");
+    await signOut(page);
+
+    await page.goto(`${BASE}/signup?role=agent`, { waitUntil: "networkidle" });
+    await page.getByLabel(/full name/i).fill("Andres Bautista");
+    await page.getByLabel(/email/i).fill(agentSignupEmail);
+    await page.getByLabel(/^password/i).fill(buyerPassword);
+    await page.getByLabel("Agency").fill("Harbor Desk");
+    await page.getByLabel("PRC license").fill("PRC REB No. 0099111");
+    await page.getByRole("button", { name: "Create account" }).click();
+    await page.waitForURL(/\/dashboard\/agent/, { timeout: 30000 });
     await signOut(page);
 
     await signIn(page, agentEmail, demoPassword);
@@ -204,6 +204,7 @@ async function main() {
 
     await page.locator("input[type=file]").setInputFiles(PHOTO);
     await page.getByText("Added", { exact: true }).waitFor({ timeout: 30000 });
+    await page.locator('img[src*="localhost:4000/uploads"]').first().waitFor({ timeout: 30000 });
 
     await page.getByRole("button", { name: "Submit for review" }).click();
     await page.getByText("In review").waitFor({ timeout: 20000 });
