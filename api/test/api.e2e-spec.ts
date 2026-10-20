@@ -131,6 +131,25 @@ describe('estate API', () => {
     expect(items.some((item) => item.slug === 'bgc-grand-hyatt-residence')).toBe(false);
   });
 
+  it('rejects non-numeric listing filters as numbers', async () => {
+    const cases = [
+      [`${API}/properties?minBeds=abc`, 'minBeds'],
+      [`${API}/properties?minPrice=abc`, 'minPrice'],
+      [`${API}/properties?maxPrice=nope`, 'maxPrice'],
+      [`${API}/properties?page=abc`, 'page'],
+      [`${API}/properties/featured?limit=abc`, 'limit'],
+    ] as const;
+    for (const [path, field] of cases) {
+      const res = await request(app.getHttpServer()).get(path);
+      expectError(res, 400, 'VALIDATION_FAILED');
+      expect(res.body.error.fields[field]).toBe(`${field} must be a number.`);
+      expect(res.body.error.fields[field]).not.toMatch(/greater than|less than/i);
+    }
+    const high = await request(app.getHttpServer()).get(`${API}/properties?minBeds=31`);
+    expectError(high, 400, 'VALIDATION_FAILED');
+    expect(high.body.error.fields.minBeds).toBe('minBeds must not be greater than 30.');
+  });
+
   it('sold listings stay public and images follow the listing', async () => {
     const sold = await request(app.getHttpServer()).get(`${API}/properties/mactan-newtown-beachfront`);
     const draft = await request(app.getHttpServer()).get(`${API}/properties/tagaytay-highlands-villa`);

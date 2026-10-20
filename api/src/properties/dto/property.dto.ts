@@ -41,6 +41,48 @@ function optionalNumber({ value }: { value: unknown }): unknown {
   return value;
 }
 
+function queryInteger({ value }: { value: unknown }): unknown {
+  if (value === undefined || value === null || value === '') return undefined;
+  if (typeof value === 'number') return Number.isFinite(value) ? value : undefined;
+  if (typeof value !== 'string') return value;
+  const trimmed = value.trim();
+  if (trimmed === '') return undefined;
+  if (!/^-?\d+$/.test(trimmed)) return trimmed;
+  return Number(trimmed);
+}
+
+function QueryInteger(bounds: { min?: number; max?: number } = {}) {
+  return function (object: object, propertyName: string) {
+    registerDecorator({
+      name: 'queryInteger',
+      target: object.constructor,
+      propertyName,
+      validator: {
+        validate(value: unknown) {
+          if (value === undefined || value === null) return true;
+          if (typeof value !== 'number' || !Number.isInteger(value)) return false;
+          if (bounds.min !== undefined && value < bounds.min) return false;
+          if (bounds.max !== undefined && value > bounds.max) return false;
+          return true;
+        },
+        defaultMessage(args: ValidationArguments) {
+          const value = args.value;
+          if (typeof value !== 'number' || !Number.isInteger(value)) {
+            return `${args.property} must be a number.`;
+          }
+          if (bounds.min !== undefined && typeof value === 'number' && value < bounds.min) {
+            return `${args.property} must not be less than ${bounds.min}.`;
+          }
+          if (bounds.max !== undefined && typeof value === 'number' && value > bounds.max) {
+            return `${args.property} must not be greater than ${bounds.max}.`;
+          }
+          return `${args.property} must be a number.`;
+        },
+      },
+    });
+  };
+}
+
 function trim({ value }: { value: unknown }): unknown {
   return typeof value === 'string' ? value.trim() : value;
 }
@@ -95,8 +137,9 @@ function PriceOrder(validationOptions?: ValidationOptions) {
       options: validationOptions,
       validator: {
         validate(_value: unknown, args: ValidationArguments) {
-          const row = args.object as { minPrice?: number; maxPrice?: number };
-          if (row.minPrice === undefined || row.maxPrice === undefined) return true;
+          const row = args.object as { minPrice?: unknown; maxPrice?: unknown };
+          if (typeof row.minPrice !== 'number' || typeof row.maxPrice !== 'number') return true;
+          if (!Number.isFinite(row.minPrice) || !Number.isFinite(row.maxPrice)) return true;
           return row.minPrice <= row.maxPrice;
         },
         defaultMessage() {
@@ -391,43 +434,31 @@ export class ListPropertiesQuery {
   @MaxLength(80)
   city?: string;
 
-  @Transform(optionalNumber)
-  @IsOptional()
-  @IsInt()
-  @Min(0)
+  @Transform(queryInteger)
+  @QueryInteger({ min: 0 })
   minPrice?: number;
 
-  @Transform(optionalNumber)
-  @IsOptional()
-  @IsInt()
-  @Min(0)
+  @Transform(queryInteger)
+  @QueryInteger({ min: 0 })
   @PriceOrder()
   maxPrice?: number;
 
-  @Transform(optionalNumber)
-  @IsOptional()
-  @IsInt()
-  @Min(0)
-  @Max(30)
+  @Transform(queryInteger)
+  @QueryInteger({ min: 0, max: 30 })
   minBeds?: number;
 
   @IsOptional()
   @IsIn(LISTING_SORTS)
   sort?: ListingSort;
 
-  @Transform(optionalNumber)
-  @IsOptional()
-  @IsInt()
-  @Min(1)
+  @Transform(queryInteger)
+  @QueryInteger({ min: 1 })
   page?: number;
 }
 
 export class LimitQuery {
-  @Transform(optionalNumber)
-  @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Max(24)
+  @Transform(queryInteger)
+  @QueryInteger({ min: 1, max: 24 })
   limit?: number;
 }
 
