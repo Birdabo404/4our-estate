@@ -3,50 +3,17 @@
 import { X } from "@phosphor-icons/react/ssr";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import {
-  createContext,
-  type ReactNode,
-  startTransition,
-  useCallback,
-  useContext,
-  useEffect,
-  useMemo,
-  useOptimistic,
-  useReducer,
-  useState,
-} from "react";
+import { createContext, type ReactNode, useCallback, useContext, useEffect, useMemo, useRef } from "react";
 import { useToast } from "@/components/ui/toast";
-import { toggleFavorite } from "@/lib/actions/favorites";
 import { spring, tween } from "@/lib/motion";
-
-type Confirmed = ReadonlySet<string>;
-
-type ConfirmedAction =
-  | { type: "synced"; ids: readonly string[] }
-  | { type: "settled"; propertyId: string; favorited: boolean };
-
-type Intent = { propertyId: string; favorited: boolean };
-
-function withMembership(ids: Confirmed, { propertyId, favorited }: Intent): Confirmed {
-  if (ids.has(propertyId) === favorited) return ids;
-  const next = new Set(ids);
-  if (favorited) next.add(propertyId);
-  else next.delete(propertyId);
-  return next;
-}
-
-function confirmedReducer(state: Confirmed, action: ConfirmedAction): Confirmed {
-  switch (action.type) {
-    case "synced":
-      return new Set(action.ids);
-    case "settled":
-      return withMembership(state, action);
-    default: {
-      const unhandled: never = action;
-      return unhandled;
-    }
-  }
-}
+import {
+  guestPromptDismissed,
+  guestPromptShown,
+  hydrated,
+  isFavorite as favoriteFlag,
+  toggleFavorite,
+} from "@/lib/store/favorites-slice";
+import { useAppDispatch, useAppSelector, useAppStore } from "@/lib/store/hooks";
 
 type FavoritesApi = {
   signedIn: boolean;
@@ -71,55 +38,63 @@ export function FavoritesProvider({
   signedIn: boolean;
   children: ReactNode;
 }) {
-  const { toast } = useToast();
-  const [confirmed, dispatch] = useReducer(confirmedReducer, initialIds, (ids) => new Set(ids));
-  const [optimistic, addIntent] = useOptimistic(confirmed, withMembership);
-  const [guestPrompt, setGuestPrompt] = useState<string | null>(null);
-
-  const serverKey = [...initialIds].sort().join(",");
-  const [syncedKey, setSyncedKey] = useState(serverKey);
-  if (syncedKey !== serverKey) {
-    setSyncedKey(serverKey);
-    dispatch({ type: "synced", ids: initialIds });
+  const store = useAppStore();
+  const serverKey = `${signedIn ? "1" : "0"}:${[...initialIds].sort().join(",")}`;
+  const appliedKey = useRef<string | null>(null);
+  // The client builds a second store, and refs start empty again after hydration.
+  // Publish the server snapshot before favorite buttons read it, or aria-pressed
+  // will not match the HTML. Later snapshots go through an effect: dispatching
+  // during render notifies buttons that are already subscribed.
+  if (appliedKey.current === null) {
+    appliedKey.current = serverKey;
+    store.dispatch(hydrated({ ids: initialIds, signedIn }));
   }
+  useEffect(() => {
+    if (appliedKey.current === serverKey) return;
+    appliedKey.current = serverKey;
+    store.dispatch(hydrated({ ids: initialIds, signedIn }));
+  }, [serverKey, initialIds, signedIn, store]);
+
+  const favorites = useAppSelector((state) => state.favorites);
+  const dispatch = useAppDispatch();
+  const { toast } = useToast();
 
   const toggle = useCallback(
     (propertyId: string) => {
-      if (!signedIn) {
-        setGuestPrompt(`${window.location.pathname}${window.location.search}`);
+      if (!favorites.signedIn) {
+        dispatch(guestPromptShown(`${window.location.pathname}${window.location.search}`));
         return;
       }
-      const intent = { propertyId, favorited: !optimistic.has(propertyId) };
-      startTransition(async () => {
-        addIntent(intent);
-        const formData = new FormData();
-        formData.set("propertyId", propertyId);
-        const result = await toggleFavorite(null, formData);
-        startTransition(() => {
-          if (result.ok) {
-            dispatch({ type: "settled", propertyId, favorited: result.data.favorited });
-          } else {
-            toast({
-              title: intent.favorited ? "We couldn't save that residence" : "We couldn't remove that residence",
-              description: result.formError ?? "Please try again in a moment.",
-              tone: "danger",
-            });
-          }
+      void dispatch(toggleFavorite(propertyId)).then((action) => {
+        if (!toggleFavorite.rejected.match(action)) return;
+        const intent = action.payload?.intent ?? true;
+        toast({
+          title: intent ? "We couldn't save that residence" : "We couldn't remove that residence",
+          description: action.payload?.description ?? "Please try again in a moment.",
+          tone: "danger",
         });
       });
     },
-    [signedIn, optimistic, addIntent, toast],
+    [dispatch, favorites.signedIn, toast],
   );
 
+  const dismissGuestPrompt = useCallback(() => {
+    dispatch(guestPromptDismissed());
+  }, [dispatch]);
+
   const api = useMemo<FavoritesApi>(
-    () => ({ signedIn, isFavorite: (id) => optimistic.has(id), toggle }),
-    [signedIn, optimistic, toggle],
+    () => ({
+      signedIn: favorites.signedIn,
+      isFavorite: (propertyId: string) => favoriteFlag(favorites, propertyId),
+      toggle,
+    }),
+    [favorites, toggle],
   );
 
   return (
     <FavoritesContext.Provider value={api}>
       {children}
-      <GuestPrompt next={guestPrompt} onDismiss={() => setGuestPrompt(null)} />
+      <GuestPrompt next={favorites.guestPrompt} onDismiss={dismissGuestPrompt} />
     </FavoritesContext.Provider>
   );
 }
