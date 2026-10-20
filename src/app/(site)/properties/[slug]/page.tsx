@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { cache, type ReactNode } from "react";
-import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { SaveableCard } from "@/components/favorites/saveable-card";
 import { LISTING_TYPE_LABEL, listingsHref, PROPERTY_TYPE_LABEL } from "@/components/listings/filters";
 import { Reveal } from "@/components/motion/reveal";
 import { SplitHeading } from "@/components/motion/split-heading";
@@ -24,7 +24,6 @@ import {
   Overview,
 } from "@/components/property-detail/sections";
 import { StickyAside } from "@/components/property-detail/sticky-aside";
-import { PropertyCard } from "@/components/property/property-card";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
@@ -170,7 +169,7 @@ export default async function PropertyPage({ params }: PageProps<"/properties/[s
             <ul className="grid gap-x-8 gap-y-16 md:grid-cols-2 md:gap-x-10 xl:grid-cols-3">
               {similar.map((item, i) => (
                 <Reveal as="li" key={item.id} index={i} className={cn(i === 1 && "xl:mt-20")}>
-                  <PropertyCard property={item} action={<FavoriteButton propertyId={item.id} title={item.title} />} />
+                  <SaveableCard property={item} />
                 </Reveal>
               ))}
             </ul>

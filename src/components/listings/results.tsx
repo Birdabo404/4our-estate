@@ -1,8 +1,7 @@
 import { ArrowLeft, ArrowRight } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
-import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { SaveableCard } from "@/components/favorites/saveable-card";
 import { Reveal } from "@/components/motion/reveal";
-import { PropertyCard } from "@/components/property/property-card";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { CityCount } from "@/lib/data/types";
@@ -18,22 +17,13 @@ export function ResultsGrid({ items, page }: { items: PropertySummary[]; page: n
     <div className="flex flex-col gap-20 md:gap-28">
       {lead && (
         <Reveal>
-          <PropertyCard
-            property={lead}
-            variant="feature"
-            priority
-            action={<FavoriteButton propertyId={lead.id} title={lead.title} />}
-          />
+          <SaveableCard property={lead} variant="feature" priority />
         </Reveal>
       )}
       <ul className="grid gap-x-8 gap-y-16 md:grid-cols-2 md:gap-x-10 md:gap-y-24 xl:grid-cols-3">
         {grid.map((property, i) => (
           <Reveal as="li" key={property.id} index={i % 3} className={cn(i % 3 === 1 && "xl:mt-28")}>
-            <PropertyCard
-              property={property}
-              priority={!lead && i < 3}
-              action={<FavoriteButton propertyId={property.id} title={property.title} />}
-            />
+            <SaveableCard property={property} priority={!lead && i < 3} />
           </Reveal>
         ))}
       </ul>

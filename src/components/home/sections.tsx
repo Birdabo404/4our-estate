@@ -1,7 +1,7 @@
 import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import Image from "next/image";
 import Link from "next/link";
-import { FavoriteButton } from "@/components/favorites/favorite-button";
+import { SaveableCard } from "@/components/favorites/saveable-card";
 import { PROPERTY_TYPE_LABEL } from "@/components/listings/filters";
 import { CountUp } from "@/components/motion/count-up";
 import { Reveal } from "@/components/motion/reveal";
@@ -9,7 +9,6 @@ import { ScrollImage } from "@/components/motion/scroll-image";
 import { ScrollText } from "@/components/motion/scroll-text";
 import { SplitHeading } from "@/components/motion/split-heading";
 import { Price } from "@/components/property/price";
-import { PropertyCard } from "@/components/property/property-card";
 import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
@@ -66,14 +65,14 @@ export function FeaturedCollection({ properties }: { properties: readonly Proper
         </div>
 
         <Reveal>
-          <PropertyCard property={lead} variant="feature" action={<FavoriteButton propertyId={lead.id} title={lead.title} />} />
+          <SaveableCard property={lead} variant="feature" />
         </Reveal>
 
         {rest.length > 0 && (
           <ul className="grid gap-x-8 gap-y-20 md:grid-cols-2 lg:grid-cols-12 lg:gap-x-10">
             {rest.slice(0, 3).map((property, i) => (
               <Reveal as="li" key={property.id} index={i % 2} className={placement[i]}>
-                <PropertyCard property={property} action={<FavoriteButton propertyId={property.id} title={property.title} />} />
+                <SaveableCard property={property} />
               </Reveal>
             ))}
             {rest.length >= 3 && (
