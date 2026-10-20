@@ -3,6 +3,7 @@ import Link from "next/link";
 import { Reveal } from "@/components/motion/reveal";
 import { Wordmark } from "@/components/motion/wordmark";
 import { Container } from "@/components/ui/container";
+import { PHOTOGRAPHER_COUNT, UNSPLASH_HREF } from "@/lib/photography/credits";
 import { OFFICES } from "./offices";
 
 const EXPLORE = [
@@ -11,6 +12,9 @@ const EXPLORE = [
   { href: "/properties?listingType=rent", label: "For lease" },
   { href: "/signup", label: "List with us" },
 ] as const;
+
+const CREDIT_LINK =
+  "underline decoration-on-night/25 underline-offset-4 transition-colors duration-500 ease-settle hover:text-on-night hover:decoration-on-night/60";
 
 export function SiteFooter() {
   return (
@@ -79,9 +83,22 @@ export function SiteFooter() {
           <Wordmark label={false} className="w-full [&>svg]:h-auto [&>svg]:w-full" />
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-on-night/10 pt-6 text-[0.75rem] text-on-night-muted md:flex-row md:items-center md:justify-between">
-          <p>© {new Date().getFullYear()} 4OUR Estate. Licensed real estate brokerage under Republic Act No. 9646.</p>
-          <p>Makati · BGC · Cebu</p>
+        <div className="mt-10 flex flex-col gap-3 border-t border-on-night/10 pt-6 text-[0.75rem] text-on-night-muted">
+          <p>
+            Photography by <span className="tabular">{PHOTOGRAPHER_COUNT}</span>{" "}
+            {PHOTOGRAPHER_COUNT === 1 ? "contributor" : "contributors"} on{" "}
+            <a href={UNSPLASH_HREF} className={CREDIT_LINK}>
+              Unsplash
+            </a>
+            {" · "}
+            <Link href="/credits" className={CREDIT_LINK}>
+              Credits
+            </Link>
+          </p>
+          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+            <p>© {new Date().getFullYear()} 4OUR Estate. Licensed real estate brokerage under Republic Act No. 9646.</p>
+            <p>Makati · BGC · Cebu</p>
+          </div>
         </div>
       </Container>
     </footer>
