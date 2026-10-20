@@ -6,7 +6,8 @@ import { usePathname } from "next/navigation";
 import { type RefObject, useCallback, useEffect, useRef, useState } from "react";
 import { Wordmark } from "@/components/motion/wordmark";
 import { ButtonLink } from "@/components/ui/button";
-import type { Role, Viewer } from "@/lib/domain/types";
+import { DASHBOARDS as DASHBOARD } from "@/lib/auth/paths";
+import type { Viewer } from "@/lib/domain/types";
 import { cn } from "@/lib/cn";
 import { duration, ease, spring, stagger, tween } from "@/lib/motion";
 import { OFFICES } from "./offices";
@@ -17,12 +18,6 @@ const PUBLIC_LINKS: readonly NavLink[] = [
   { href: "/", label: "Home" },
   { href: "/properties", label: "Properties" },
 ];
-
-const DASHBOARD: Record<Role, NavLink> = {
-  buyer: { href: "/dashboard/buyer", label: "Dashboard" },
-  agent: { href: "/dashboard/agent", label: "Agent desk" },
-  admin: { href: "/dashboard/admin", label: "Admin" },
-};
 
 function linksFor(viewer: Viewer): NavLink[] {
   switch (viewer.kind) {
