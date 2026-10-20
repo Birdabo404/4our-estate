@@ -1,26 +1,208 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@custom-variant js (&:where(.js, .js *));
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #000000;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Paper: the warm, uncoated stock everything sits on. */
+  --color-paper: #f4efe7;
+  --color-paper-raised: #faf7f2;
+  --color-paper-sunken: #e9e2d6;
+
+  /* Ink: espresso, never pure black. */
+  --color-ink: #1c1915;
+  --color-ink-soft: #48413a;
+  --color-ink-muted: #6b6257;
+
+  /* Night: the dark register for footer, overlays, and image scrims. */
+  --color-night: #14120f;
+  --color-night-raised: #201d19;
+  --color-on-night: #efe9df;
+  --color-on-night-muted: #a69d90;
+
+  /* The single accent. Narra brass, used for focus, emphasis, and rare detail. */
+  --color-accent: #82613b;
+  --color-accent-soft: #c8ae86;
+
+  /* Functional tones. Desaturated so they read as information, not decoration. */
+  --color-positive: #4f6249;
+  --color-danger: #9e3f2a;
+
+  --font-display: var(--font-bodoni), "Bodoni 72", "Didot", ui-serif, Georgia, serif;
+  --font-sans: var(--font-jost), "Futura", ui-sans-serif, system-ui, sans-serif;
+
+  --text-display-1: clamp(3.25rem, 0.9rem + 7.4vw, 8.75rem);
+  --text-display-1--line-height: 0.92;
+  --text-display-1--letter-spacing: -0.035em;
+  --text-display-2: clamp(2.75rem, 1.4rem + 4.2vw, 5.5rem);
+  --text-display-2--line-height: 0.98;
+  --text-display-2--letter-spacing: -0.03em;
+  --text-display-3: clamp(2.125rem, 1.45rem + 2.1vw, 3.625rem);
+  --text-display-3--line-height: 1.04;
+  --text-display-3--letter-spacing: -0.025em;
+  --text-heading: clamp(1.5rem, 1.25rem + 0.8vw, 2.125rem);
+  --text-heading--line-height: 1.12;
+  --text-heading--letter-spacing: -0.015em;
+  --text-title: 1.3125rem;
+  --text-title--line-height: 1.25;
+  --text-title--letter-spacing: -0.01em;
+  --text-lead: clamp(1.125rem, 1.05rem + 0.3vw, 1.3125rem);
+  --text-lead--line-height: 1.6;
+  --text-body: 1rem;
+  --text-body--line-height: 1.7;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.6;
+  --text-micro: 0.6875rem;
+  --text-micro--line-height: 1.4;
+  --text-micro--letter-spacing: 0.24em;
+
+  --ease-settle: cubic-bezier(0.32, 0.72, 0, 1);
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-exit: cubic-bezier(0.55, 0, 0.75, 0.15);
+
+  --radius-photo: 0.1875rem;
+  --radius-field: 0.875rem;
+  --radius-panel: 2rem;
+
+  /* Diffused, layered, warm-tinted. Never a single dark drop. */
+  --shadow-hairline: 0 0 0 1px rgb(28 25 21 / 0.06);
+  --shadow-lift: 0 1px 1px rgb(28 25 21 / 0.03), 0 8px 24px -12px rgb(28 25 21 / 0.12);
+  --shadow-float: 0 1px 1px rgb(28 25 21 / 0.03), 0 18px 40px -18px rgb(28 25 21 / 0.16),
+    0 48px 96px -48px rgb(28 25 21 / 0.22);
+
+  --animate-shimmer: shimmer 2.4s var(--ease-settle) infinite;
+
+  @keyframes shimmer {
+    from {
+      transform: translateX(-100%);
+    }
+    to {
+      transform: translateX(100%);
+    }
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+:root {
+  --z-nav: 40;
+  --z-overlay: 50;
+  --z-toast: 60;
+  --z-grain: 70;
+  --nav-height: 5rem;
+  color-scheme: light;
+  scrollbar-gutter: stable;
+}
+
+@layer base {
+  html {
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    font-size: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "kern", "liga";
+  }
+
+  body {
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    min-height: 100dvh;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--color-accent) 24%, transparent);
+    color: var(--color-ink);
+  }
+
+  /*
+   * Brass ring with a paper gap. The gap keeps the ring legible on ink
+   * buttons, night panels, and photography alike.
+   */
+  :focus-visible {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+    box-shadow: 0 0 0 3px var(--color-paper);
+  }
+
+  :focus:not(:focus-visible) {
+    outline: none;
+  }
+
+  [hidden] {
+    display: none !important;
+  }
+}
+
+@layer utilities {
+  /*
+   * Bodoni Moda's optical-size axis thins hairlines as size grows. Pinning
+   * opsz keeps strokes alive at display sizes instead of letting `auto`
+   * push them to 96 where commas and crossbars vanish.
+   */
+  .font-display {
+    font-variation-settings: "opsz" var(--opsz, 30);
+  }
+
+  .tabular {
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+}
+
+/*
+ * Fixed paper grain. A single composited layer that never scrolls, so it
+ * costs nothing after first paint.
+ */
+.grain {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-grain);
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: multiply;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.9 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/*
+ * Pre-hydration states for Anime.js sequences. Applied only when JS is on
+ * and motion is welcome, so no-JS and reduced-motion visitors see the
+ * finished state in the server HTML.
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .js [data-split="pending"] [data-split-word] {
+    transform: translateY(108%);
+  }
+
+  .js [data-draw="pending"] {
+    visibility: hidden;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
 }
