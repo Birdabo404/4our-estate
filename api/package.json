@@ -22,7 +22,8 @@
     "test:debug": "vitest --inspect-brk --no-file-parallelism",
     "test:e2e": "DATABASE_URL=postgresql://estate:estate@localhost:5432/estate_test JWT_SECRET=test-jwt-secret-estate JWT_EXPIRES_IN=1d PORT=4000 CORS_ORIGIN=http://localhost:3000 PUBLIC_API_ORIGIN=http://localhost:4000 vitest run --config ./vitest.config.e2e.ts",
     "db:migrate": "prisma migrate deploy",
-    "db:seed": "prisma db seed"
+    "db:seed": "prisma db seed",
+    "postinstall": "prisma generate"
   },
   "prisma": {
     "seed": "tsx prisma/seed.ts"

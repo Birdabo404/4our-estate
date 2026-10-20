@@ -27,7 +27,7 @@ export async function getFavoriteIds(): Promise<string[]> {
 }
 
 export async function listMyInquiries(): Promise<Inquiry[]> {
-  await requireRole("buyer", "agent", "admin");
+  await requireRole("buyer");
   try {
     const { data } = await apiFetch<Inquiry[]>("/me/inquiries");
     return Array.isArray(data) ? data : [];
