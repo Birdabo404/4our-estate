@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:reset": "supabase db reset",
+    "db:seed": "node --env-file=.env.local --import tsx scripts/seed.ts",
+    "db:types": "supabase gen types typescript --local > src/lib/supabase/database.types.ts",
+    "verify:rls": "node --env-file=.env.local --import tsx scripts/verify-rls.ts"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

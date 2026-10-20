@@ -1,0 +1,1 @@
+-- Demo rows are loaded by `npm run db:seed` (scripts/seed.ts), not by this file.
