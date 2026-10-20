@@ -154,7 +154,7 @@ export function SiteNav({ viewer }: { viewer: Viewer }) {
                       aria-current={active ? "page" : undefined}
                       className={cn(
                         "relative block rounded-full px-4 py-2 text-small tracking-[0.02em] transition-opacity duration-500 ease-settle",
-                        active ? "opacity-100" : "opacity-70 hover:opacity-100",
+                        active ? "opacity-100" : "opacity-80 hover:opacity-100",
                       )}
                     >
                       {link.label}
@@ -271,7 +271,7 @@ function MenuOverlay({
       exit="closed"
       variants={curtain}
       transition={{ duration: duration.slow, ease: ease.reveal }}
-      className="fixed inset-0 -z-10 flex flex-col overflow-y-auto bg-paper/92 px-6 pb-10 pt-28 text-ink backdrop-blur-2xl md:hidden"
+      className="fixed inset-0 -z-10 flex flex-col overflow-y-auto bg-paper px-6 pb-10 pt-28 text-ink md:hidden"
     >
       <ul className="flex flex-col gap-1">
         {items.map((link, i) => (

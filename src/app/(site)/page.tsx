@@ -23,6 +23,7 @@ export default function HomePage() {
           className="absolute inset-0 -z-10"
         />
         <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_18_15/0.45)_0%,rgb(20_18_15/0)_26%,rgb(20_18_15/0.1)_50%,rgb(20_18_15/0.72)_100%)]" />
+        <div aria-hidden className="absolute inset-0 -z-10 hidden bg-[radial-gradient(55%_60%_at_100%_100%,rgb(20_18_15/0.6),rgb(20_18_15/0))] md:block" />
 
         <Container width="wide" className="pb-12 md:pb-16">
           <div className="grid items-end gap-12 md:grid-cols-12">
