@@ -81,7 +81,7 @@ async function main() {
       if (route === "/styleguide") {
         for (const id of await page.locator("main section[id]").evaluateAll((els) => els.map((el) => el.id))) {
           const path = join(OUT, `${label}-section-${id}.png`);
-          await page.locator(`section#${id}`).screenshot({ path });
+          await page.locator(`section#${id}`).screenshot({ path, style: "header.sticky, .grain { visibility: hidden }" });
           console.log(`saved ${path}`);
         }
       }
