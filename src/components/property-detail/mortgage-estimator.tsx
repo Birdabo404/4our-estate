@@ -142,7 +142,7 @@ export function MortgageEstimator({ price }: { price: number }) {
           </p>
         </div>
         <div className="flex flex-col gap-4">
-          <div aria-hidden className="flex h-1.5 overflow-hidden rounded-full bg-accent-soft/40">
+          <div aria-hidden className="flex h-2 overflow-hidden rounded-[2px] bg-accent-soft/40">
             <motion.div
               className="h-full w-full origin-left bg-accent"
               initial={false}

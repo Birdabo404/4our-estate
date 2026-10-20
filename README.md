@@ -1,6 +1,6 @@
 # 4OUR Estate
 
-A luxury real estate platform for Philippine homes, from Forbes Park estates to Siargao villas. Guests browse a photography-first catalogue. Buyers save homes and send inquiries. Agents list and manage residences. Admins moderate listings and manage people.
+A real estate platform for Philippine homes, from Forbes Park estates to Siargao villas. Guests search and browse a photo-led catalogue with real numbers up front. Buyers save homes and send inquiries. Agents list and manage residences. Admins moderate listings and manage people.
 
 Built for the ITE 18 midterm (frontend and backend tracks).
 
@@ -97,16 +97,17 @@ The browser scripts need both servers running.
 
 The full system is in [DESIGN.md](DESIGN.md), and `/styleguide` renders every component live.
 
-- **Editorial luxury.** The site should read like a printed portfolio from a private brokerage, not a listings portal. Photography carries the page. Paper, ink and one Narra brass accent set the stage.
-- **Type.** Bodoni Moda for display and Jost for text. A Didone over a Futura revival is the classic fashion-masthead pairing. Bodoni's optical-size axis follows the type scale so small titles stay sturdy.
-- **Colour.** Warm paper `#f4efe7`, espresso ink `#1c1915`, and brass `#82613b`. Every text pairing is checked against WCAG by `scripts/design/check-tokens.ts`.
-- **Layout.** Generous whitespace, asymmetric editorial grids, a split panel on the property page (gallery left, sticky price and inquiry right), and a quiet sticky nav that turns white over photographs.
-- **Motion.** Everything decelerates into place on shared curves from `src/lib/motion.ts`, and nothing bounces. Each library has one job, and ESLint enforces the split:
+- **Workbench, not brochure.** The site should feel like a tool a sharp developer built for home hunters: honest numbers, clear labels and a little play in the margins. Photography sells the house, and the interface around it stays direct and readable.
+- **Type.** Bricolage Grotesque for display, Hanken Grotesk for text and JetBrains Mono for labels and data. Bricolage's width axis gives condensed figures for stats and spec sheets. Emphasis is an orange highlighter stroke, not italics.
+- **Colour.** Paper `#f4f2ec` and ink `#151411`, with Kahel orange `#ff5a1f` for the one thing to press and sky `#cfe9f1` as the calm field behind heroes and page headers. Orange fills always carry ink labels. Every text pairing is checked against WCAG by `scripts/design/check-tokens.ts`.
+- **Texture.** Dithered place photos (an 8×8 Bayer canvas that wipes away on hover), an ASCII floor plan, blueprint grids and a rotating stamp. All of it is decorative and hidden from assistive tech.
+- **Layout.** A sticky night search bar on listings, white cards with a spec sheet, a sky header and photo mosaic on the property page, and real dashboards with stat cards, bar charts and tables.
+- **Motion.** Short and purposeful, on shared curves from `src/lib/motion.ts`, and nothing bounces. Each library has one job, and ESLint enforces the split:
 
 | Library | Owns |
 | --- | --- |
 | Framer Motion | Component state and gesture: hover, press, menus, dialogs, lightbox, form error reveals, toasts |
-| GSAP + ScrollTrigger | Scroll choreography: hero parallax, image reveals, the pinned "Explore by place" rail |
+| GSAP + ScrollTrigger | Scroll-linked reveals: gallery rows on the property page, clip-path image reveals |
 | Anime.js | SVG and type: the 4OUR wordmark stroke draw, headline word staggers, count-ups |
 
 All motion respects `prefers-reduced-motion`.
@@ -266,13 +267,13 @@ Every endpoint is listed in [docs/api.md](docs/api.md) with method, role, body a
 
 | Route | Screen |
 | --- | --- |
-| `/` | Editorial home: cinematic hero, featured collection, pinned "Explore by place", market figures, agent invitation |
+| `/` | Home: sky hero with search, live ticker, featured homes, dithered "Explore by place", latest listings ledger, market figures with an ASCII plan, how it works, agent invitation |
 | `/properties` | Search and filters (keyword, sale/rent, type, city, price, beds, sort), pagination, empty and loading states |
-| `/properties/[slug]` | Split-panel detail: gallery and lightbox, sticky price and inquiry panel, PH mortgage estimator, similar homes |
-| `/login`, `/signup` | Editorial split with photography. Signup chooses Buyer or Agent |
-| `/dashboard/buyer` | Saved residences, my inquiries, profile |
-| `/dashboard/agent` | Overview, listings with status moves, listing editor with photo upload, inquiry inbox |
-| `/dashboard/admin` | Overview, moderation queue, people and roles |
+| `/properties/[slug]` | Sky header and photo mosaic, lightbox, key facts, spec sheet, map card, sticky price and inquiry panel, PH mortgage estimator, similar homes |
+| `/login`, `/signup` | Split screen with a dithered photo panel. Signup chooses Buyer or Agent |
+| `/dashboard/buyer` | Stat cards, latest inquiries, saved homes, profile |
+| `/dashboard/agent` | Overview with stats, pipeline and inquiry charts, attention list and book table; listings with status moves, listing editor with photo upload, inquiry inbox |
+| `/dashboard/admin` | Overview with catalogue, member and city charts and the review queue; moderation queue, people and roles |
 | `/styleguide` | The living design system |
 
 **State management.**
@@ -282,7 +283,7 @@ Every endpoint is listed in [docs/api.md](docs/api.md) with method, role, body a
 
 **Forms.** The inquiry, signup, login and listing editor forms validate on blur and submit with zod. They show server errors on the matching field, move focus to the first invalid field, and announce form errors through an `aria-live` region.
 
-**Accessibility.** Semantic landmarks, one `h1` per page, a skip link, labelled controls, visible brass focus rings, keyboard-operable menu, gallery, dialogs and filters, and checked colour contrast.
+**Accessibility.** Semantic landmarks, one `h1` per page, a skip link, labelled controls, visible orange focus rings, keyboard-operable menu, gallery, dialogs and filters, and checked colour contrast.
 
 ## Project structure
 
