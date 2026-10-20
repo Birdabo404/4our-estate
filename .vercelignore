@@ -4,3 +4,5 @@
 !/api/prisma/seed-data
 /.decision-trail
 /docs
+.env*
+!.env.example
