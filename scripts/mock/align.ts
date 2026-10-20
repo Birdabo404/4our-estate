@@ -26,8 +26,11 @@ function iso(value: unknown): string {
 }
 
 // Seed data has no createdAt. Postgres fills that column with now() at insert.
-// The live database also has favorites saved after the seed. Copy those clocks, and only those extra favorites, so the strict body compare can run.
-export async function alignStore(store: Store): Promise<string[]> {
+// The live database can also hold favorites saved by test runs after the seed. Those are reported and
+// removed from the live side of the compare, never added to the mock, so a seed favorite the mock lost still fails.
+export type Alignment = { notes: string[]; extraFavorites: Map<string, Set<string>> };
+
+export async function alignStore(store: Store): Promise<Alignment> {
   const require = createRequire(new URL("../../api/package.json", import.meta.url));
   const pg = require("pg") as { Client: new (config: { connectionString: string }) => QueryClient };
   const client = new pg.Client({ connectionString: databaseUrl() });
@@ -37,6 +40,7 @@ export async function alignStore(store: Store): Promise<string[]> {
     throw new Error("Could not read clocks from Postgres.");
   }
   const notes: string[] = [];
+  const extraFavorites = new Map<string, Set<string>>();
   try {
     const users = await client.query(`select email, "createdAt" from users`);
     for (const row of users.rows) {
@@ -67,7 +71,7 @@ export async function alignStore(store: Store): Promise<string[]> {
     const favorites = await client.query(
       `select u.email as email, p.slug as slug, f."createdAt" as "createdAt" from favorites f join users u on u.id = f."userId" join properties p on p.id = f."propertyId"`,
     );
-    let inserted = 0;
+    let extras = 0;
     for (const row of favorites.rows) {
       const email = String(row.email);
       const slug = String(row.slug);
@@ -80,12 +84,14 @@ export async function alignStore(store: Store): Promise<string[]> {
         existing.createdAt = createdAt;
         continue;
       }
-      store.favorites.push({ userId: user.id, propertyId: property.id, createdAt });
-      inserted += 1;
-      notes.push(`favorite not in seed data: ${email} saved ${slug}`);
+      const forUser = extraFavorites.get(user.id) ?? new Set<string>();
+      forUser.add(property.id);
+      extraFavorites.set(user.id, forUser);
+      extras += 1;
+      notes.push(`favorite not in seed data, excluded from the live side: ${email} saved ${slug}`);
     }
-    notes.push(`inserted ${inserted} favorites that exist in Postgres and not in the seed`);
-    return notes;
+    notes.push(`excluded ${extras} live favorites that are not in the seed`);
+    return { notes, extraFavorites };
   } finally {
     await client.end();
   }

@@ -110,18 +110,30 @@ async function login(email: string): Promise<{ liveToken: string; mockToken: str
   return { liveToken, mockToken };
 }
 
+let liveFavoriteFilter: (userId: string, ids: string[]) => string[] = (_userId, ids) => ids;
+
+function tokenSubject(token: string): string {
+  const payload = token.split(".")[1] ?? "";
+  return (JSON.parse(Buffer.from(payload, "base64url").toString("utf8")) as { sub: string }).sub;
+}
+
 async function check(call: Call, tokens: Record<"buyer" | "agent" | "admin", { liveToken: string; mockToken: string }>): Promise<void> {
   const method = call.method ?? "GET";
   const pair = call.token ? tokens[call.token] : null;
   const apiSide = await live(method, call.path, call.json, pair?.liveToken);
+  if (call.path === "/me/favorites/ids" && pair) {
+    const body = apiSide.body as { data?: string[] };
+    if (Array.isArray(body.data)) body.data = liveFavoriteFilter(tokenSubject(pair.liveToken), body.data);
+  }
   const mockSide = await local(method, call.path, call.json, pair?.mockToken);
   record(call.name, mockSide, apiSide);
 }
 
 async function main(): Promise<void> {
   const store = await getStore();
-  const notes = await alignStore(store);
+  const { notes, extraFavorites } = await alignStore(store);
   for (const note of notes) console.log(`note  ${note}`);
+  liveFavoriteFilter = (userId, ids) => ids.filter((id) => !extraFavorites.get(userId)?.has(id));
 
   const adminId = stableUuid("user:admin@4our.estate");
   console.log(`stableUuid user:admin@4our.estate ${adminId}`);
