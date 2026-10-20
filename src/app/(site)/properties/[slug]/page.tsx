@@ -108,7 +108,7 @@ export default async function PropertyPage({ params }: PageProps<"/properties/[s
                 text={property.title}
                 trigger="mount"
                 delay={0.15}
-                className="font-display text-display-2 text-balance [--opsz:96]"
+                className="font-display text-display-2 text-balance"
               />
               <p className="text-lead text-white/85">
                 {formatLocation(property)}, {property.province}
@@ -160,7 +160,7 @@ export default async function PropertyPage({ params }: PageProps<"/properties/[s
             <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
               <div className="flex flex-col gap-4">
                 <p className="text-micro uppercase text-ink-muted">Also in {property.city}</p>
-                <SplitHeading as="h2" text="Residences *nearby*" className="font-display text-display-3 [--opsz:72]" />
+                <SplitHeading as="h2" text="Residences *nearby*" className="font-display text-display-3" />
               </div>
               <ButtonLink href={listingsHref({ city: property.city, sort: "newest", page: 1 })} variant="secondary" icon="arrow-right" className="self-start md:self-auto">
                 All of {property.city}

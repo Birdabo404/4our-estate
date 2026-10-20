@@ -109,7 +109,7 @@ function Toast({ toast, onDismiss }: { toast: ToastItem; onDismiss: (id: number)
         aria-label="Dismiss notification"
         className="-mr-1 grid size-7 shrink-0 place-items-center rounded-full text-on-night-muted transition-colors duration-300 ease-settle hover:bg-white/10 hover:text-on-night"
       >
-        <X size={13} weight="light" />
+        <X size={13} weight="regular" />
       </button>
     </motion.li>
   );

@@ -40,7 +40,7 @@ export function InquiryList({
             </div>
             <div className="flex flex-col items-start gap-2 text-small md:items-end md:pt-1">
               <p className="text-ink">{inquiry.name}</p>
-              <a className="text-accent underline decoration-accent/30 underline-offset-4" href={`mailto:${inquiry.email}`}>
+              <a className="text-accent-ink underline decoration-accent-ink/30 underline-offset-4" href={`mailto:${inquiry.email}`}>
                 {inquiry.email}
               </a>
               {inquiry.phone ? (

@@ -34,7 +34,7 @@ export function DemoAccounts({ onUse }: { onUse?: (account: { email: string; pas
                 <button
                   type="button"
                   onClick={() => onUse({ email: account.email, password: PASSWORD })}
-                  className="text-right text-ink underline decoration-ink/20 underline-offset-4 transition-colors duration-300 ease-settle hover:text-accent hover:decoration-accent"
+                  className="text-right text-ink underline decoration-ink/20 underline-offset-4 transition-colors duration-300 ease-settle hover:text-accent-ink hover:decoration-accent-ink"
                 >
                   {account.email}
                 </button>

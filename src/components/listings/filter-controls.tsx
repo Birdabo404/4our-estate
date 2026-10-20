@@ -139,7 +139,7 @@ export function KeywordSearch({ className, inputClassName }: { className?: strin
       <label htmlFor={id} className="sr-only">
         Search residences
       </label>
-      <MagnifyingGlass aria-hidden size={18} weight="light" className="pointer-events-none absolute left-4 text-ink-muted" />
+      <MagnifyingGlass aria-hidden size={18} weight="regular" className="pointer-events-none absolute left-4 text-ink-muted" />
       <input
         id={id}
         name="q"
@@ -167,7 +167,7 @@ export function KeywordSearch({ className, inputClassName }: { className?: strin
           }}
           className="absolute right-2 grid size-8 place-items-center rounded-full text-ink-muted transition-colors duration-300 ease-settle hover:bg-ink/5 hover:text-ink"
         >
-          <X size={13} weight="light" />
+          <X size={13} weight="regular" />
         </button>
       )}
     </form>
@@ -181,7 +181,7 @@ export function QuietSelect({ spec, className }: { spec: SelectSpec; className?:
     <div
       className={cn(
         "relative flex min-w-0 flex-col justify-center rounded-full px-5 py-1.5 transition-colors duration-300 ease-settle",
-        "has-[:focus-visible]:bg-ink/[0.04] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent",
+        "has-[:focus-visible]:bg-ink/[0.04] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent-ink",
         spec.disabled ? "opacity-55" : "hover:bg-ink/[0.035]",
         className,
       )}
@@ -202,7 +202,7 @@ export function QuietSelect({ spec, className }: { spec: SelectSpec; className?:
           </option>
         ))}
       </select>
-      <CaretDown aria-hidden size={12} weight="light" className="pointer-events-none absolute bottom-3 right-5 text-ink-muted" />
+      <CaretDown aria-hidden size={12} weight="regular" className="pointer-events-none absolute bottom-3 right-5 text-ink-muted" />
     </div>
   );
 }
@@ -230,7 +230,7 @@ export function SortSelect({ className }: { className?: string }) {
           </option>
         ))}
       </select>
-      <CaretDown aria-hidden size={12} weight="light" className="pointer-events-none absolute right-4 text-ink-muted" />
+      <CaretDown aria-hidden size={12} weight="regular" className="pointer-events-none absolute right-4 text-ink-muted" />
     </div>
   );
 }

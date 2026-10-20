@@ -192,7 +192,7 @@ export default function StyleguidePage() {
                   ["Motion with mass", "Things settle like heavy paper. Nothing bounces, nothing loops for attention."],
                 ].map(([title, body], i) => (
                   <Reveal as="li" index={i} key={title} className="flex flex-col gap-3 bg-paper p-8">
-                    <span className="font-display text-heading italic text-accent">{i + 1}</span>
+                    <span className="font-display text-heading italic text-accent-ink">{i + 1}</span>
                     <h3 className="text-title">{title}</h3>
                     <p className="text-small text-ink-soft">{body}</p>
                   </Reveal>
@@ -253,7 +253,7 @@ export default function StyleguidePage() {
                 <Panel coreClassName="flex flex-col gap-4">
                   <span className="text-micro font-medium uppercase text-ink-muted">Display · Bodoni Moda</span>
                   <span className="font-display text-[4.5rem] leading-none">
-                    Aa <em className="text-accent">Ff</em> ₱48
+                    Aa <em className="text-accent-ink">Ff</em> ₱48
                   </span>
                   <span className="text-small text-ink-muted">Weights 400 to 500. Italic for one emphasised word per heading.</span>
                 </Panel>

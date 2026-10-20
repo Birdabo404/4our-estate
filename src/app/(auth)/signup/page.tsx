@@ -36,7 +36,7 @@ export default async function SignupPage({
       </div>
       <p className="mt-8 text-small text-ink-soft">
         Already with us?{" "}
-        <Link href={loginHref} className="text-accent underline decoration-accent/30 underline-offset-4">
+        <Link href={loginHref} className="text-accent-ink underline decoration-accent-ink/30 underline-offset-4">
           Sign in
         </Link>
       </p>

@@ -32,7 +32,7 @@ export function ScrollText({
   as = "p",
   text,
   className,
-  emClassName = "italic text-accent",
+  emClassName = "italic text-accent-ink",
 }: {
   as?: keyof typeof TAGS;
   text: string;

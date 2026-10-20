@@ -107,7 +107,7 @@ export function DashboardShell({ account, children }: { account: DashboardAccoun
             aria-label="Open menu"
             className="grid size-11 place-items-center rounded-full text-ink ring-1 ring-inset ring-ink/15"
           >
-            <List size={18} weight="light" />
+            <List size={18} weight="regular" />
           </button>
         </header>
         <Sheet

@@ -58,7 +58,7 @@ export default async function AgentHomePage() {
               <li key={inquiry.id} className="border-t border-ink/10 py-5">
                 <Link href="/dashboard/agent/inquiries" className="group flex flex-col gap-1">
                   <span className="text-small text-ink-muted">New inquiry</span>
-                  <span className="font-display text-title group-hover:text-accent">{inquiry.name}</span>
+                  <span className="font-display text-title group-hover:text-accent-ink">{inquiry.name}</span>
                   <span className="text-small text-ink-soft">{inquiry.propertyTitle}</span>
                 </Link>
               </li>
@@ -67,7 +67,7 @@ export default async function AgentHomePage() {
               <li key={listing.id} className="border-t border-ink/10 py-5">
                 <Link href={`/dashboard/agent/listings/${listing.id}`} className="group flex flex-col gap-1">
                   <span className="text-small text-ink-muted">Draft</span>
-                  <span className="font-display text-title group-hover:text-accent">{listing.title}</span>
+                  <span className="font-display text-title group-hover:text-accent-ink">{listing.title}</span>
                 </Link>
               </li>
             ))}

@@ -20,7 +20,7 @@ export function PriceSummary({ property, className }: { property: PropertyDetail
         {!sold && <FavoriteButton propertyId={property.id} title={property.title} tone="paper" className="shrink-0" />}
       </div>
       {sold ? (
-        <p className="font-display text-[clamp(2.5rem,1.6rem+2.6vw,4rem)] italic leading-none [--opsz:24]">Sold</p>
+        <p className="font-display text-[clamp(2.5rem,1.6rem+2.6vw,4rem)] italic leading-none">Sold</p>
       ) : (
         <Price amount={property.pricePhp} listingType={property.listingType} size="xl" className="text-[clamp(2.5rem,1.8rem+1.6vw,3.25rem)]" />
       )}

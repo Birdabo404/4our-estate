@@ -63,11 +63,11 @@ export function Pagination({ filters, total, pageSize }: { filters: ListingFilte
         <li>
           {current > 1 ? (
             <Link href={href(current - 1)} aria-label="Previous page" className={step}>
-              <ArrowLeft aria-hidden size={15} weight="light" />
+              <ArrowLeft aria-hidden size={15} weight="regular" />
             </Link>
           ) : (
             <span aria-hidden className={cn(step, "opacity-35 hover:ring-ink/12")}>
-              <ArrowLeft size={15} weight="light" />
+              <ArrowLeft size={15} weight="regular" />
             </span>
           )}
         </li>
@@ -95,11 +95,11 @@ export function Pagination({ filters, total, pageSize }: { filters: ListingFilte
         <li>
           {current < count ? (
             <Link href={href(current + 1)} aria-label="Next page" className={step}>
-              <ArrowRight aria-hidden size={15} weight="light" />
+              <ArrowRight aria-hidden size={15} weight="regular" />
             </Link>
           ) : (
             <span aria-hidden className={cn(step, "opacity-35 hover:ring-ink/12")}>
-              <ArrowRight size={15} weight="light" />
+              <ArrowRight size={15} weight="regular" />
             </span>
           )}
         </li>
@@ -111,7 +111,7 @@ export function Pagination({ filters, total, pageSize }: { filters: ListingFilte
 export function EmptyResults({ filters, cities }: { filters: ListingFilters; cities: readonly CityCount[] }) {
   const chips = activeChips(filters);
   const places = [...cities].sort((a, b) => b.count - a.count).slice(0, 3);
-  const link = "text-small text-accent underline decoration-accent/30 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-accent";
+  const link = "text-small text-accent-ink underline decoration-accent-ink/30 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-accent-ink";
 
   return (
     <div className="flex flex-col items-center border-y border-ink/10 py-6">

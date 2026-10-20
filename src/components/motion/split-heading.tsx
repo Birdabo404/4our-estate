@@ -8,7 +8,7 @@ import { duration, ease, ms, prefersReducedMotion, stagger } from "@/lib/motion"
 type Segment = { text: string; em: boolean };
 
 /**
- * `Residences of *quiet* consequence` marks "quiet" for the italic accent.
+ * `Find a home that *fits*` marks "fits" for the highlighter accent.
  * Emphasis can open and close inside a word, so `*care*.` keeps its period.
  */
 function parse(text: string): Segment[][] {
@@ -39,7 +39,7 @@ export function SplitHeading({
   trigger = "view",
   delay = 0,
   className,
-  emClassName = "italic",
+  emClassName,
 }: {
   as?: keyof typeof TAGS;
   text: string;
@@ -63,7 +63,7 @@ export function SplitHeading({
     const play = () => {
       animation = animate(el.querySelectorAll("[data-split-word]"), {
         translateY: { from: "108%", to: "0%" },
-        duration: ms(duration.reveal + 0.2),
+        duration: ms(duration.slow),
         delay: animeStagger(ms(stagger.words), { start: ms(delay) }),
         ease: cubicBezier(...ease.reveal),
         onComplete: finish,
@@ -96,11 +96,15 @@ export function SplitHeading({
         <Fragment key={i}>
           <span aria-hidden className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] pr-[0.08em] -mr-[0.08em] align-top">
             <span data-split-word className="inline-block">
-              {word.map((segment, j) => (
-                <span key={j} className={segment.em ? emClassName : undefined}>
-                  {segment.text}
-                </span>
-              ))}
+              {word.map((segment, j) =>
+                segment.em ? (
+                  <em key={j} className={emClassName}>
+                    {segment.text}
+                  </em>
+                ) : (
+                  <span key={j}>{segment.text}</span>
+                ),
+              )}
             </span>
           </span>
           {i < words.length - 1 && " "}

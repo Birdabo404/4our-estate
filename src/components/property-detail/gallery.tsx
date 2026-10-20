@@ -85,7 +85,7 @@ function Frame({
         variants={hint}
         className="absolute bottom-4 right-4 grid size-10 place-items-center rounded-full bg-paper text-ink shadow-float"
       >
-        <ArrowsOut size={15} weight="light" />
+        <ArrowsOut size={15} weight="regular" />
       </motion.span>
     </motion.button>
   );

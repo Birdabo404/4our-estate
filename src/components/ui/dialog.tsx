@@ -21,14 +21,14 @@ const PLACEMENT: Record<
   },
   right: {
     frame: "items-stretch justify-end p-2 sm:p-3",
-    panel: "h-full w-full max-w-[30rem] rounded-[1.75rem]",
+    panel: "h-full w-full max-w-[30rem] rounded-panel",
     initial: { x: "104%" },
     animate: { x: 0, transition: spring.panel },
     exit: { x: "104%", transition: tween.exit },
   },
   bottom: {
     frame: "items-end justify-center p-2",
-    panel: "max-h-[88dvh] w-full max-w-2xl rounded-[1.75rem]",
+    panel: "max-h-[88dvh] w-full max-w-2xl rounded-panel",
     initial: { y: "104%" },
     animate: { y: 0, transition: spring.panel },
     exit: { y: "104%", transition: tween.exit },
@@ -90,11 +90,11 @@ function Surface({ onClose, title, description, children, footer, className, pla
           animate={spec.animate}
           exit={spec.exit}
           className={cn(
-            "pointer-events-auto flex flex-col overflow-hidden bg-ink/[0.05] p-1.5 shadow-float ring-1 ring-white/30",
+            "pointer-events-auto flex flex-col overflow-hidden bg-paper-raised shadow-float ring-1 ring-ink/10",
             spec.panel,
           )}
         >
-          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto rounded-[calc(var(--radius-panel)-0.375rem)] bg-paper-raised shadow-[inset_0_1px_0_rgb(255_255_255/0.8)]">
+          <div className="flex min-h-0 flex-1 flex-col overflow-y-auto bg-paper-raised">
             <header className="flex items-start justify-between gap-6 px-7 pb-2 pt-7 md:px-9 md:pt-9">
               <div className="flex flex-col gap-2">
                 <h2 id={titleId} className="font-display text-heading">
@@ -110,9 +110,9 @@ function Surface({ onClose, title, description, children, footer, className, pla
                 type="button"
                 onClick={onClose}
                 aria-label="Close"
-                className="-mr-2 -mt-1 grid size-10 shrink-0 place-items-center rounded-full text-ink-soft ring-1 ring-inset ring-ink/10 transition-colors duration-300 ease-settle hover:bg-ink/5 hover:text-ink"
+                className="-mr-2 -mt-1 grid size-10 shrink-0 place-items-center rounded-md text-ink-soft ring-1 ring-inset ring-ink/15 transition-colors duration-300 ease-settle hover:bg-ink hover:text-paper"
               >
-                <X size={16} weight="light" />
+                <X size={16} weight="regular" />
               </button>
             </header>
             {children && <div className={cn("flex-1 px-7 py-5 md:px-9", className)}>{children}</div>}

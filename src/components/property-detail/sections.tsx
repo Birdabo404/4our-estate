@@ -36,11 +36,11 @@ export function Chapter({
     <section aria-labelledby={id} className={cn("flex flex-col gap-10 border-t border-ink/10 pt-10 md:gap-12 md:pt-12", className)}>
       <Reveal as="header" distance={24} className="flex flex-col gap-4">
         <p className="flex items-center gap-3 text-micro uppercase text-ink-muted">
-          <span className="tabular text-accent">{String(index).padStart(2, "0")}</span>
+          <span className="tabular text-accent-ink">{String(index).padStart(2, "0")}</span>
           <span aria-hidden className="h-px w-8 bg-ink/15" />
           {label}
         </p>
-        <h2 id={id} className="max-w-[22ch] font-display text-display-3 [--opsz:72]">
+        <h2 id={id} className="max-w-[22ch] font-display text-display-3">
           {title}
         </h2>
       </Reveal>
@@ -69,7 +69,7 @@ export function KeyFacts({ property, className }: { property: PropertyDetail; cl
       {facts.map((fact) => (
         <div key={fact.label} className="flex flex-col-reverse gap-1.5 bg-paper py-1 pr-4">
           <dt className="text-micro uppercase text-ink-muted">{fact.label}</dt>
-          <dd className="tabular font-display text-[1.75rem] leading-none [--opsz:24]">{fact.value}</dd>
+          <dd className="tabular font-display text-[1.75rem] leading-none">{fact.value}</dd>
         </div>
       ))}
     </dl>
@@ -80,7 +80,7 @@ export function Overview({ property }: { property: PropertyDetail }) {
   const { lead, body } = splitDescription(property.description);
   return (
     <div className="flex flex-col gap-8">
-      <Reveal as="p" distance={24} className="max-w-[34ch] font-display text-[clamp(1.375rem,1.1rem+0.9vw,2rem)] leading-[1.32] text-ink [--opsz:36]">
+      <Reveal as="p" distance={24} className="max-w-[34ch] font-display text-[clamp(1.375rem,1.1rem+0.9vw,2rem)] leading-[1.32] text-ink">
         {lead}
       </Reveal>
       {body.map((paragraph, i) => (
@@ -190,7 +190,7 @@ export function LocationBlock({ property }: { property: PropertyDetail }) {
           Open in Google Maps
         </span>
         <span className="grid size-9 place-items-center rounded-full ring-1 ring-inset ring-ink/15 transition-colors duration-300 ease-settle group-hover:bg-ink group-hover:text-paper">
-          <ArrowUpRight aria-hidden size={14} weight="light" />
+          <ArrowUpRight aria-hidden size={14} weight="regular" />
         </span>
         <span className="sr-only">(opens in a new tab)</span>
       </a>
@@ -220,7 +220,7 @@ export function AgentAvatar({ agent, size = "md" }: { agent: AgentProfile; size?
     <span
       aria-hidden
       className={cn(
-        "grid shrink-0 place-items-center rounded-full bg-night font-display text-on-night [--opsz:24]",
+        "grid shrink-0 place-items-center rounded-full bg-night font-display text-on-night",
         box,
         size === "lg" ? "text-[1.75rem]" : "text-[1.125rem]",
       )}
@@ -246,7 +246,7 @@ export function AgentCard({ agent }: { agent: AgentProfile }) {
           aria-label={`Call ${agent.fullName} on ${agent.phone}`}
           className="grid size-10 shrink-0 place-items-center rounded-full text-ink-soft ring-1 ring-inset ring-ink/15 transition-colors duration-300 ease-settle hover:bg-ink hover:text-paper"
         >
-          <Phone aria-hidden size={16} weight="light" />
+          <Phone aria-hidden size={16} weight="regular" />
         </a>
       )}
     </div>
@@ -297,7 +297,7 @@ export function LeaseNote({ property }: { property: PropertyDetail }) {
       ].map((item, i) => (
         <Reveal key={item.label} index={i} distance={16} className="flex flex-col gap-3 border-t border-ink/10 pt-5">
           <p className="text-micro uppercase text-ink-muted">{item.label}</p>
-          <p className="tabular font-display text-[1.75rem] leading-none [--opsz:24]">{item.value}</p>
+          <p className="tabular font-display text-[1.75rem] leading-none">{item.value}</p>
           <p className="text-small text-ink-soft">{item.note}</p>
         </Reveal>
       ))}

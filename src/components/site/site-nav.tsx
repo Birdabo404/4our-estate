@@ -16,7 +16,7 @@ type NavLink = { href: string; label: string };
 
 const PUBLIC_LINKS: readonly NavLink[] = [
   { href: "/", label: "Home" },
-  { href: "/properties", label: "Properties" },
+  { href: "/properties", label: "Browse homes" },
 ];
 
 function linksFor(viewer: Viewer): NavLink[] {
@@ -126,48 +126,49 @@ export function SiteNav({ viewer }: { viewer: Viewer }) {
       >
         <AnimatePresence>{open && <MenuOverlay links={links} viewer={viewer} pathname={pathname} onNavigate={() => setOpen(false)} />}</AnimatePresence>
 
-        <div className="relative mx-auto max-w-[96rem] px-3 pt-3 sm:px-5 lg:px-8">
-          <motion.div
-            aria-hidden
-            initial={false}
-            animate={showBar ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: -10, scale: 0.985 }}
-            transition={spring.panel}
-            className="absolute inset-x-3 bottom-0 top-3 rounded-full bg-paper/80 shadow-lift ring-1 ring-ink/[0.07] backdrop-blur-xl sm:inset-x-5 lg:inset-x-8"
-          />
-          <nav aria-label="Primary" className="relative flex h-16 items-center justify-between pl-4 pr-2 sm:pl-6 sm:pr-2.5">
-            <Link href="/" aria-label="4OUR Estate, home" className="rounded-full py-2 text-[1.3rem]">
-              <Wordmark animated />
-            </Link>
-
-            <ul className="absolute left-1/2 hidden -translate-x-1/2 items-center gap-1 md:flex">
-              {links.map((link) => {
-                const active = isActive(pathname, link.href);
-                return (
-                  <li key={link.href}>
-                    <Link
-                      href={link.href}
-                      aria-current={active ? "page" : undefined}
-                      className={cn(
-                        "relative block rounded-full px-4 py-2 text-small tracking-[0.02em] transition-opacity duration-500 ease-settle",
-                        active ? "opacity-100" : "opacity-80 hover:opacity-100",
-                      )}
-                    >
-                      {link.label}
-                      {active && (
-                        <motion.span
-                          layoutId="nav-active"
-                          transition={spring.ui}
-                          className="absolute inset-x-4 -bottom-0.5 h-px bg-current"
-                        />
-                      )}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
+        <motion.div
+          aria-hidden
+          initial={false}
+          animate={{ opacity: showBar ? 1 : 0 }}
+          transition={spring.ui}
+          className="absolute inset-0 border-b border-ink/10 bg-paper/88 backdrop-blur-xl"
+        />
+        <div className="relative mx-auto max-w-[96rem] px-5 sm:px-8 lg:px-12">
+          <nav aria-label="Primary" className="flex h-(--nav-height) items-center justify-between gap-6">
+            <div className="flex items-center gap-10">
+              <Link href="/" aria-label="4OUR Estate, home" className="rounded-md py-2 text-[1.3rem]">
+                <Wordmark animated />
+              </Link>
+              <ul className="hidden items-center gap-1 md:flex">
+                {links.map((link) => {
+                  const active = isActive(pathname, link.href);
+                  return (
+                    <li key={link.href}>
+                      <Link
+                        href={link.href}
+                        aria-current={active ? "page" : undefined}
+                        className={cn(
+                          "relative block rounded-md px-3 py-2 text-small font-medium transition-opacity duration-500 ease-settle",
+                          active ? "opacity-100" : "opacity-75 hover:opacity-100",
+                        )}
+                      >
+                        {link.label}
+                        {active && (
+                          <motion.span
+                            layoutId="nav-active"
+                            transition={spring.ui}
+                            className="absolute inset-x-3 -bottom-0.5 h-0.5 bg-accent"
+                          />
+                        )}
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
 
             <div className="flex items-center gap-2">
-              <span className="hidden md:block">
+              <span className="hidden items-center gap-2 md:flex">
                 <AccountControl viewer={viewer} light={light} />
               </span>
               <button
@@ -178,8 +179,8 @@ export function SiteNav({ viewer }: { viewer: Viewer }) {
                 aria-label={open ? "Close menu" : "Open menu"}
                 onClick={() => setOpen((v) => !v)}
                 className={cn(
-                  "relative grid size-11 place-items-center rounded-full ring-1 ring-inset transition-colors duration-500 ease-settle md:hidden",
-                  light ? "ring-white/35" : "ring-ink/15",
+                  "relative grid size-11 place-items-center rounded-md ring-1 ring-inset transition-colors duration-500 ease-settle md:hidden",
+                  light ? "ring-white/45" : "ring-ink/25",
                 )}
               >
                 <motion.span
@@ -187,14 +188,14 @@ export function SiteNav({ viewer }: { viewer: Viewer }) {
                   initial={false}
                   animate={open ? { y: 0, rotate: 45 } : { y: -3.5, rotate: 0 }}
                   transition={spring.ui}
-                  className="absolute h-px w-[1.125rem] bg-current"
+                  className="absolute h-0.5 w-[1.125rem] bg-current"
                 />
                 <motion.span
                   aria-hidden
                   initial={false}
                   animate={open ? { y: 0, rotate: -45 } : { y: 3.5, rotate: 0 }}
                   transition={spring.ui}
-                  className="absolute h-px w-[1.125rem] bg-current"
+                  className="absolute h-0.5 w-[1.125rem] bg-current"
                 />
               </button>
             </div>
@@ -209,9 +210,20 @@ function AccountControl({ viewer, light }: { viewer: Viewer; light: boolean }) {
   switch (viewer.kind) {
     case "guest":
       return (
-        <ButtonLink href="/login" size="sm" variant={light ? "on-image" : "primary"}>
-          Sign in
-        </ButtonLink>
+        <>
+          <Link
+            href="/login"
+            className={cn(
+              "rounded-md px-3 py-2 text-small font-medium transition-opacity duration-500 ease-settle hover:opacity-70",
+              light ? "text-white" : "text-ink",
+            )}
+          >
+            Sign in
+          </Link>
+          <ButtonLink href="/signup?role=agent" size="sm" variant="accent" icon="arrow-up-right">
+            List a property
+          </ButtonLink>
+        </>
       );
     case "member":
       return (
@@ -219,8 +231,8 @@ function AccountControl({ viewer, light }: { viewer: Viewer; light: boolean }) {
           href={DASHBOARD[viewer.role].href}
           aria-label={`${viewer.fullName}, open your ${DASHBOARD[viewer.role].label.toLowerCase()}`}
           className={cn(
-            "grid size-11 place-items-center rounded-full text-[0.75rem] font-medium tracking-[0.12em] transition-colors duration-500 ease-settle",
-            light ? "bg-white text-ink" : "bg-ink text-paper",
+            "grid size-11 place-items-center rounded-md font-mono text-[0.75rem] font-medium transition-colors duration-500 ease-settle",
+            light ? "bg-white text-ink" : "bg-ink text-paper hover:bg-accent hover:text-ink",
           )}
         >
           {initials(viewer.fullName)}
@@ -281,9 +293,9 @@ function MenuOverlay({
                 href={link.href}
                 onClick={onNavigate}
                 aria-current={isActive(pathname, link.href) ? "page" : undefined}
-                className="flex items-baseline gap-4 py-1 font-display text-[3.25rem] leading-[1.05] tracking-[-0.03em] aria-[current=page]:italic"
+                className="flex items-baseline gap-4 py-1 font-display text-[3rem] font-semibold leading-[1.05] tracking-[-0.04em] aria-[current=page]:text-accent-ink"
               >
-                <span className="font-sans text-micro tracking-[0.2em] text-ink-muted">0{i + 1}</span>
+                <span className="text-micro text-ink-muted">[0{i + 1}]</span>
                 {link.label}
               </Link>
             </motion.span>

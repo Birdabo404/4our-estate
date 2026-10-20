@@ -34,7 +34,7 @@ export function EmptyState({
   return (
     <div className={cn("mx-auto flex max-w-md flex-col items-center px-6 py-20 text-center", className)}>
       <span className="grid size-16 place-items-center rounded-full ring-1 ring-inset ring-ink/10">
-        <Glyph aria-hidden size={26} weight="thin" className="text-ink-soft" />
+        <Glyph aria-hidden size={26} weight="light" className="text-ink-soft" />
       </span>
       <h3 className="mt-8 font-display text-heading">{title}</h3>
       {children && <div className="mt-3 text-body text-ink-muted">{children}</div>}

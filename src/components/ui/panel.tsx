@@ -3,21 +3,14 @@ import { cn } from "@/lib/cn";
 
 export type PanelTone = "paper" | "night";
 
-const TONE: Record<PanelTone, { shell: string; core: string }> = {
-  paper: {
-    shell: "bg-ink/[0.035] ring-ink/[0.06] shadow-float",
-    core: "bg-paper-raised text-ink shadow-[inset_0_1px_0_rgb(255_255_255/0.8)]",
-  },
-  night: {
-    shell: "bg-white/[0.04] ring-white/[0.08] shadow-float",
-    core: "bg-night-raised text-on-night shadow-[inset_0_1px_0_rgb(255_255_255/0.06)]",
-  },
+const TONE: Record<PanelTone, string> = {
+  paper: "bg-paper-raised text-ink ring-ink/10 shadow-lift",
+  night: "bg-night-raised text-on-night ring-white/10",
 };
 
 /**
- * The double bezel: an outer tray and an inner plate with a concentric radius.
- * For UI surfaces (filters, forms, dashboard modules, dialogs). Never wrap
- * listing photography in it; photos stay cinematic and unboxed.
+ * A white sheet with a hairline edge, for forms, dialogs, and dashboard
+ * modules. Listing photography never goes inside one.
  */
 export function Panel({
   as: Tag = "div",
@@ -33,10 +26,8 @@ export function Panel({
   children: ReactNode;
 }) {
   return (
-    <Tag className={cn("rounded-panel p-1.5 ring-1", TONE[tone].shell, className)}>
-      <div className={cn("rounded-[calc(var(--radius-panel)-0.375rem)] p-6 md:p-8", TONE[tone].core, coreClassName)}>
-        {children}
-      </div>
+    <Tag className={cn("rounded-panel ring-1", TONE[tone], className)}>
+      <div className={cn("p-6 md:p-8", coreClassName)}>{children}</div>
     </Tag>
   );
 }

@@ -23,7 +23,7 @@ export function SiteFooter() {
         <div className="grid gap-16 md:grid-cols-12 md:gap-10">
           <Reveal className="md:col-span-6">
             <p className="max-w-[18ch] font-display text-display-3 text-on-night">
-              Residences across the archipelago, introduced with <em className="text-accent-soft">discretion</em>.
+              Residences across the archipelago, introduced with <em className="text-accent-soft [--em-mark:transparent]">discretion</em>.
             </p>
             <a
               href="mailto:letters@4our.estate?subject=Private%20letters"
@@ -36,7 +36,7 @@ export function SiteFooter() {
               <ArrowUpRight
                 aria-hidden
                 size={16}
-                weight="light"
+                weight="regular"
                 className="shrink-0 transition-transform duration-500 ease-settle group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
               />
             </a>

@@ -6,7 +6,7 @@ export default function PropertyNotFound() {
     <div className="pb-28 pt-36 md:pb-44 md:pt-52">
       <Container width="prose" className="flex flex-col items-start gap-8">
         <p className="text-micro uppercase text-ink-muted">Not on the register</p>
-        <h1 className="font-display text-display-2 [--opsz:96]">
+        <h1 className="font-display text-display-2">
           This residence is <em className="italic">no longer</em> listed.
         </h1>
         <p className="max-w-[48ch] text-lead text-ink-soft">

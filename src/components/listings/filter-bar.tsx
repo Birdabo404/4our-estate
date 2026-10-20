@@ -55,7 +55,7 @@ export function FilterBar() {
             aria-haspopup="dialog"
             className="relative flex h-12 shrink-0 items-center gap-2.5 rounded-full bg-ink pl-4 pr-5 text-small font-medium text-paper transition-colors duration-500 ease-settle hover:bg-[#2b2620] lg:hidden"
           >
-            <Faders aria-hidden size={16} weight="light" />
+            <Faders aria-hidden size={16} weight="regular" />
             Filters
             {activeCount > 0 && (
               <span className="grid size-5 place-items-center rounded-full bg-paper text-[0.6875rem] text-ink tabular">{activeCount}</span>
@@ -147,7 +147,7 @@ export function ResultsHeader() {
                 >
                   {chip.label}
                   <span className="grid size-5 place-items-center rounded-full bg-ink/[0.06] text-ink-soft transition-colors duration-300 ease-settle group-hover:bg-ink group-hover:text-paper">
-                    <X aria-hidden size={10} weight="light" />
+                    <X aria-hidden size={10} weight="regular" />
                   </span>
                 </button>
               </motion.li>
@@ -157,8 +157,8 @@ export function ResultsHeader() {
                 type="button"
                 onClick={() => update(CLEAR_ALL)}
                 className={cn(
-                  "h-9 rounded-full px-3 text-small text-accent underline decoration-accent/30 underline-offset-4",
-                  "transition-colors duration-300 ease-settle hover:decoration-accent",
+                  "h-9 rounded-full px-3 text-small text-accent-ink underline decoration-accent-ink/30 underline-offset-4",
+                  "transition-colors duration-300 ease-settle hover:decoration-accent-ink",
                 )}
               >
                 Clear all

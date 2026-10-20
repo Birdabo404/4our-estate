@@ -205,7 +205,7 @@ export function WordmarkDemo() {
       <Wordmark key={run} animated className="text-[clamp(2.5rem,4.6vw,4.5rem)]" />
       <Button variant="ghost" size="sm" onClick={() => setRun((n) => n + 1)}>
         <span className="flex items-center gap-2">
-          <ArrowCounterClockwise aria-hidden size={14} weight="light" /> Replay the draw
+          <ArrowCounterClockwise aria-hidden size={14} weight="regular" /> Replay the draw
         </span>
       </Button>
     </div>

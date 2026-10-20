@@ -73,7 +73,7 @@ export function SavedResidences({ properties }: { properties: PropertySummary[] 
                   aria-label={`Remove ${property.title} from saved`}
                   className="grid size-10 place-items-center rounded-full bg-paper text-ink shadow-float transition-colors duration-300 ease-settle hover:bg-white"
                 >
-                  <X size={14} weight="light" />
+                  <X size={14} weight="regular" />
                 </button>
               }
             />
@@ -107,7 +107,7 @@ function UndoNotice({
           Undo
         </button>
         <button type="button" onClick={onDismiss} aria-label="Dismiss notification" className="text-on-night-muted">
-          <X size={13} weight="light" />
+          <X size={13} weight="regular" />
         </button>
       </div>
     </div>

@@ -5,10 +5,10 @@ type Tone = "quiet" | "attention" | "positive" | "closed" | "accent";
 
 const TONE: Record<Tone, { shell: string; dot: string }> = {
   quiet: { shell: "bg-ink/[0.05] text-ink-soft ring-ink/10", dot: "bg-ink-muted" },
-  attention: { shell: "bg-accent/10 text-accent ring-accent/25", dot: "bg-accent" },
+  attention: { shell: "bg-sun/40 text-ink ring-sun", dot: "bg-ink" },
   positive: { shell: "bg-positive/10 text-positive ring-positive/25", dot: "bg-positive" },
-  closed: { shell: "bg-ink text-paper ring-ink", dot: "bg-paper" },
-  accent: { shell: "bg-accent text-paper ring-accent", dot: "bg-paper" },
+  closed: { shell: "bg-ink text-paper ring-ink", dot: "bg-accent" },
+  accent: { shell: "bg-accent text-ink ring-accent", dot: "bg-ink" },
 };
 
 type Spec = { label: string; tone: Tone };
@@ -46,12 +46,12 @@ export function StatusPill(props: StatusPillProps) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-2 rounded-full px-3 py-1 text-[0.6875rem] font-medium uppercase tracking-[0.16em] ring-1 ring-inset",
+        "inline-flex items-center gap-2 rounded-[0.25rem] px-2 py-0.5 font-mono text-[0.6875rem] font-medium uppercase tracking-[0.06em] ring-1 ring-inset",
         TONE[tone].shell,
         className,
       )}
     >
-      <span aria-hidden className={cn("size-1.5 rounded-full", TONE[tone].dot)} />
+      <span aria-hidden className={cn("size-1.5 rounded-[1px]", TONE[tone].dot)} />
       {label}
     </span>
   );

@@ -38,7 +38,7 @@ export default async function EditListingPage({ params }: { params: Promise<{ id
             {publicRecord ? (
               <Link
                 href={`/properties/${property.slug}`}
-                className="text-small text-accent underline decoration-accent/30 underline-offset-4"
+                className="text-small text-accent-ink underline decoration-accent-ink/30 underline-offset-4"
               >
                 View on the site
               </Link>

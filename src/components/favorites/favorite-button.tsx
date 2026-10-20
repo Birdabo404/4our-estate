@@ -11,11 +11,11 @@ export type FavoriteButtonTone = "image" | "paper";
 
 const TONE: Record<FavoriteButtonTone, { shell: string; glyph: string }> = {
   image: {
-    shell: "size-10 bg-paper/92 text-ink shadow-lift ring-1 ring-inset ring-white/50 hover:bg-white",
+    shell: "size-9 rounded-md bg-white text-ink ring-1 ring-inset ring-ink/10 hover:bg-sky",
     glyph: "size-[18px]",
   },
   paper: {
-    shell: "h-11 gap-2.5 pl-3.5 pr-4.5 text-small text-ink ring-1 ring-inset ring-ink/15 hover:bg-ink/[0.04] hover:ring-ink/30",
+    shell: "h-11 gap-2.5 rounded-md pl-3.5 pr-4.5 text-small text-ink ring-1 ring-inset ring-ink/20 hover:ring-ink",
     glyph: "size-[18px]",
   },
 };
@@ -48,13 +48,13 @@ export function FavoriteButton({
       whileTap={{ scale: 0.92 }}
       transition={spring.press}
       className={cn(
-        "relative inline-flex shrink-0 items-center justify-center rounded-full font-medium transition-[background-color,box-shadow] duration-500 ease-settle",
+        "relative inline-flex shrink-0 items-center justify-center font-semibold transition-[background-color,box-shadow] duration-500 ease-settle",
         spec.shell,
         className,
       )}
     >
       <span aria-hidden className={cn("relative grid place-items-center", spec.glyph)}>
-        <HeartStraight weight="light" className="absolute inset-0 size-full" />
+        <HeartStraight weight="regular" className="absolute inset-0 size-full" />
         <motion.span
           className="absolute inset-0 text-accent"
           initial={false}
@@ -67,7 +67,7 @@ export function FavoriteButton({
           {pulse > 0 && saved && (
             <motion.span
               key={pulse}
-              className="absolute -inset-2 rounded-full ring-1 ring-accent/50"
+              className="absolute -inset-2 rounded-md ring-2 ring-accent/60"
               initial={{ opacity: 0.9, scale: 0.6 }}
               animate={{ opacity: 0, scale: 1.5 }}
               exit={{ opacity: 0 }}

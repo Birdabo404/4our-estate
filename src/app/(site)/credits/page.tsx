@@ -23,7 +23,7 @@ export default function PhotographyCreditsPage() {
             These photographs are from Unsplash, under the{" "}
             <a
               href={UNSPLASH_LICENSE_HREF}
-              className="text-accent underline decoration-accent/30 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-accent"
+              className="text-accent-ink underline decoration-accent-ink/30 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-accent-ink"
             >
               Unsplash License
             </a>
