@@ -148,7 +148,7 @@ export function KeywordSearch({ className, inputClassName }: { className?: strin
         onChange={(event) => setDraft(event.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        placeholder="Search by place or name"
+        placeholder="Place or residence"
         autoComplete="off"
         enterKeyHint="search"
         className={cn(

@@ -40,10 +40,11 @@ export function HomeHero({ photo, listingCount, cityCount }: { photo: Photo; lis
       <ScrollImage src={photoUrl(photo, 2400, 80)} alt={photo.alt} sizes="100vw" preload intensity="hero" className="absolute inset-0 -z-10" />
       <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_18_15/0.5)_0%,rgb(20_18_15/0)_28%,rgb(20_18_15/0.08)_52%,rgb(20_18_15/0.76)_100%)]" />
       <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_55%_at_0%_100%,rgb(20_18_15/0.5),rgb(20_18_15/0))]" />
+      <div aria-hidden className="absolute inset-0 -z-10 hidden bg-[radial-gradient(45%_50%_at_100%_100%,rgb(20_18_15/0.62),rgb(20_18_15/0))] md:block" />
 
       <Container width="wide" className="pb-10 md:pb-14">
         <div data-hero-copy className="grid items-end gap-10 md:grid-cols-12 md:gap-12">
-          <div className="flex flex-col gap-7 md:col-span-8 lg:col-span-9">
+          <div className="flex flex-col gap-7 md:col-span-7 lg:col-span-8">
             <Reveal delay={0.2} distance={12}>
               <Eyebrow tone="image">Private collection · Philippines</Eyebrow>
             </Reveal>
@@ -55,7 +56,7 @@ export function HomeHero({ photo, listingCount, cityCount }: { photo: Photo; lis
               className="max-w-[11ch] text-display-1 text-white [--opsz:144]"
             />
           </div>
-          <Reveal delay={0.9} distance={16} className="flex flex-col items-start gap-7 md:col-span-4 md:items-end md:text-right lg:col-span-3">
+          <Reveal delay={0.9} distance={16} className="flex flex-col items-start gap-7 md:col-span-5 md:items-end md:text-right lg:col-span-4">
             <p className="max-w-[32ch] text-small text-white/88">
               Houses, villas, and apartments from Forbes Park to Siargao, each represented by the agent who knows it by name.
             </p>

@@ -88,7 +88,7 @@ function Surface({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1, transition: tween.settle }}
         exit={{ opacity: 0, transition: { ...tween.settle, delay: source ? 0.1 : 0 } }}
-        className="absolute inset-0 bg-night/[0.97]"
+        className="absolute inset-0 bg-night"
       />
 
       <div className="pointer-events-none relative flex h-full flex-col">
