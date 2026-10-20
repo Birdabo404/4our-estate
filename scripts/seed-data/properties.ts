@@ -200,7 +200,7 @@ export const PROPERTIES: SeedProperty[] = [
   {
     slug: "bgc-grand-hyatt-residence",
     agentEmail: "mateo.cruz@4our.estate",
-    title: "Grand Hyatt Residence, pending",
+    title: "Grand Hyatt Residences, Sky Floor",
     description:
       "The residence is on a high floor of the Grand Hyatt tower, with the city on two sides and a gallery that runs the length of the glass. Three bedrooms, four baths, a kitchen that was kept closed so the living room stays a room and not a show. The owner finished it in 2021 and has used it lightly, which you can tell from the edges of the stone and the way the hardware still clicks. Two parking slots are on the title. Hotel services are available if you want them and easy to ignore if you do not. The submission is still with the desk, which is why the status is pending and the photographs are already in the file. What you are looking at is a corner plan, not a middle unit with one window and a long hall. BGC at this address means you can be in a meeting downstairs and home by the time the lift opens. The price reflects the floor and the glass, and it will not be dressed up with a story about lifestyle. The plan is the argument.",
     listingType: "sale",
@@ -368,7 +368,7 @@ export const PROPERTIES: SeedProperty[] = [
   {
     slug: "mactan-newtown-beachfront",
     agentEmail: "rafael.delacruz@4our.estate",
-    title: "Mactan Beachfront, sold",
+    title: "Punta Engaño Beach House",
     description:
       "The villa faced the channel on Mactan, with a lawn that went down to a low wall and the water beyond it at high tide. Four bedrooms upstairs, a pavilion for lunch when the breeze was right, and a pool set to one side so it did not steal the sea. The stone was local, the roof was clay, and the glass was specified for salt. Built in 2018 and kept by a family who used it in the dry months and closed it properly in the wet ones. It has sold. The record stays on the site because a closed sale is part of how this coast is priced, and because the photographs still tell you what a beachfront plan on Mactan can be when it is a house and not a row of hotel rooms. The new owner takes possession after the paperwork, which is already done. Inquiries on this one will not be opened. If you want the next lot along this stretch, Rafael has the names of the families who have not listed yet. That conversation does not happen on a form.",
     listingType: "sale",
@@ -536,7 +536,7 @@ export const PROPERTIES: SeedProperty[] = [
   {
     slug: "tagaytay-highlands-villa",
     agentEmail: "ana.reyes@4our.estate",
-    title: "Highlands Villa, still a draft",
+    title: "Midlands Villa, Tagaytay Highlands",
     description:
       "The villa in Tagaytay Highlands is not on the market yet. The owner finished the structure in 2024 and is still choosing stone for the baths, which is why this file is a draft and not a listing you can inquire on. Four bedrooms, a pool already filled, and a ridge line that takes Taal when the cloud lifts and takes nothing but white when it does not. You should know that before you drive up. The plan is concrete and glass, with a roof that overhangs far enough for the rain Tagaytay gets sideways. Parking is cut into the slope. A caretaker's room is at the gate. When the finishes are done, the price will be set against the other ridge houses and not against a condo in the city. Until then the photographs are here so the desk can see the massing, and the public catalog will not show the page. If you are the sort of buyer who wants to choose the stone, say so to Ana Lucia. If you want a house you can sleep in next Friday, look at the ridge listing that is already published.",
     listingType: "sale",
@@ -676,7 +676,7 @@ export const PROPERTIES: SeedProperty[] = [
   {
     slug: "bgc-park-west-lease",
     agentEmail: "mateo.cruz@4our.estate",
-    title: "Park West Lease, archived",
+    title: "Park West Two-Bedroom Lease",
     description:
       "This two-bedroom on the park side of a 2019 BGC tower was leased through the last dry season and has been archived. The rent was two hundred seventy-five thousand pesos a month, furnished, one parking slot, ninety-five square meters with a proper second room. It is not available. The page remains so the desk can see what a park-facing plan in that building looked like when it was live, and so an owner with the same stack can be priced against a number that actually cleared. The tenant left the apartment cleaner than they found it, which is rare enough to write down. If you are hunting that building, Mateo can say whether a similar floor is coming. He will not invent one. Archived, in this file, means the lease ended and the owner is living in it again. The photographs stay because they are accurate and because a future listing in the same line should not have to be imagined from a floor plan. Ask for the live BGC leases if you need keys this month. There are three of them, and they are the ones with a status of published.",
     listingType: "rent",
