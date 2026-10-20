@@ -2,46 +2,13 @@ import "server-only";
 
 import { cookies } from "next/headers";
 
+import { ApiError, UNREACHABLE_MESSAGE, type ApiErrorBody, type ApiMeta, type ApiSuccess } from "./error";
+import { mockFetch } from "./mock/dispatch";
 import { jwtExpired, SESSION_COOKIE, sessionMaxAge } from "./token";
 
-const UNREACHABLE = "We couldn't reach the server. Try again in a moment.";
+export { ApiError, type ApiErrorBody, type ApiMeta, type ApiSuccess } from "./error";
+
 const COOKIE_WRITE = "Cookies can only be modified";
-
-export type ApiMeta = {
-  total: number;
-  page: number;
-  pageSize: number;
-};
-
-export type ApiSuccess<T> = {
-  data: T;
-  meta?: ApiMeta;
-};
-
-export type ApiErrorBody = {
-  statusCode: number;
-  code: string;
-  message: string;
-  fields?: Record<string, string>;
-};
-
-export class ApiError extends Error {
-  readonly statusCode: number;
-  readonly code: string;
-  readonly fields?: Record<string, string>;
-
-  constructor(body: ApiErrorBody) {
-    super(body.message);
-    this.name = "ApiError";
-    this.statusCode = body.statusCode;
-    this.code = body.code;
-    if (body.fields) this.fields = body.fields;
-  }
-
-  static unreachable(): ApiError {
-    return new ApiError({ statusCode: 0, code: "NETWORK", message: UNREACHABLE });
-  }
-}
 
 type ApiInit = {
   method?: string;
@@ -124,7 +91,7 @@ function readError(payload: unknown, status: number): ApiErrorBody {
   return {
     statusCode: status,
     code: status === 0 ? "NETWORK" : "INTERNAL",
-    message: status === 0 ? UNREACHABLE : "Something went wrong. Please try again.",
+    message: status === 0 ? UNREACHABLE_MESSAGE : "Something went wrong. Please try again.",
   };
 }
 
@@ -156,7 +123,28 @@ export async function apiFetch<T>(path: string, init: ApiInit = {}): Promise<Api
   return call<T>(path, init, token, true);
 }
 
+function usesMockData(): boolean {
+  const env = process.env;
+  return env.DATA_MODE === "mock";
+}
+
 async function call<T>(path: string, init: ApiInit, token: string | null, allowRetry: boolean): Promise<ApiSuccess<T>> {
+  if (usesMockData()) {
+    try {
+      return await mockFetch<T>(init.method ?? "GET", path, {
+        json: init.json,
+        form: init.form,
+        token,
+      });
+    } catch (error) {
+      if (error instanceof ApiError && error.statusCode === 401 && token && allowRetry) {
+        await clearSession();
+        return call<T>(path, init, null, false);
+      }
+      throw error;
+    }
+  }
+
   const headers = new Headers();
   if (token) headers.set("authorization", `Bearer ${token}`);
   let body: BodyInit | undefined;
