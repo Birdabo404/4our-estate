@@ -3,6 +3,7 @@
  *
  *   npx next dev -p 3000
  *   node --env-file=.env.local --import tsx scripts/e2e/public.ts
+ *   BASE_URL=http://localhost:3302 node --env-file=.env.local --import tsx scripts/e2e/public.ts
  *
  * Writes screenshots to /tmp/shots/fe-public/. Shares the seeded database with
  * other work, so it only adds uniquely addressed inquiries and restores any
@@ -12,7 +13,8 @@ import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 import { type Browser, type BrowserContext, chromium, expect, type Page } from "@playwright/test";
 
-const BASE = process.env.E2E_BASE ?? "http://localhost:3000";
+const BASE = baseUrl();
+const REDUX_SHOTS = "/tmp/shots/redux";
 const OUT = "/tmp/shots/fe-public";
 const BUYER = { email: "camille.uy@4our.estate", password: "Estate!2026" };
 const SLUGS = { sale: "forbes-park-acacia-house", rent: "bgc-high-street-lease", sold: "mactan-newtown-beachfront" } as const;
@@ -34,6 +36,12 @@ const SCREENS = [
 ] as const;
 
 const HIDE_DEV_OVERLAY = "nextjs-portal { display: none !important; }";
+
+function baseUrl(): string {
+  const fromArg = process.argv[2];
+  if (fromArg && /^https?:\/\//.test(fromArg)) return fromArg;
+  return process.env.BASE_URL ?? process.env.E2E_BASE ?? "http://localhost:3000";
+}
 
 type Result = { name: string; ok: boolean; detail?: string };
 const results: Result[] = [];
@@ -254,6 +262,20 @@ async function checkMemberFavorite(browser: Browser) {
     await expect(button()).toHaveAttribute("aria-pressed", initial ?? "false");
   });
 
+  await check("favorites: a redux toggle shows on the button before reload", async () => {
+    await page.goto(`/properties/${SLUGS.sale}`, { waitUntil: "networkidle" });
+    const button = page.locator("main").getByRole("button", { name: /^(Save|Saved)$/ });
+    const initial = await button.getAttribute("aria-pressed");
+    const flipped = initial === "true" ? "false" : "true";
+    await button.click();
+    await expect(button).toHaveAttribute("aria-pressed", flipped);
+    await expect(button).toHaveText(flipped === "true" ? "Saved" : "Save");
+    await button.click();
+    await expect(button).toHaveAttribute("aria-pressed", initial ?? "false");
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(600);
+  });
+
   await check("inquiry: a signed-in buyer sees their name and email prefilled", async () => {
     await page.goto(`/properties/${SLUGS.rent}`, { waitUntil: "networkidle" });
     const form = page.locator("aside").getByRole("form", { name: /Inquire about/ });
@@ -261,6 +283,49 @@ async function checkMemberFavorite(browser: Browser) {
     await expect(form.locator('[name="name"]')).not.toHaveValue("");
   });
   await context.close();
+}
+
+async function checkCredits(browser: Browser) {
+  mkdirSync(REDUX_SHOTS, { recursive: true });
+  const widths = { desktop: "1440", mobile: "390" } as const;
+  for (const viewport of Object.keys(widths) as ViewportName[]) {
+    const width = widths[viewport];
+    const context = await newContext(browser, viewport);
+    const page = await context.newPage();
+    await check(`credits: the footer links to /credits at ${width}`, async () => {
+      await page.goto("/properties", { waitUntil: "networkidle" });
+      const footer = page.getByRole("contentinfo");
+      await expect(footer.getByRole("link", { name: "Credits" })).toHaveAttribute("href", "/credits");
+      await expect(footer.getByRole("link", { name: "Unsplash" })).toHaveAttribute(
+        "href",
+        "https://unsplash.com/?utm_source=4our_estate&utm_medium=referral",
+      );
+      await expect(footer.getByText(/Photography by \d+ contributors on/)).toBeVisible();
+      await page.evaluate(() => document.fonts.ready);
+      await footer.scrollIntoViewIfNeeded();
+      await footer.screenshot({ path: `${REDUX_SHOTS}/footer-${width}.png` });
+    });
+    await check(`credits: /credits lists a photographer at ${width}`, async () => {
+      const before = consoleErrors.length;
+      const response = await page.goto("/credits", { waitUntil: "domcontentloaded" });
+      expect(response?.status()).toBe(200);
+      await expect(page.getByRole("heading", { level: 1, name: "Photography" })).toBeVisible();
+      await expect(page.getByText("Photos uploaded by agents belong to their listing agents.")).toBeVisible();
+      const photographer = page.getByRole("heading", { level: 2 }).first();
+      await expect(photographer).toBeVisible();
+      await page.evaluate(() => document.fonts.ready);
+      await page.screenshot({ path: `${REDUX_SHOTS}/credits-${width}.png` });
+      const thumb = page.locator("main img").first();
+      await thumb.scrollIntoViewIfNeeded();
+      await expect
+        .poll(async () => thumb.evaluate((node) => (node instanceof HTMLImageElement ? node.naturalWidth : 0)))
+        .toBeGreaterThan(0);
+      await page.screenshot({ path: `${REDUX_SHOTS}/credits-list-${width}.png` });
+      const added = consoleErrors.slice(before);
+      expect(added, added.join("\n")).toEqual([]);
+    });
+    await context.close();
+  }
 }
 
 async function main() {
@@ -298,6 +363,7 @@ async function main() {
   await checkGuestFavorite(desktop);
   await desktop.close();
   await checkMemberFavorite(browser);
+  await checkCredits(browser);
 
   await check("no console errors on any page", async () => {
     expect(consoleErrors, consoleErrors.join("\n")).toEqual([]);
