@@ -219,6 +219,7 @@ export function SegmentedControl<V extends string>({
   onValueChange,
   "aria-label": ariaLabel,
   size = "md",
+  tone = "paper",
   className,
 }: {
   name: string;
@@ -228,16 +229,18 @@ export function SegmentedControl<V extends string>({
   onValueChange?: (value: V) => void;
   "aria-label"?: string;
   size?: "sm" | "md";
+  tone?: "paper" | "night";
   className?: string;
 }) {
   const id = useId();
+  const night = tone === "night";
   const [uncontrolled, setUncontrolled] = useState<V | undefined>(defaultValue ?? options[0]?.value);
   const current = value ?? uncontrolled;
   return (
     <div
       role="radiogroup"
       aria-label={ariaLabel}
-      className={cn("inline-flex rounded-md bg-ink/[0.06] p-1", className)}
+      className={cn("inline-flex rounded-md p-1", night ? "bg-white/10" : "bg-ink/[0.06]", className)}
     >
       {options.map((option) => {
         const checked = option.value === current;
@@ -250,7 +253,13 @@ export function SegmentedControl<V extends string>({
               "relative cursor-pointer select-none rounded-[0.3rem] font-semibold transition-colors duration-300 ease-settle",
               "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent-ink",
               size === "sm" ? "px-4 py-1.5 text-small" : "px-5 py-2.5 text-small",
-              checked ? "text-paper" : "text-ink-soft hover:text-ink",
+              night
+                ? checked
+                  ? "text-ink"
+                  : "text-on-night-muted hover:text-on-night"
+                : checked
+                  ? "text-paper"
+                  : "text-ink-soft hover:text-ink",
             )}
           >
             <input
@@ -270,7 +279,7 @@ export function SegmentedControl<V extends string>({
                 layoutId={`${id}-thumb`}
                 transition={spring.ui}
                 aria-hidden
-                className="absolute inset-0 rounded-[0.3rem] bg-ink"
+                className={cn("absolute inset-0 rounded-[0.3rem]", night ? "bg-accent" : "bg-ink")}
               />
             )}
             <span className="relative">{option.label}</span>

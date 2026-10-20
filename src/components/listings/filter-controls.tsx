@@ -90,13 +90,22 @@ const LISTING_TYPE_OPTIONS = [
 
 type ListingTypeChoice = (typeof LISTING_TYPE_OPTIONS)[number]["value"];
 
-export function ListingTypeControl({ size = "sm", className }: { size?: "sm" | "md"; className?: string }) {
+export function ListingTypeControl({
+  size = "sm",
+  tone = "paper",
+  className,
+}: {
+  size?: "sm" | "md";
+  tone?: "paper" | "night";
+  className?: string;
+}) {
   const { filters, update } = useListingFilters();
   return (
     <SegmentedControl<ListingTypeChoice>
       name="listingType"
       aria-label="Listing type"
       size={size}
+      tone={tone}
       options={LISTING_TYPE_OPTIONS}
       value={filters.listingType ?? "all"}
       onValueChange={(value) => update({ listingType: value === "all" ? undefined : (value satisfies ListingType) })}
@@ -139,7 +148,7 @@ export function KeywordSearch({ className, inputClassName }: { className?: strin
       <label htmlFor={id} className="sr-only">
         Search residences
       </label>
-      <MagnifyingGlass aria-hidden size={18} weight="regular" className="pointer-events-none absolute left-4 text-ink-muted" />
+      <MagnifyingGlass aria-hidden size={18} weight="bold" className="pointer-events-none absolute left-4 text-accent" />
       <input
         id={id}
         name="q"
@@ -148,12 +157,12 @@ export function KeywordSearch({ className, inputClassName }: { className?: strin
         onChange={(event) => setDraft(event.target.value)}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        placeholder="Place or residence"
+        placeholder="Search a place, street or home"
         autoComplete="off"
         enterKeyHint="search"
         className={cn(
-          "h-12 w-full rounded-full bg-transparent pl-11 pr-10 text-small text-ink placeholder:text-ink-muted [&::-webkit-search-cancel-button]:hidden",
-          "focus-visible:shadow-none focus-visible:outline-none",
+          "h-12 w-full rounded-md bg-white/[0.07] pl-11 pr-10 text-small text-on-night ring-1 ring-inset ring-white/10 placeholder:text-on-night-muted [&::-webkit-search-cancel-button]:hidden",
+          "transition-[box-shadow,background-color] duration-300 ease-settle hover:bg-white/10 focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-accent",
           inputClassName,
         )}
       />
@@ -165,7 +174,7 @@ export function KeywordSearch({ className, inputClassName }: { className?: strin
             setDraft("");
             update({ q: undefined });
           }}
-          className="absolute right-2 grid size-8 place-items-center rounded-full text-ink-muted transition-colors duration-300 ease-settle hover:bg-ink/5 hover:text-ink"
+          className="absolute right-2 grid size-8 place-items-center rounded-[0.25rem] text-on-night-muted transition-colors duration-300 ease-settle hover:bg-white/10 hover:text-on-night"
         >
           <X size={13} weight="regular" />
         </button>
@@ -174,19 +183,19 @@ export function KeywordSearch({ className, inputClassName }: { className?: strin
   );
 }
 
-/** A label-over-value select for the filter bar: the micro caption names it, the value reads at body size. */
+/** A label-over-value select for the dark filter bar: a mono caption names it, the value reads at body size. */
 export function QuietSelect({ spec, className }: { spec: SelectSpec; className?: string }) {
   const id = useId();
   return (
     <div
       className={cn(
-        "relative flex min-w-0 flex-col justify-center rounded-full px-5 py-1.5 transition-colors duration-300 ease-settle",
-        "has-[:focus-visible]:bg-ink/[0.04] has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent-ink",
-        spec.disabled ? "opacity-55" : "hover:bg-ink/[0.035]",
+        "relative flex h-12 min-w-0 flex-col justify-center rounded-md px-4 transition-colors duration-300 ease-settle",
+        "has-[:focus-visible]:bg-white/10 has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent",
+        spec.disabled ? "opacity-45" : "hover:bg-white/[0.07]",
         className,
       )}
     >
-      <label htmlFor={id} className="text-[0.625rem] font-medium uppercase leading-4 tracking-[0.22em] text-ink-muted">
+      <label htmlFor={id} className="font-mono text-[0.625rem] uppercase leading-4 tracking-[0.08em] text-on-night-muted">
         {spec.label}
       </label>
       <select
@@ -194,7 +203,7 @@ export function QuietSelect({ spec, className }: { spec: SelectSpec; className?:
         value={spec.value}
         disabled={spec.disabled}
         onChange={(event) => spec.onChange(event.target.value)}
-        className="w-full min-w-0 cursor-pointer appearance-none truncate bg-transparent pr-5 text-small text-ink focus-visible:shadow-none focus-visible:outline-none disabled:cursor-not-allowed"
+        className="w-full min-w-0 cursor-pointer appearance-none truncate bg-transparent pr-5 text-small font-semibold text-on-night focus-visible:shadow-none focus-visible:outline-none disabled:cursor-not-allowed [&_option]:bg-paper-raised [&_option]:text-ink"
       >
         {spec.options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -202,7 +211,7 @@ export function QuietSelect({ spec, className }: { spec: SelectSpec; className?:
           </option>
         ))}
       </select>
-      <CaretDown aria-hidden size={12} weight="regular" className="pointer-events-none absolute bottom-3 right-5 text-ink-muted" />
+      <CaretDown aria-hidden size={12} weight="bold" className="pointer-events-none absolute bottom-3 right-4 text-on-night-muted" />
     </div>
   );
 }
@@ -212,8 +221,8 @@ export function SortSelect({ className }: { className?: string }) {
   const id = useId();
   return (
     <div className={cn("relative flex items-center gap-3", className)}>
-      <label htmlFor={id} className="text-micro font-medium uppercase text-ink-muted">
-        Sort
+      <label htmlFor={id} className="text-micro uppercase text-ink-muted">
+        Sort by
       </label>
       <select
         id={id}
@@ -222,7 +231,7 @@ export function SortSelect({ className }: { className?: string }) {
           const sort = LISTING_SORTS.find((value) => value === event.target.value);
           if (sort) update({ sort });
         }}
-        className="h-10 cursor-pointer appearance-none rounded-full bg-transparent pl-4 pr-9 text-small text-ink ring-1 ring-inset ring-ink/12 transition-[box-shadow] duration-300 ease-settle hover:ring-ink/25"
+        className="h-10 cursor-pointer appearance-none rounded-md bg-paper-raised pl-3.5 pr-9 text-small font-semibold text-ink ring-1 ring-inset ring-ink/15 transition-[box-shadow] duration-300 ease-settle hover:ring-ink"
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
@@ -230,7 +239,7 @@ export function SortSelect({ className }: { className?: string }) {
           </option>
         ))}
       </select>
-      <CaretDown aria-hidden size={12} weight="regular" className="pointer-events-none absolute right-4 text-ink-muted" />
+      <CaretDown aria-hidden size={12} weight="bold" className="pointer-events-none absolute right-3.5 text-ink-muted" />
     </div>
   );
 }

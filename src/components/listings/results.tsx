@@ -14,15 +14,15 @@ export function ResultsGrid({ items, page }: { items: PropertySummary[]; page: n
   const grid = lead ? items.slice(1) : items;
 
   return (
-    <div className="flex flex-col gap-20 md:gap-28">
+    <div className="flex flex-col gap-6 md:gap-8">
       {lead && (
         <Reveal>
           <SaveableCard property={lead} variant="feature" priority />
         </Reveal>
       )}
-      <ul className="grid gap-x-8 gap-y-16 md:grid-cols-2 md:gap-x-10 md:gap-y-24 xl:grid-cols-3">
+      <ul className="grid gap-5 sm:grid-cols-2 md:gap-6 xl:grid-cols-3">
         {grid.map((property, i) => (
-          <Reveal as="li" key={property.id} index={i % 3} className={cn(i % 3 === 1 && "xl:mt-28")}>
+          <Reveal as="li" key={property.id} index={i % 3}>
             <SaveableCard property={property} priority={!lead && i < 3} />
           </Reveal>
         ))}
@@ -52,22 +52,24 @@ export function Pagination({ filters, total, pageSize }: { filters: ListingFilte
   if (count <= 1) return null;
   const current = Math.min(filters.page, count);
   const href = (page: number) => listingsHref(applyPatch(filters, { page }));
-  const step = "grid size-11 place-items-center rounded-full ring-1 ring-inset ring-ink/12 transition-[box-shadow,background-color] duration-300 ease-settle hover:ring-ink/30";
+  const step =
+    "grid size-11 place-items-center rounded-md bg-paper-raised text-ink ring-1 ring-inset ring-ink/15 transition-[box-shadow,background-color,color] duration-300 ease-settle hover:bg-ink hover:text-paper hover:ring-ink";
 
   return (
-    <nav aria-label="Pagination" className="flex items-center justify-between gap-6 border-t border-ink/10 pt-8">
-      <p className="text-small text-ink-muted">
-        Page <span className="tabular text-ink">{current}</span> of <span className="tabular">{count}</span>
+    <nav aria-label="Pagination" className="flex items-center justify-between gap-6 border-t border-dashed border-ink/20 pt-8">
+      <p className="font-mono text-[0.8125rem] text-ink-muted">
+        page <span className="tabular font-semibold text-ink">{String(current).padStart(2, "0")}</span> /{" "}
+        <span className="tabular">{String(count).padStart(2, "0")}</span>
       </p>
       <ol className="flex items-center gap-1.5">
         <li>
           {current > 1 ? (
             <Link href={href(current - 1)} aria-label="Previous page" className={step}>
-              <ArrowLeft aria-hidden size={15} weight="regular" />
+              <ArrowLeft aria-hidden size={15} weight="bold" />
             </Link>
           ) : (
-            <span aria-hidden className={cn(step, "opacity-35 hover:ring-ink/12")}>
-              <ArrowLeft size={15} weight="regular" />
+            <span aria-hidden className={cn(step, "pointer-events-none opacity-35")}>
+              <ArrowLeft size={15} weight="bold" />
             </span>
           )}
         </li>
@@ -79,8 +81,8 @@ export function Pagination({ filters, total, pageSize }: { filters: ListingFilte
                 aria-label={`Page ${slot}`}
                 aria-current={slot === current ? "page" : undefined}
                 className={cn(
-                  "grid size-11 place-items-center rounded-full text-small tabular transition-colors duration-300 ease-settle",
-                  slot === current ? "bg-ink text-paper" : "text-ink-soft hover:bg-ink/[0.05] hover:text-ink",
+                  "grid size-11 place-items-center rounded-md font-mono text-small tabular transition-colors duration-300 ease-settle",
+                  slot === current ? "bg-accent font-semibold text-ink" : "text-ink-soft hover:bg-ink/[0.06] hover:text-ink",
                 )}
               >
                 {slot}
@@ -95,11 +97,11 @@ export function Pagination({ filters, total, pageSize }: { filters: ListingFilte
         <li>
           {current < count ? (
             <Link href={href(current + 1)} aria-label="Next page" className={step}>
-              <ArrowRight aria-hidden size={15} weight="regular" />
+              <ArrowRight aria-hidden size={15} weight="bold" />
             </Link>
           ) : (
-            <span aria-hidden className={cn(step, "opacity-35 hover:ring-ink/12")}>
-              <ArrowRight size={15} weight="regular" />
+            <span aria-hidden className={cn(step, "pointer-events-none opacity-35")}>
+              <ArrowRight size={15} weight="bold" />
             </span>
           )}
         </li>
@@ -114,22 +116,22 @@ export function EmptyResults({ filters, cities }: { filters: ListingFilters; cit
   const link = "text-small text-accent-ink underline decoration-accent-ink/30 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-accent-ink";
 
   return (
-    <div className="flex flex-col items-center border-y border-ink/10 py-6">
+    <div className="flex flex-col items-center rounded-panel bg-paper-raised py-6 ring-1 ring-ink/10">
       <EmptyState
         icon="search"
-        title="Nothing in the collection matches, yet"
+        title="No homes match that, yet"
         action={
           <ButtonLink href={listingsHref(applyPatch(filters, CLEAR_ALL))} variant="secondary" icon="arrow-right">
             Clear all filters
           </ButtonLink>
         }
       >
-        New residences arrive quietly. Loosen one detail, or let us show you what is available today.
+        Agents add new places every week. Drop one filter, or start from a city that has homes today.
       </EmptyState>
       <div className="grid w-full max-w-2xl gap-10 pb-14 text-center sm:grid-cols-2 sm:text-left">
         {chips.length > 0 && (
           <div className="flex flex-col gap-3">
-            <p className="text-micro font-medium uppercase text-ink-muted">Try without</p>
+            <p className="text-micro uppercase text-ink-muted">Try without</p>
             <ul className="flex flex-col gap-2">
               {chips.map((chip) => (
                 <li key={chip.id}>
@@ -142,7 +144,7 @@ export function EmptyResults({ filters, cities }: { filters: ListingFilters; cit
           </div>
         )}
         <div className="flex flex-col gap-3">
-          <p className="text-micro font-medium uppercase text-ink-muted">Or begin with a place</p>
+          <p className="text-micro uppercase text-ink-muted">Or start with a place</p>
           <ul className="flex flex-col gap-2">
             {places.map((city) => (
               <li key={city.name}>

@@ -11,7 +11,7 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 import { StatusPill } from "@/components/ui/status-pill";
 import type { PropertySummary, PropertyType } from "@/lib/domain/types";
 import { cn } from "@/lib/cn";
-import { formatArea, formatLocation } from "@/lib/format";
+import { formatArea, formatLocation, formatPhp } from "@/lib/format";
 import { duration, ease, spring } from "@/lib/motion";
 import { Price, type PriceSize } from "./price";
 
@@ -67,6 +67,21 @@ function facts(p: PropertySummary): Fact[] {
     { icon: Bed, label: "Bedrooms", value: p.bedrooms === 0 ? "Studio" : `${p.bedrooms} bed` },
     { icon: Bathtub, label: "Bathrooms", value: `${p.bathrooms} bath` },
   ];
+}
+
+const LISTED = new Intl.DateTimeFormat("en-PH", { month: "short", year: "numeric", timeZone: "Asia/Manila" });
+
+function specSheet(p: PropertySummary): Array<[string, string]> {
+  const rows: Array<[string, string]> = [
+    ["Offer", p.listingType === "rent" ? "Lease, monthly" : "Sale, freehold"],
+    ["Province", p.province],
+  ];
+  if (p.lotAreaSqm && p.propertyType !== "lot") rows.push(["Lot", formatArea(p.lotAreaSqm)]);
+  if (p.floorAreaSqm > 0 && p.propertyType !== "lot") {
+    rows.push(["Per sqm", formatPhp(Math.round(p.pricePhp / p.floorAreaSqm), "compact")]);
+  }
+  if (p.publishedAt) rows.push(["Listed", LISTED.format(new Date(p.publishedAt))]);
+  return rows;
 }
 
 const card: Variants = {
@@ -192,6 +207,16 @@ export function PropertyCard({
                 </li>
               ))}
             </ul>
+            {variant === "feature" && (
+              <dl className="mb-6 hidden divide-y divide-dashed divide-ink/15 border-y border-dashed border-ink/15 font-mono text-[0.75rem] md:block">
+                {specSheet(property).map(([term, value]) => (
+                  <div key={term} className="flex items-baseline justify-between gap-4 py-2">
+                    <dt className="uppercase tracking-[0.06em] text-ink-muted">{term}</dt>
+                    <dd className="tabular text-ink">{value}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
             <div className="mt-auto flex items-end justify-between gap-4 border-t border-dashed border-ink/20 pt-4">
               <Price amount={property.pricePhp} listingType={property.listingType} size={spec.price} />
               <span
