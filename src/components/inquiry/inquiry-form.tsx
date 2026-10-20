@@ -148,12 +148,12 @@ function InquiryRound({
           <motion.span
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1, transition: { ...spring.ui, delay: 0.12 } }}
-            className="grid size-12 place-items-center rounded-full text-positive ring-1 ring-inset ring-positive/30"
+            className="grid size-12 place-items-center rounded-md bg-positive text-paper"
           >
-            <Check aria-hidden size={20} weight="regular" />
+            <Check aria-hidden size={20} weight="bold" />
           </motion.span>
           <div className="flex flex-col gap-2">
-            <h3 className="font-display text-heading">Your note is with {agent.firstName}</h3>
+            <h3 className="font-display text-heading font-semibold">Your note is with {agent.firstName}</h3>
             <p className="text-body text-ink-soft">
               Expect a reply within one business day{sentTo ? <> at <span className="text-ink">{sentTo}</span></> : null}. Nothing is shared
               beyond the agent who represents {propertyTitle}.

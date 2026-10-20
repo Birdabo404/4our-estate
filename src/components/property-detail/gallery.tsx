@@ -4,7 +4,6 @@ import { ArrowsOut } from "@phosphor-icons/react/ssr";
 import { motion, type Variants } from "framer-motion";
 import Image from "next/image";
 import { type CSSProperties, type ReactNode, useRef } from "react";
-import { ScrollImage } from "@/components/motion/scroll-image";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { gsap, MEDIA, useGSAP } from "@/lib/gsap";
@@ -12,17 +11,49 @@ import { duration, spring } from "@/lib/motion";
 import { isHiddenSource, useGallery } from "./gallery-state";
 import type { GalleryImage, GalleryRow } from "./photo-meta";
 
+const MOSAIC_LEAD = "(min-width: 1024px) 66vw, 100vw";
+const MOSAIC_SIDE = "(min-width: 1024px) 30vw, 50vw";
+
+/** Sky header with the title block and a three-photo mosaic. The mosaic owns photos 0–2; the column starts at 3. */
 export function GalleryHero({ children }: { children: ReactNode }) {
   const { images } = useGallery();
-  const cover = images[0];
+  const [cover, ...rest] = images;
+  const side = rest.slice(0, 2);
   return (
-    <section data-nav-surface="image" className="relative isolate flex min-h-[92dvh] flex-col justify-end overflow-hidden bg-night text-white">
-      {cover && (
-        <ScrollImage src={cover.url} alt={cover.alt} sizes="100vw" preload intensity="hero" className="absolute inset-0 -z-10" />
-      )}
-      <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_18_15/0.5)_0%,rgb(20_18_15/0)_24%,rgb(20_18_15/0.06)_52%,rgb(20_18_15/0.78)_100%)]" />
-      <div aria-hidden className="absolute inset-0 -z-10 bg-[radial-gradient(60%_55%_at_0%_100%,rgb(20_18_15/0.55),rgb(20_18_15/0))]" />
+    <section className="relative isolate overflow-hidden bg-sky pb-8 pt-[calc(var(--nav-height)+2rem)] md:pb-12 md:pt-[calc(var(--nav-height)+3rem)]">
+      <div aria-hidden className="bg-grid absolute inset-0 -z-10 [mask-image:linear-gradient(180deg,#000_10%,transparent_70%)]" />
       {children}
+      {cover && (
+        <div className="mx-auto mt-8 w-full max-w-[96rem] px-5 sm:px-8 md:mt-10 lg:px-12">
+          <div className="relative grid h-[min(68vw,22rem)] gap-2 sm:h-[26rem] md:gap-3 lg:h-[34rem] lg:grid-cols-3 lg:grid-rows-2">
+            <Frame
+              image={cover}
+              index={0}
+              layoutId="frame-0"
+              sizes={MOSAIC_LEAD}
+              preload
+              className={cn("h-full w-full", side.length > 0 ? "lg:col-span-2 lg:row-span-2" : "lg:col-span-3 lg:row-span-2")}
+              style={{ aspectRatio: "auto" }}
+            />
+            {side.map((image, i) => (
+              <Frame
+                key={image.id}
+                image={image}
+                index={i + 1}
+                layoutId={`frame-${i + 1}`}
+                sizes={MOSAIC_SIDE}
+                className={cn("hidden h-full w-full lg:block", side.length === 1 && "lg:row-span-2")}
+                style={{ aspectRatio: "auto" }}
+              />
+            ))}
+            <div className="pointer-events-none absolute bottom-3 left-3 md:bottom-4 md:left-4">
+              <div className="pointer-events-auto">
+                <OpenGalleryButton />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }
@@ -31,7 +62,7 @@ export function OpenGalleryButton() {
   const { images, open } = useGallery();
   if (images.length === 0) return null;
   return (
-    <Button variant="on-image" icon="arrow-up-right" onClick={() => open(0, null)}>
+    <Button variant="on-image" size="sm" icon="arrow-up-right" onClick={() => open(0, null)}>
       View {images.length} photographs
     </Button>
   );
@@ -47,6 +78,7 @@ function Frame({
   index,
   layoutId,
   sizes,
+  preload = false,
   className,
   style,
 }: {
@@ -54,6 +86,7 @@ function Frame({
   index: number;
   layoutId: string | null;
   sizes: string;
+  preload?: boolean;
   className?: string;
   style?: CSSProperties;
 }) {
@@ -75,7 +108,7 @@ function Frame({
         <motion.div layoutId={layoutId ?? undefined} transition={spring.panel} className="absolute inset-0 overflow-hidden rounded-photo">
           <div data-reveal className="absolute inset-0 overflow-hidden">
             <div data-zoom className="absolute inset-0 will-change-transform">
-              <Image src={image.url} alt="" fill sizes={sizes} className="object-cover" />
+              <Image src={image.url} alt="" fill sizes={sizes} preload={preload} className="object-cover" />
             </div>
           </div>
         </motion.div>
@@ -83,9 +116,9 @@ function Frame({
       <motion.span
         aria-hidden
         variants={hint}
-        className="absolute bottom-4 right-4 grid size-10 place-items-center rounded-full bg-paper text-ink shadow-float"
+        className="absolute bottom-3 right-3 grid size-9 place-items-center rounded-md bg-paper-raised text-ink shadow-float"
       >
-        <ArrowsOut size={15} weight="regular" />
+        <ArrowsOut size={15} weight="bold" />
       </motion.span>
     </motion.button>
   );

@@ -44,7 +44,7 @@ function Bar({ children }: { children: ReactNode }) {
           exit={{ y: "110%", transition: tween.exit }}
           className="fixed inset-x-0 bottom-0 z-(--z-nav) px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] lg:hidden"
         >
-          <div className="flex items-center justify-between gap-4 rounded-full bg-paper-raised/95 py-2 pl-6 pr-2 shadow-float ring-1 ring-ink/[0.08] backdrop-blur-md">
+          <div className="flex items-center justify-between gap-4 rounded-panel bg-paper-raised/95 py-2 pl-4 pr-2 shadow-float ring-1 ring-ink/15 backdrop-blur-md">
             {children}
           </div>
         </motion.div>
@@ -64,7 +64,7 @@ export function MobileEnquireBar(props: EnquireProps) {
         </div>
         <div className="flex items-center gap-2">
           <FavoriteButton propertyId={props.propertyId} title={props.title} tone="image" className="shadow-none ring-ink/15" />
-          <Button size="md" onClick={() => setOpen(true)} aria-haspopup="dialog">
+          <Button size="md" variant="accent" onClick={() => setOpen(true)} aria-haspopup="dialog">
             Enquire
           </Button>
         </div>
@@ -91,7 +91,7 @@ export function MobileEnquireBar(props: EnquireProps) {
 export function MobileSoldBar({ href }: { href: string }) {
   return (
     <Bar>
-      <span className="font-display text-title italic">Sold</span>
+      <span className="condensed font-display text-heading font-bold uppercase">Sold</span>
       <ButtonLink href={href} size="md" icon={href.startsWith("#") ? "arrow-down" : "arrow-right"}>
         Similar homes
       </ButtonLink>
