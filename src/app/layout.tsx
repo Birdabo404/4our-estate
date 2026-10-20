@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Bodoni_Moda, Jost } from "next/font/google";
 import { MotionProvider } from "@/components/motion/motion-provider";
+import { StoreProvider } from "@/lib/store/provider";
 import "./globals.css";
 
 const bodoni = Bodoni_Moda({
@@ -55,7 +56,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         >
           Skip to content
         </a>
-        <MotionProvider>{children}</MotionProvider>
+        <StoreProvider>
+          <MotionProvider>{children}</MotionProvider>
+        </StoreProvider>
         <div aria-hidden className="grain" />
       </body>
     </html>
