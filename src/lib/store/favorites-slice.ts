@@ -6,6 +6,7 @@ import type { RootState } from "./store";
 export type FavoritesState = {
   confirmed: string[];
   pending: Record<string, boolean>;
+  latestRequest: Record<string, string>;
   signedIn: boolean;
   guestPrompt: string | null;
 };
@@ -13,6 +14,7 @@ export type FavoritesState = {
 const initialState: FavoritesState = {
   confirmed: [],
   pending: {},
+  latestRequest: {},
   signedIn: false,
   guestPrompt: null,
 };
@@ -59,6 +61,13 @@ function commit(confirmed: string[], propertyId: string, favorited: boolean): st
   return confirmed;
 }
 
+/** An older request settling must not erase the intent of a newer tap on the same property. */
+function settle(state: FavoritesState, propertyId: string, requestId: string): void {
+  if (state.latestRequest[propertyId] !== requestId) return;
+  delete state.pending[propertyId];
+  delete state.latestRequest[propertyId];
+}
+
 const favoritesSlice = createSlice({
   name: "favorites",
   initialState,
@@ -79,14 +88,15 @@ const favoritesSlice = createSlice({
       .addCase(toggleFavorite.pending, (state, action) => {
         const propertyId = action.meta.arg;
         state.pending[propertyId] = !isFavorite(state, propertyId);
+        state.latestRequest[propertyId] = action.meta.requestId;
       })
       .addCase(toggleFavorite.fulfilled, (state, action) => {
         const { propertyId, favorited } = action.payload;
         state.confirmed = commit(state.confirmed, propertyId, favorited);
-        delete state.pending[propertyId];
+        settle(state, propertyId, action.meta.requestId);
       })
       .addCase(toggleFavorite.rejected, (state, action) => {
-        delete state.pending[action.meta.arg];
+        settle(state, action.meta.arg, action.meta.requestId);
       });
   },
 });

@@ -45,7 +45,7 @@ async function main() {
   } = await import("../../src/lib/store/favorites-slice");
 
   let state = favoritesReducer(undefined, { type: "@@init" });
-  assert.deepEqual(state, { confirmed: [], pending: {}, signedIn: false, guestPrompt: null });
+  assert.deepEqual(state, { confirmed: [], pending: {}, latestRequest: {}, signedIn: false, guestPrompt: null });
 
   state = favoritesReducer(state, hydrated({ ids: ["house-a", "house-b"], signedIn: true }));
   assert.deepEqual(state.confirmed, ["house-a", "house-b"], "hydrate keeps server order");
@@ -55,7 +55,7 @@ async function main() {
   assert.equal(selectIsFavorite("house-c")(root(state)), false);
   assert.equal(selectFavoriteCount(root(state)), 2);
 
-  state = favoritesReducer(state, toggleFavorite.pending("req-pending", "house-a"));
+  state = favoritesReducer(state, toggleFavorite.pending("req-a", "house-a"));
   assert.equal(state.pending["house-a"], false, "pending stores the optimistic intent");
   assert.equal(selectIsFavorite("house-a")(root(state)), false);
   assert.equal(selectIsFavorite("house-b")(root(state)), true);
@@ -66,7 +66,7 @@ async function main() {
 
   state = favoritesReducer(
     state,
-    toggleFavorite.fulfilled({ propertyId: "house-a", favorited: true }, "req-fulfill", "house-a"),
+    toggleFavorite.fulfilled({ propertyId: "house-a", favorited: true }, "req-a", "house-a"),
   );
   assert.deepEqual(state.confirmed, ["house-a", "house-b"], "fulfilled commits the server boolean");
   assert.equal(Object.hasOwn(state.pending, "house-a"), false);
@@ -89,6 +89,22 @@ async function main() {
   assert.equal(selectIsFavorite("house-c")(root(state)), false);
   assert.deepEqual(state.confirmed, ["house-a", "house-b"]);
   assert.equal(selectFavoriteCount(root(state)), 2);
+
+  state = favoritesReducer(state, toggleFavorite.pending("req-b1", "house-b"));
+  state = favoritesReducer(state, toggleFavorite.pending("req-b2", "house-b"));
+  assert.equal(selectIsFavorite("house-b")(root(state)), true, "a second tap flips the intent back");
+  state = favoritesReducer(
+    state,
+    toggleFavorite.fulfilled({ propertyId: "house-b", favorited: false }, "req-b1", "house-b"),
+  );
+  assert.equal(state.pending["house-b"], true, "an older request settling keeps the newer intent");
+  assert.equal(selectIsFavorite("house-b")(root(state)), true);
+  state = favoritesReducer(
+    state,
+    toggleFavorite.fulfilled({ propertyId: "house-b", favorited: true }, "req-b2", "house-b"),
+  );
+  assert.equal(Object.hasOwn(state.pending, "house-b"), false, "the newest request clears the intent");
+  assert.deepEqual(state.confirmed, ["house-a", "house-b"]);
 
   state = favoritesReducer(state, guestPromptShown("/properties?q=Makati"));
   assert.equal(state.guestPrompt, "/properties?q=Makati");
