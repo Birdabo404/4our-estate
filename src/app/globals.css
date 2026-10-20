@@ -156,10 +156,27 @@
   /*
    * Bodoni Moda's optical-size axis thins hairlines as size grows. Pinning
    * opsz keeps strokes alive at display sizes instead of letting `auto`
-   * push them to 96 where commas and crossbars vanish.
+   * push them to 96 where commas and crossbars vanish. Smaller tokens drop
+   * the axis further so card titles keep a readable stroke.
    */
-  .font-display {
+  .font-display,
+  h1,
+  h2,
+  h3,
+  h4 {
     font-variation-settings: "opsz" var(--opsz, 30);
+  }
+
+  .text-display-3 {
+    --opsz: 22;
+  }
+
+  .text-heading {
+    --opsz: 16;
+  }
+
+  .text-title {
+    --opsz: 11;
   }
 
   .tabular {

@@ -51,7 +51,7 @@ const VARIANT: Record<
     root: "grid grid-cols-[6.5rem_1fr] items-center gap-5",
     media: "aspect-square",
     body: "flex min-w-0 flex-col gap-1.5",
-    title: "text-[1.0625rem] leading-snug [--opsz:18]",
+    title: "text-[1.0625rem] leading-snug [--opsz:11]",
     sizes: "104px",
     price: "sm",
     detail: false,
@@ -124,7 +124,11 @@ export function PropertyCard({
         {variant !== "compact" && (
           <div className="absolute inset-x-4 top-4 flex items-start justify-between gap-3">
             <div className="flex flex-wrap gap-2">
-              {property.status !== "published" && <StatusPill kind="listing" status={property.status} className="bg-paper-raised" />}
+              {property.status !== "published" && (
+                <span className="inline-flex rounded-full bg-paper-raised">
+                  <StatusPill kind="listing" status={property.status} />
+                </span>
+              )}
               {property.featured && property.status === "published" && <Eyebrow tone="image">Featured</Eyebrow>}
             </div>
             {action && <div className="relative z-10">{action}</div>}
