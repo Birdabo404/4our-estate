@@ -1,5 +1,24 @@
 import { plainToInstance, Type } from 'class-transformer';
-import { IsInt, IsString, Max, Min, MinLength, validateSync } from 'class-validator';
+import {
+  IsBoolean,
+  IsInt,
+  IsString,
+  Max,
+  Min,
+  MinLength,
+  validateSync,
+} from 'class-validator';
+
+function swaggerEnabled(value: unknown): unknown {
+  if (value === undefined || value === null || value === '') return true;
+  if (value === true || value === false) return value;
+  if (typeof value === 'string') {
+    const normalized = value.trim().toLowerCase();
+    if (normalized === 'true' || normalized === '1') return true;
+    if (normalized === 'false' || normalized === '0') return false;
+  }
+  return value;
+}
 
 class EnvironmentVariables {
   @IsString()
@@ -24,6 +43,9 @@ class EnvironmentVariables {
 
   @IsString()
   PUBLIC_API_ORIGIN = 'http://localhost:4000';
+
+  @IsBoolean()
+  SWAGGER_ENABLED = true;
 }
 
 export type AppEnv = {
@@ -33,6 +55,7 @@ export type AppEnv = {
   PORT: number;
   CORS_ORIGIN: string;
   PUBLIC_API_ORIGIN: string;
+  SWAGGER_ENABLED: boolean;
 };
 
 export function validateEnv(config: Record<string, unknown>): AppEnv {
@@ -42,6 +65,7 @@ export function validateEnv(config: Record<string, unknown>): AppEnv {
     PORT: config.PORT || 4000,
     CORS_ORIGIN: config.CORS_ORIGIN || 'http://localhost:3000',
     PUBLIC_API_ORIGIN: config.PUBLIC_API_ORIGIN || 'http://localhost:4000',
+    SWAGGER_ENABLED: swaggerEnabled(config.SWAGGER_ENABLED),
   };
   const validated = plainToInstance(EnvironmentVariables, candidate, {
     enableImplicitConversion: true,
@@ -49,7 +73,10 @@ export function validateEnv(config: Record<string, unknown>): AppEnv {
   const errors = validateSync(validated, { skipMissingProperties: false });
   if (errors.length > 0) {
     const details = errors
-      .map((error) => `${error.property}: ${Object.values(error.constraints ?? {}).join(', ')}`)
+      .map(
+        (error) =>
+          `${error.property}: ${Object.values(error.constraints ?? {}).join(', ')}`,
+      )
       .join('; ');
     throw new Error(`Invalid environment. ${details}`);
   }
@@ -60,5 +87,6 @@ export function validateEnv(config: Record<string, unknown>): AppEnv {
     PORT: validated.PORT,
     CORS_ORIGIN: validated.CORS_ORIGIN.replace(/\/$/, ''),
     PUBLIC_API_ORIGIN: validated.PUBLIC_API_ORIGIN.replace(/\/$/, ''),
+    SWAGGER_ENABLED: validated.SWAGGER_ENABLED,
   };
 }
