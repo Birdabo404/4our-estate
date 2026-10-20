@@ -348,4 +348,6 @@ Free-plan limits:
 
 When the Render service is asleep, the first page load waits for it to wake. Mock mode has no such delay.
 
+**Live demo:** https://4our-estate.vercel.app runs in mock mode. Browsing, search, detail pages, login with the demo accounts, signup and dashboards all work. Vercel runs several server instances with separate memory, so in mock mode a change made on one instance may be missing on another. That covers a saved favorite, a new listing, an inquiry, or a status change. Accounts survive because the session token carries the member's profile. For changes that persist and are shared, point `API_URL` at the Render API instead of using `DATA_MODE=mock`.
+
 The mock deploy path was checked locally. The committed files minus the `.vercelignore` exclusions installed and built cleanly with `DATA_MODE=mock`. Started with `next start` and the API address pointed at a closed port, the build passed the public browser suite (30/30) and the agent-to-admin publish flow.
