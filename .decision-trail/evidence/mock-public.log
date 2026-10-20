@@ -1,0 +1,34 @@
+Public screens against http://127.0.0.1:3301
+  pass  desktop: home renders
+  pass  desktop: listings renders
+  pass  desktop: listings-rent renders
+  pass  desktop: listings-empty renders
+  pass  desktop: detail-sale renders
+  pass  desktop: detail-rent renders
+  pass  desktop: detail-sold renders
+  pass  desktop: lightbox opens from the hero and closes with Escape
+  pass  mobile: home renders
+  pass  mobile: listings renders
+  pass  mobile: listings-rent renders
+  pass  mobile: listings-empty renders
+  pass  mobile: detail-sale renders
+  pass  mobile: detail-rent renders
+  pass  mobile: detail-sold renders
+  pass  mobile: lightbox opens from the hero and closes with Escape
+  pass  detail: a missing residence answers 404 with the editorial not-found
+  pass  home and listings show a seeded residence
+  pass  filters: listing type updates the URL and the results
+  pass  filters: keyword search is debounced into the URL
+  pass  filters: clear all returns the full collection
+  pass  filters: an impossible search shows the editorial empty state
+  pass  inquiry: an empty submit shows inline errors and focuses the first
+  pass  inquiry: a past viewing date is refused
+  pass  inquiry: a valid note is sent and confirmed
+  pass  favorites: a guest is invited to sign in and come back
+  pass  buyer login lands on the buyer dashboard
+  pass  favorites: a buyer's toggle persists across a reload
+  pass  inquiry: a signed-in buyer sees their name and email prefilled
+  pass  no console errors on any page
+left 1 inquiries in the mock process
+
+30/30 checks passed. Screenshots in /tmp/shots/mock-public.

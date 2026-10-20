@@ -6,9 +6,10 @@ Built for the ITE 18 midterm (frontend and backend tracks).
 
 | Layer | Stack |
 | --- | --- |
-| Web | Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Framer Motion, GSAP + ScrollTrigger, Anime.js v4 |
-| API | NestJS 12, TypeScript, Prisma 7, PostgreSQL 16, JWT (passport-jwt), bcrypt, class-validator |
+| Web | Next.js 16 (App Router), TypeScript, Tailwind CSS v4, Redux Toolkit, Framer Motion, GSAP + ScrollTrigger, Anime.js v4 |
+| API | NestJS 12, TypeScript, Prisma 7, PostgreSQL 16, JWT (passport-jwt), bcrypt, class-validator, Swagger (OpenAPI 3) |
 | Tooling | Docker Compose for Postgres, Vitest + supertest for API e2e, Playwright for browser e2e |
+| Hosting | Vercel (web), Render (API + Postgres) |
 
 ## Run it locally
 
@@ -33,13 +34,25 @@ npm run api:dev     # terminal 1
 npm run dev         # terminal 2
 ```
 
+Interactive API docs (Swagger UI) are at http://localhost:4000/api/docs, and the raw OpenAPI spec is at `/api/docs-json`. Log in with `POST /auth/login`, then paste the `accessToken` into **Authorize** to call protected routes.
+
+### Mock-data mode (no API, no database)
+
+```bash
+npm install
+DATA_MODE=mock npm run dev
+```
+
+The web app answers every request from an in-memory copy of the seed data instead of calling the API. All screens, logins, favorites, inquiries, listing edits and moderation work. Two limits apply. Changes last only until the server restarts, and photo uploads need the live API. The mock is built from the API's own seed files with the same ids. `npx tsx scripts/mock/parity.ts` compares its responses with a running API and fails on any difference.
+
 ### Environment variables
 
 Web (`.env.local`):
 
 | Variable | Example | Purpose |
 | --- | --- | --- |
-| `API_URL` | `http://localhost:4000/api/v1` | Base URL the Next server uses to call the API. Never sent to the browser. |
+| `API_URL` | `http://localhost:4000/api/v1` | Base URL the Next server uses to call the API. Never sent to the browser. A non-localhost host is also allowed as an image source for uploaded photos. |
+| `DATA_MODE` | unset or `mock` | `mock` serves the seed data from memory and never calls the API. |
 
 API (`api/.env`):
 
@@ -51,6 +64,7 @@ API (`api/.env`):
 | `PORT` | `4000` | API port. |
 | `CORS_ORIGIN` | `http://localhost:3000` | The only browser origin the API accepts. |
 | `PUBLIC_API_ORIGIN` | `http://localhost:4000` | Origin written into uploaded image URLs. |
+| `SWAGGER_ENABLED` | `true` | Set to `false` to stop serving `/api/docs`. |
 
 The API validates its environment at boot and exits with a clear message when a value is missing.
 
@@ -73,6 +87,8 @@ npx tsc --noEmit && npm run lint && npm run build   # web
 npm run api:test                                    # API e2e against a separate estate_test database
 npm run e2e:public                                  # browser: home, listings, detail, inquiry, favorites
 npm run e2e:app                                     # browser: signup, every role's dashboard, list, moderate, publish
+npx tsx scripts/store/favorites.check.ts            # Redux favorites slice
+npx tsx scripts/mock/parity.ts                      # mock responses equal the live API's
 ```
 
 The browser scripts need both servers running.
@@ -260,7 +276,7 @@ Every endpoint is listed in [docs/api.md](docs/api.md) with method, role, body a
 | `/styleguide` | The living design system |
 
 **State management.**
-- Favorites are a context provider holding a confirmed set in a reducer, with a `useOptimistic` layer on top. A toggle updates instantly and rolls back with a toast if the save fails.
+- Favorites live in a Redux Toolkit store (`src/lib/store/`), with one store per request, created in a client `StoreProvider` mounted in the root layout. The `favorites` slice keeps the server-confirmed ids plus a map of pending intents. A `createAsyncThunk` calls the server action, so a toggle shows instantly, commits on success, and rolls back with a toast on failure. A newer tap is never overwritten by an older request that settles late. Components still use `useFavorites()` and `<FavoriteButton>`.
 - Listing filters live in the URL, so back, share and refresh all work.
 - The mortgage estimator and the lightbox are local state machines.
 
@@ -281,7 +297,8 @@ Every endpoint is listed in [docs/api.md](docs/api.md) with method, role, body a
 │   ├── components/         ui, motion, site, property, home, listings, property-detail, auth, dashboard
 │   └── lib/
 │       ├── domain/         shared types and the listing transition table
-│       ├── api/            server-only API client
+│       ├── api/            server-only API client, and mock/ for DATA_MODE=mock
+│       ├── store/          Redux Toolkit store and the favorites slice
 │       ├── data/           typed reads used by pages
 │       ├── actions/        server actions used by forms
 │       ├── validation/     zod schemas shared by forms and actions
@@ -294,4 +311,41 @@ Every endpoint is listed in [docs/api.md](docs/api.md) with method, role, body a
 
 ## Photography
 
-Photos come from Unsplash under the Unsplash License, curated by hand into `src/lib/photography/catalog.ts`. Each one carries its photographer's name, and `scripts/photos/verify.ts` checks every URL still resolves.
+Photos come from Unsplash under the Unsplash License, curated by hand into `src/lib/photography/catalog.ts`. Each one carries its photographer's name, and `scripts/photos/verify.ts` checks every URL still resolves. The footer credits the contributors and links to `/credits`, which lists every photographer with their photos.
+
+## Deploy
+
+The web app goes to Vercel and the API plus Postgres to Render. For a demo with no backend, deploy only the web app with `DATA_MODE=mock`.
+
+### API and database on Render
+
+`render.yaml` is a Render Blueprint for the web service `4our-estate-api` (root `api/`) and the Postgres database `4our-estate-db`, both on the free plan.
+
+1. In Render, choose **New > Blueprint** and pick this repository.
+2. When asked, set `CORS_ORIGIN` to your Vercel URL (for example `https://4our-estate.vercel.app`) and `PUBLIC_API_ORIGIN` to the Render service URL (for example `https://4our-estate-api.onrender.com`).
+3. Apply. Render generates `JWT_SECRET` and wires `DATABASE_URL`. Every start runs `prisma migrate deploy` before the server boots. Render health-checks `/api/v1/health`.
+4. Seed once from your machine with the database's **external** URL:
+
+```bash
+cd api
+DATABASE_URL="<external database URL from Render>" npm run db:seed
+```
+
+Free-plan limits:
+- Uploaded photos live on an ephemeral disk and disappear on redeploy, restart or spin-down.
+- The service sleeps after 15 idle minutes, and the first request after that takes about a minute.
+- Free Postgres expires after 30 days.
+
+[docs/api.md](docs/api.md#deploy-to-render) has the details.
+
+### Web app on Vercel
+
+1. In Vercel, import this repository. The framework preset is Next.js and the root directory is the repo root. `.vercelignore` keeps the API package out of the upload, except the seed data the mock mode reads.
+2. Set the environment variables:
+   - **Against the Render API:** `API_URL=https://<your-render-service>.onrender.com/api/v1`.
+   - **Without a backend:** `DATA_MODE=mock`.
+3. Deploy, then put the Vercel URL into Render's `CORS_ORIGIN` if you didn't already.
+
+When the Render service is asleep, the first page load waits for it to wake. Mock mode has no such delay.
+
+The mock deploy path was checked locally. The committed files minus the `.vercelignore` exclusions installed and built cleanly with `DATA_MODE=mock`. Started with `next start` and the API address pointed at a closed port, the build passed the public browser suite (30/30) and the agent-to-admin publish flow.
