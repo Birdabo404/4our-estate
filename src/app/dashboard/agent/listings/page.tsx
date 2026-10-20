@@ -82,21 +82,23 @@ export default async function AgentListingsPage() {
         </EmptyState>
       ) : (
         <>
-          <ul aria-label="Listings by status" className="mb-3 flex flex-wrap gap-2">
+          <dl aria-label="Listings by status" className="mb-3 flex flex-wrap gap-2">
             {LISTING_STATUSES.map((status) => {
               const count = listings.filter((l) => l.status === status).length;
               return (
-                <li key={status} className="inline-flex items-center gap-2 rounded-md bg-paper-raised py-1 pl-1 pr-3 ring-1 ring-ink/10">
-                  <StatusPill kind="listing" status={status} />
-                  <span className="tabular font-mono text-[0.75rem] font-semibold text-ink">{count}</span>
-                </li>
+                <div key={status} className="inline-flex items-center gap-2 rounded-md bg-paper-raised py-1 pl-1 pr-3 ring-1 ring-ink/10">
+                  <dt>
+                    <StatusPill kind="listing" status={status} />
+                  </dt>
+                  <dd className="tabular font-mono text-[0.75rem] font-semibold text-ink">{count}</dd>
+                </div>
               );
             })}
-          </ul>
+          </dl>
           <ul aria-label="Your listings" className="divide-y divide-dashed divide-ink/10 rounded-panel bg-paper-raised ring-1 ring-ink/10">
-          {listings.map((property) => (
-            <ListingRow key={property.id} property={property} />
-          ))}
+            {listings.map((property) => (
+              <ListingRow key={property.id} property={property} />
+            ))}
           </ul>
         </>
       )}
