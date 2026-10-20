@@ -7,7 +7,7 @@ import { Container } from "@/components/ui/container";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { Section } from "@/components/ui/section";
 
-const HERO = "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=2400&q=80&auto=format&fit=crop";
+const HERO = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=2400&q=80&auto=format&fit=crop";
 const INTERIOR = "https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80&auto=format&fit=crop";
 
 export default function HomePage() {
@@ -16,13 +16,13 @@ export default function HomePage() {
       <section data-nav-surface="image" className="relative isolate flex min-h-[100dvh] flex-col justify-end overflow-hidden bg-night text-white">
         <ScrollImage
           src={HERO}
-          alt="A white modernist house with a lap pool at dusk"
+          alt="A dark timber house glowing at dusk beneath an old acacia tree"
           sizes="100vw"
           preload
           intensity="hero"
           className="absolute inset-0 -z-10"
         />
-        <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_18_15/0.42)_0%,rgb(20_18_15/0)_28%,rgb(20_18_15/0.05)_55%,rgb(20_18_15/0.62)_100%)]" />
+        <div aria-hidden className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgb(20_18_15/0.45)_0%,rgb(20_18_15/0)_26%,rgb(20_18_15/0.1)_50%,rgb(20_18_15/0.72)_100%)]" />
 
         <Container width="wide" className="pb-12 md:pb-16">
           <div className="grid items-end gap-12 md:grid-cols-12">
@@ -39,7 +39,7 @@ export default function HomePage() {
               />
             </div>
             <Reveal delay={0.9} className="flex flex-col items-start gap-8 md:col-span-3 md:items-end md:text-right">
-              <p className="max-w-[30ch] text-small text-white/80">
+              <p className="max-w-[30ch] text-small text-white/90">
                 Homes in Forbes Park, Rockwell, Alabang, Tagaytay, and Cebu, represented by people who know them by name.
               </p>
               <ButtonLink href="/properties" variant="on-image" size="lg" magnetic>

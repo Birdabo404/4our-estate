@@ -5,19 +5,24 @@ import { Fragment, useEffect, useRef } from "react";
 import { cn } from "@/lib/cn";
 import { duration, ease, ms, prefersReducedMotion, stagger } from "@/lib/motion";
 
-type Word = { text: string; em: boolean };
+type Segment = { text: string; em: boolean };
 
-/** `Residences of *quiet* consequence` marks "quiet" for the italic accent. */
-function parse(text: string): Word[] {
+/**
+ * `Residences of *quiet* consequence` marks "quiet" for the italic accent.
+ * Emphasis can open and close inside a word, so `*care*.` keeps its period.
+ */
+function parse(text: string): Segment[][] {
+  let em = false;
   return text
-    .split(/(\*[^*]+\*)/)
-    .filter(Boolean)
-    .flatMap((chunk) => {
-      const em = chunk.startsWith("*") && chunk.endsWith("*");
-      return (em ? chunk.slice(1, -1) : chunk)
-        .split(/\s+/)
-        .filter(Boolean)
-        .map((word) => ({ text: word, em }));
+    .trim()
+    .split(/\s+/)
+    .map((token) => {
+      const segments: Segment[] = [];
+      for (const part of token.split(/(\*)/)) {
+        if (part === "*") em = !em;
+        else if (part) segments.push({ text: part, em });
+      }
+      return segments;
     });
 }
 
@@ -86,12 +91,16 @@ export function SplitHeading({
   }, [trigger, delay]);
 
   return (
-    <Tag ref={ref} aria-label={words.map((w) => w.text).join(" ")} data-split="pending" className={cn("font-display", className)}>
+    <Tag ref={ref} aria-label={text.replace(/\*/g, "")} data-split="pending" className={cn("font-display", className)}>
       {words.map((word, i) => (
         <Fragment key={i}>
           <span aria-hidden className="inline-block overflow-hidden pb-[0.12em] -mb-[0.12em] pr-[0.08em] -mr-[0.08em] align-top">
-            <span data-split-word className={cn("inline-block", word.em && emClassName)}>
-              {word.text}
+            <span data-split-word className="inline-block">
+              {word.map((segment, j) => (
+                <span key={j} className={segment.em ? emClassName : undefined}>
+                  {segment.text}
+                </span>
+              ))}
             </span>
           </span>
           {i < words.length - 1 && " "}

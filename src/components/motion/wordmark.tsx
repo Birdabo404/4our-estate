@@ -85,7 +85,7 @@ export function Wordmark({
             <path d={HORIZON} data-horizon {...stroke} strokeWidth={1} />
           </svg>
           {label && (
-            <span data-tag className="pb-[0.04em] font-sans text-[0.28em] font-medium uppercase tracking-[0.42em]">
+            <span data-tag className="pb-[0.04em] font-sans text-[max(0.36em,0.625rem)] font-medium uppercase tracking-[0.42em]">
               Estate
             </span>
           )}

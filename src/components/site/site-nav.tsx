@@ -298,13 +298,17 @@ function MenuOverlay({
       <motion.div
         variants={{ closed: { opacity: 0, y: 16 }, open: { opacity: 1, y: 0 } }}
         transition={{ ...tween.reveal, delay: 0.12 + items.length * stagger.items }}
-        className="mt-auto grid grid-cols-3 gap-4 border-t border-ink/10 pt-6"
+        className="mt-auto flex flex-col border-t border-ink/10 pt-2"
       >
         {OFFICES.map((office) => (
-          <div key={office.city} className="flex flex-col gap-1">
-            <span className="text-micro uppercase text-ink-muted">{office.city}</span>
-            <span className="text-small text-ink-soft">{office.phone}</span>
-          </div>
+          <a
+            key={office.city}
+            href={`tel:${office.phone.replace(/\s/g, "")}`}
+            className="flex items-baseline justify-between border-b border-ink/[0.07] py-3.5"
+          >
+            <span className="text-micro font-medium uppercase text-ink-muted">{office.city}</span>
+            <span className="tabular text-small text-ink-soft">{office.phone}</span>
+          </a>
         ))}
       </motion.div>
     </motion.div>
