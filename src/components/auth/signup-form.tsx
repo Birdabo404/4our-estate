@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 
 import { signUp } from "@/lib/actions/auth";
@@ -13,7 +13,6 @@ import { Panel } from "@/components/ui/panel";
 
 import { DemoAccounts } from "./demo-accounts";
 import { PasswordMeter } from "./password-meter";
-import { PENDING_LICENSE_KEY } from "./pending-license";
 import { FormAlert } from "@/components/dashboard/form-alert";
 import { useZodForm } from "@/components/dashboard/use-zod-form";
 import { fieldErrors } from "@/components/dashboard/zod-form";
@@ -22,35 +21,13 @@ const ORDER = ["fullName", "email", "password", "phone", "agency", "licenseNo"] 
 
 function parseSignup(formData: FormData): Record<string, string> {
   const parsed = signupSchema.safeParse(readSignup(formData));
-  const errors = parsed.success ? {} : fieldErrors(parsed.error);
-  if (formData.get("role") === "agent") {
-    const agency = String(formData.get("agency") ?? "").trim();
-    const license = String(formData.get("licenseNo") ?? "").trim();
-    if (agency.length < 2) errors.agency = "Enter your agency.";
-    if (license.length < 4 || license.length > 40) errors.licenseNo = "Enter your PRC license number.";
-  }
-  return errors;
+  return parsed.success ? {} : fieldErrors(parsed.error);
 }
 
 export function SignupForm({ next, initialRole }: { next?: string; initialRole: SignupRole }) {
   const [role, setRole] = useState<SignupRole>(initialRole);
   const [password, setPassword] = useState("");
-  const { state, pending, errorFor, formError, onBlur, onSubmit } = useZodForm(
-    signUp,
-    parseSignup,
-    ORDER,
-    (formData) => {
-      if (formData.get("role") !== "agent") {
-        sessionStorage.removeItem(PENDING_LICENSE_KEY);
-        return;
-      }
-      sessionStorage.setItem(PENDING_LICENSE_KEY, String(formData.get("licenseNo") ?? "").trim());
-    },
-  );
-
-  useEffect(() => {
-    if (state && !state.ok) sessionStorage.removeItem(PENDING_LICENSE_KEY);
-  }, [state]);
+  const { pending, errorFor, formError, onBlur, onSubmit } = useZodForm(signUp, parseSignup, ORDER);
 
   return (
     <Panel>

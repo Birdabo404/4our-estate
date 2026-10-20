@@ -1,18 +1,18 @@
 /**
  * End-to-end pass over the public screens against a running dev server.
  *
- *   npx next dev -p 3201
+ *   npx next dev -p 3000
  *   node --env-file=.env.local --import tsx scripts/e2e/public.ts
  *
  * Writes screenshots to /tmp/shots/fe-public/. Shares the seeded database with
  * other work, so it only adds uniquely addressed inquiries and restores any
  * favorite it toggles.
  */
+import { execFileSync } from "node:child_process";
 import { mkdirSync } from "node:fs";
 import { type Browser, type BrowserContext, chromium, expect, type Page } from "@playwright/test";
-import { createServerClient } from "@supabase/ssr";
 
-const BASE = process.env.E2E_BASE ?? "http://localhost:3201";
+const BASE = process.env.E2E_BASE ?? "http://localhost:3000";
 const OUT = "/tmp/shots/fe-public";
 const BUYER = { email: "camille.uy@4our.estate", password: "Estate!2026" };
 const SLUGS = { sale: "forbes-park-acacia-house", rent: "bgc-high-street-lease", sold: "mactan-newtown-beachfront" } as const;
@@ -38,6 +38,7 @@ const HIDE_DEV_OVERLAY = "nextjs-portal { display: none !important; }";
 type Result = { name: string; ok: boolean; detail?: string };
 const results: Result[] = [];
 const consoleErrors: string[] = [];
+const inquiryEmails: string[] = [];
 
 async function check(name: string, run: () => Promise<void>) {
   try {
@@ -191,7 +192,9 @@ async function checkInquiry(context: BrowserContext) {
 
   await check("inquiry: a valid note is sent and confirmed", async () => {
     await form.locator('[name="name"]').fill("Marisol Ocampo");
-    await form.locator('[name="email"]').fill(`e2e+${Date.now()}@example.com`);
+    const email = `e2e+${Date.now()}@example.com`;
+    inquiryEmails.push(email);
+    await form.locator('[name="email"]').fill(email);
     await form.locator('[name="phone"]').fill("0917 555 0199");
     await form.locator('[name="message"]').fill("We would like to see the house on a weekday morning, ideally before the rains.");
     await form.getByRole("button", { name: "Send inquiry" }).click();
@@ -215,26 +218,21 @@ async function checkGuestFavorite(context: BrowserContext) {
   await page.close();
 }
 
-/** Signs in through the same cookie format the app's server client reads. */
-async function buyerCookies() {
-  const jar = new Map<string, string>();
-  const supabase = createServerClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!, {
-    cookies: {
-      getAll: () => [...jar].map(([name, value]) => ({ name, value })),
-      setAll: (cookies) => cookies.forEach(({ name, value }) => jar.set(name, value)),
-    },
-  });
-  const { error } = await supabase.auth.signInWithPassword(BUYER);
-  if (error) throw new Error(`Buyer sign-in failed: ${error.message}`);
-  await new Promise((resolve) => setTimeout(resolve, 50));
-  const host = new URL(BASE).hostname;
-  return [...jar].map(([name, value]) => ({ name, value, domain: host, path: "/", sameSite: "Lax" as const }));
+async function signIn(page: Page, email: string, password: string) {
+  await page.goto("/login", { waitUntil: "networkidle" });
+  await page.getByLabel(/email/i).fill(email);
+  await page.getByLabel(/password/i).fill(password);
+  await page.getByRole("button", { name: "Sign in" }).click();
+  await page.waitForURL(/\/dashboard\/(buyer|agent|admin)/, { timeout: 30_000 });
 }
 
 async function checkMemberFavorite(browser: Browser) {
   const context = await newContext(browser, "desktop");
-  await context.addCookies(await buyerCookies());
   const page = await context.newPage();
+  await check("buyer login lands on the buyer dashboard", async () => {
+    await signIn(page, BUYER.email, BUYER.password);
+    await expect(page).toHaveURL(/\/dashboard\/buyer/);
+  });
   const button = () => page.locator("main button[aria-pressed]").first();
 
   await check("favorites: a buyer's toggle persists across a reload", async () => {
@@ -278,6 +276,16 @@ async function main() {
 
   await checkMissingResidence(browser);
 
+  const seeded = await newContext(browser, "desktop");
+  const seededPage = await seeded.newPage();
+  await check("home and listings show a seeded residence", async () => {
+    await seededPage.goto("/", { waitUntil: "networkidle" });
+    await expect(seededPage.getByText("Villa off Cloud 9, Siargao").first()).toBeVisible();
+    await seededPage.goto("/properties", { waitUntil: "networkidle" });
+    await expect(seededPage.getByText("Villa off Cloud 9, Siargao").first()).toBeVisible();
+  });
+  await seeded.close();
+
   const desktop = await newContext(browser, "desktop");
   await checkFilters(desktop);
   await checkInquiry(desktop);
@@ -290,10 +298,22 @@ async function main() {
   });
 
   await browser.close();
+  cleanupInquiries();
   const failed = results.filter((r) => !r.ok);
   console.log(`\n${results.length - failed.length}/${results.length} checks passed. Screenshots in ${OUT}.`);
   if (consoleErrors.length > 0) console.log(consoleErrors.join("\n"));
   process.exitCode = failed.length > 0 ? 1 : 0;
+}
+
+function cleanupInquiries() {
+  if (inquiryEmails.length === 0) return;
+  const list = inquiryEmails.map((email) => `'${email.replaceAll("'", "''")}'`).join(", ");
+  execFileSync(
+    "docker",
+    ["exec", "estate-postgres", "psql", "-U", "estate", "-d", "estate", "-c", `DELETE FROM inquiries WHERE email IN (${list});`],
+    { stdio: "inherit" },
+  );
+  console.log(`cleanup removed ${inquiryEmails.length} inquiries`);
 }
 
 void main();

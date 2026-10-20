@@ -1,6 +1,6 @@
 # API
 
-The 4OUR Estate API is a NestJS service on PostgreSQL. It replaces the Supabase client. The Next app is still on Supabase until a later swap. This service speaks the same listing, account, inquiry, and favorite shapes as `src/lib/domain/types.ts` and `src/lib/data/types.ts`.
+The 4OUR Estate API is a NestJS service on PostgreSQL. The Next.js app calls it from `src/lib/data` and `src/lib/actions`. This service speaks the same listing, account, inquiry, and favorite shapes as `src/lib/domain/types.ts` and `src/lib/data/types.ts`.
 
 Base URL: `http://localhost:4000/api/v1`.
 
@@ -12,7 +12,7 @@ Dates are ISO strings. Money is a JSON number of whole Philippine pesos. `publis
 
 ## Run the API
 
-Postgres is a separate container from the Supabase stack. It publishes port 5432. Do not stop the Supabase containers.
+Postgres publishes port 5432.
 
 ```bash
 docker compose up -d postgres

@@ -4,15 +4,31 @@ import { cache } from "react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
+import { ApiError, apiFetch, sessionToken } from "@/lib/api/client";
 import { dashboardPath } from "@/lib/auth/paths";
 import { ROLES, type Role, type Viewer } from "@/lib/domain/types";
-
-import { createClient } from "@/lib/supabase/server";
 
 export type Member = Extract<Viewer, { kind: "member" }>;
 
 function isRole(value: string): value is Role {
   return (ROLES as readonly string[]).includes(value);
+}
+
+function asMember(value: unknown): Member | null {
+  if (!value || typeof value !== "object") return null;
+  const row = value as Partial<Member>;
+  if (row.kind !== "member") return null;
+  if (typeof row.id !== "string" || typeof row.email !== "string" || typeof row.fullName !== "string") return null;
+  if (row.avatarUrl !== null && typeof row.avatarUrl !== "string") return null;
+  if (typeof row.role !== "string" || !isRole(row.role)) return null;
+  return {
+    kind: "member",
+    id: row.id,
+    email: row.email,
+    role: row.role,
+    fullName: row.fullName,
+    avatarUrl: row.avatarUrl,
+  };
 }
 
 async function requestPath(): Promise<string> {
@@ -23,33 +39,14 @@ async function requestPath(): Promise<string> {
 }
 
 export const getViewer = cache(async (): Promise<Viewer> => {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.getUser();
-  const user = data.user;
-  if (error || !user) return { kind: "guest" };
-
-  const profile = await supabase
-    .from("profiles")
-    .select("role, full_name, avatar_url")
-    .eq("id", user.id)
-    .maybeSingle();
-
-  const metadataName = user.user_metadata.full_name;
-  const fullName =
-    profile.data?.full_name ||
-    (typeof metadataName === "string" && metadataName.trim() !== ""
-      ? metadataName
-      : "Member");
-  const role = profile.data && isRole(profile.data.role) ? profile.data.role : "buyer";
-
-  return {
-    kind: "member",
-    id: user.id,
-    email: user.email ?? "",
-    role,
-    fullName,
-    avatarUrl: profile.data?.avatar_url ?? null,
-  };
+  if (!(await sessionToken())) return { kind: "guest" };
+  try {
+    const { data } = await apiFetch<unknown>("/auth/me");
+    return asMember(data) ?? { kind: "guest" };
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 401) return { kind: "guest" };
+    throw new Error("Could not load your account.");
+  }
 });
 
 export async function requireRole(...roles: [Role, ...Role[]]): Promise<Member> {

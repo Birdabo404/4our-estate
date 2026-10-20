@@ -158,6 +158,7 @@ export function ImageManager({ property }: { property: PropertyDetail }) {
                       size="sm"
                       onClick={async () => {
                         const formData = new FormData();
+                        formData.set("propertyId", property.id);
                         formData.set("imageId", image.id);
                         const result = await setCoverImage(null, formData);
                         if (!result.ok) {
@@ -184,13 +185,22 @@ export function ImageManager({ property }: { property: PropertyDetail }) {
       )}
       <RemovePhoto
         imageId={removeId}
+        propertyId={property.id}
         onClose={() => setRemoveId(null)}
       />
     </Panel>
   );
 }
 
-function RemovePhoto({ imageId, onClose }: { imageId: string | null; onClose: () => void }) {
+function RemovePhoto({
+  imageId,
+  propertyId,
+  onClose,
+}: {
+  imageId: string | null;
+  propertyId: string;
+  onClose: () => void;
+}) {
   const router = useRouter();
   const { toast } = useToast();
   return (
@@ -210,6 +220,7 @@ function RemovePhoto({ imageId, onClose }: { imageId: string | null; onClose: ()
             onClick={async () => {
               if (!imageId) return;
               const formData = new FormData();
+              formData.set("propertyId", propertyId);
               formData.set("imageId", imageId);
               const result = await deleteListingImage(null, formData);
               if (!result.ok) {

@@ -1,12 +1,12 @@
 const RULES = [
-  { id: "length", label: "At least 8 characters", test: (value: string) => value.length >= 8 },
-  { id: "case", label: "Upper and lower case", test: (value: string) => /[a-z]/.test(value) && /[A-Z]/.test(value) },
+  { id: "length", label: "8 to 72 characters", test: (value: string) => value.length >= 8 && value.length <= 72 },
+  { id: "letter", label: "A letter", test: (value: string) => /[A-Za-z]/.test(value) },
   { id: "number", label: "A number", test: (value: string) => /\d/.test(value) },
 ] as const;
 
 export function PasswordMeter({ password }: { password: string }) {
   const met = RULES.filter((rule) => rule.test(password)).length;
-  const label = password.length === 0 ? "Use 8 or more characters, with mixed case and a number." : met >= 3 ? "Strong password." : met === 2 ? "Fair password." : "Short password.";
+  const label = password.length === 0 ? "Use 8 to 72 characters, including a letter and a number." : met >= 3 ? "Strong password." : met === 2 ? "Fair password." : "Short password.";
   return (
     <div className="-mt-3" aria-live="polite">
       <p className="text-small text-ink-muted">{label}</p>

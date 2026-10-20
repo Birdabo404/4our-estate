@@ -1,12 +1,12 @@
 "use server";
 
+import { apiFetch } from "@/lib/api/client";
 import { requireRole } from "@/lib/data/viewer";
-import { createClient } from "@/lib/supabase/server";
 import { profileSchema, readProfile } from "@/lib/validation/profile";
 
-import { humanize } from "./errors";
+import { failure } from "./failure";
 import { revalidateListing } from "./revalidate";
-import { fail, invalid, ok, type ActionResult } from "./result";
+import { invalid, ok, type ActionResult } from "./result";
 
 export async function updateProfile(
   _prev: ActionResult<{ id: string }> | null,
@@ -14,22 +14,24 @@ export async function updateProfile(
 ): Promise<ActionResult<{ id: string }>> {
   const parsed = profileSchema.safeParse(readProfile(formData));
   if (!parsed.success) return invalid(parsed.error);
-  const viewer = await requireRole("buyer", "agent", "admin");
-  const supabase = await createClient();
+  await requireRole("buyer", "agent", "admin");
 
-  const { error } = await supabase
-    .from("profiles")
-    .update({
-      full_name: parsed.data.fullName,
-      phone: parsed.data.phone ?? null,
-      avatar_url: parsed.data.avatarUrl ?? null,
-      agency: parsed.data.agency ?? null,
-      license_no: parsed.data.licenseNo ?? null,
-      bio: parsed.data.bio ?? null,
-    })
-    .eq("id", viewer.id);
-  if (error) return fail(humanize(error));
-
-  revalidateListing();
-  return ok({ id: viewer.id });
+  const input = parsed.data;
+  try {
+    const { data } = await apiFetch<{ id: string }>("/me/profile", {
+      method: "PATCH",
+      json: {
+        fullName: input.fullName,
+        phone: input.phone ?? null,
+        avatarUrl: input.avatarUrl ?? null,
+        agency: input.agency ?? null,
+        licenseNo: input.licenseNo ?? null,
+        bio: input.bio ?? null,
+      },
+    });
+    revalidateListing();
+    return ok({ id: data.id });
+  } catch (error) {
+    return failure(error);
+  }
 }
