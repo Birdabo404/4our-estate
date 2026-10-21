@@ -68,7 +68,7 @@ const SWATCHES: ReadonlyArray<{ group: string; tokens: ReadonlyArray<{ name: str
   {
     group: "Night",
     tokens: [
-      { name: "night", role: "Footer, scrims", against: "on-night" },
+      { name: "night", role: "Search bar, scrims", against: "on-night" },
       { name: "night-raised", role: "Dark panels", against: "on-night" },
       { name: "on-night-muted", role: "Meta on night", against: "night" },
     ],
@@ -88,6 +88,7 @@ const SWATCHES: ReadonlyArray<{ group: string; tokens: ReadonlyArray<{ name: str
       { name: "sky", role: "Hero and header fields", against: "ink" },
       { name: "sky-soft", role: "Row hover, quiet bands", against: "ink" },
       { name: "sky-deep", role: "Dither ink, chart series", against: "paper" },
+      { name: "bay", role: "Footer field", against: "paper" },
     ],
   },
   {

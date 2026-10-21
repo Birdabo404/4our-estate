@@ -99,7 +99,7 @@ The full system is in [DESIGN.md](DESIGN.md), and `/styleguide` renders every co
 
 - **Workbench, not brochure.** The site should feel like a tool a sharp developer built for home hunters: honest numbers, clear labels and a little play in the margins. Photography sells the house, and the interface around it stays direct and readable.
 - **Type.** Bricolage Grotesque for display, Hanken Grotesk for text and JetBrains Mono for labels and data. Bricolage's width axis gives condensed figures for stats and spec sheets. Emphasis is an orange highlighter stroke, not italics.
-- **Colour.** Paper `#f4f2ec` and ink `#151411`, with Kahel orange `#ff5a1f` for the one thing to press and sky `#cfe9f1` as the calm field behind heroes and page headers. Orange fills always carry ink labels. Every text pairing is checked against WCAG by `scripts/design/check-tokens.ts`.
+- **Colour.** Paper `#f4f2ec` and ink `#151411`, with Kahel orange `#ff5a1f` for the one thing to press sky `#cfe9f1` as the calm field behind heroes and page headers, and a Manila Bay cobalt `#1d44c8` for the footer. Orange fills always carry ink labels. Every text pairing is checked against WCAG by `scripts/design/check-tokens.ts`.
 - **Texture.** Dithered place photos (an 8×8 Bayer canvas that wipes away on hover), an ASCII floor plan, blueprint grids and a rotating stamp. All of it is decorative and hidden from assistive tech.
 - **Layout.** A sticky night search bar on listings, white cards with a spec sheet, a sky header and photo mosaic on the property page, and real dashboards with stat cards, bar charts and tables.
 - **Motion.** Short and purposeful, on shared curves from `src/lib/motion.ts`, and nothing bounces. Each library has one job, and ESLint enforces the split:

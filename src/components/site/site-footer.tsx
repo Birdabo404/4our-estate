@@ -1,106 +1,154 @@
-import { ArrowUpRight } from "@phosphor-icons/react/ssr";
 import Link from "next/link";
-import { Reveal } from "@/components/motion/reveal";
+import { DitherImage } from "@/components/motion/dither-image";
 import { Wordmark } from "@/components/motion/wordmark";
+import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
+import { PHOTOS, photoUrl } from "@/lib/photography/catalog";
 import { PHOTOGRAPHER_COUNT, UNSPLASH_HREF } from "@/lib/photography/credits";
 import { OFFICES } from "./offices";
 
-const EXPLORE = [
-  { href: "/properties", label: "All residences" },
-  { href: "/properties?listingType=sale", label: "For sale" },
-  { href: "/properties?listingType=rent", label: "For lease" },
-  { href: "/signup", label: "List with us" },
-] as const;
+type FooterLink = { href: string; label: string; external?: boolean };
 
-const CREDIT_LINK =
-  "underline decoration-on-night/25 underline-offset-4 transition-colors duration-500 ease-settle hover:text-on-night hover:decoration-on-night/60";
+const COLUMNS: ReadonlyArray<{ title: string; links: readonly FooterLink[] }> = [
+  {
+    title: "Browse",
+    links: [
+      { href: "/properties", label: "All homes" },
+      { href: "/properties?listingType=sale", label: "For sale" },
+      { href: "/properties?listingType=rent", label: "For lease" },
+      { href: "/properties?propertyType=condominium", label: "Condos" },
+      { href: "/properties?propertyType=house", label: "Houses" },
+    ],
+  },
+  {
+    title: "Members",
+    links: [
+      { href: "/login", label: "Sign in" },
+      { href: "/signup", label: "Create an account" },
+      { href: "/dashboard/buyer", label: "Saved homes" },
+      { href: "/signup?role=agent", label: "List a property" },
+    ],
+  },
+  {
+    title: "Company",
+    links: [
+      { href: "mailto:hello@4our.estate", label: "Contact us", external: true },
+      { href: "mailto:letters@4our.estate?subject=Private%20letters", label: "Private letters", external: true },
+      { href: "/styleguide", label: "Design system" },
+    ],
+  },
+];
+
+const HORIZON = PHOTOS.find((p) => p.id === "photo-1457195740896-7f345efef228");
+
+const LINK = "text-sky underline-offset-4 transition-colors duration-300 ease-settle hover:text-paper hover:underline";
+
+function ColumnLink({ link }: { link: FooterLink }) {
+  return link.external ? (
+    <a href={link.href} className={LINK}>
+      {link.label}
+    </a>
+  ) : (
+    <Link href={link.href} className={LINK}>
+      {link.label}
+    </Link>
+  );
+}
 
 export function SiteFooter() {
   return (
-    <footer className="relative overflow-hidden bg-night text-on-night">
-      <Container width="wide" className="pb-10 pt-24 md:pt-36">
-        <div className="grid gap-16 md:grid-cols-12 md:gap-10">
-          <Reveal className="md:col-span-6">
-            <p className="max-w-[18ch] font-display text-display-3 text-on-night">
-              Residences across the archipelago, introduced with <em className="text-accent-soft [--em-mark:transparent]">discretion</em>.
+    <footer className="relative z-10 -mt-8 overflow-hidden rounded-t-[1.75rem] bg-bay text-paper md:-mt-10 md:rounded-t-[2.5rem] [&_:focus-visible]:shadow-none [&_:focus-visible]:outline-sun">
+      <Container width="wide" className="pt-14 md:pt-20">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="flex flex-col gap-5">
+            <Link href="/" aria-label="4OUR Estate home" className="w-fit">
+              <Wordmark className="text-[2.5rem] md:text-[3.25rem]" />
+            </Link>
+            <p className="max-w-[30ch] font-display text-heading font-semibold [&_em]:rounded-[0.25rem] [&_em]:bg-accent [&_em]:bg-none [&_em]:px-1.5 [&_em]:text-ink">
+              Homes across the archipelago, with the <em>price</em> up front.
             </p>
-            <a
-              href="mailto:letters@4our.estate?subject=Private%20letters"
-              className="group mt-10 inline-flex items-center gap-4 border-b border-on-night/20 pb-2 text-small transition-colors duration-500 ease-settle hover:border-accent-soft"
-            >
-              <span>
-                <span className="text-on-night">Private letters.</span>{" "}
-                <span className="text-on-night-muted">A quarterly note on homes before they reach the market.</span>
-              </span>
-              <ArrowUpRight
-                aria-hidden
-                size={16}
-                weight="regular"
-                className="shrink-0 transition-transform duration-500 ease-settle group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-              />
-            </a>
-          </Reveal>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <ButtonLink href="/properties" variant="on-image" icon="arrow-up-right">
+              Browse homes
+            </ButtonLink>
+            <ButtonLink href="/signup?role=agent" variant="accent" icon="arrow-right">
+              List a property
+            </ButtonLink>
+          </div>
+        </div>
 
-          <nav aria-label="Footer" className="md:col-span-2 md:col-start-8">
-            <h2 className="font-sans text-micro font-medium uppercase text-on-night-muted">Explore</h2>
-            <ul className="mt-6 flex flex-col gap-3">
-              {EXPLORE.map((item) => (
-                <li key={item.href}>
-                  <Link
-                    href={item.href}
-                    className="text-small text-on-night/85 transition-colors duration-500 ease-settle hover:text-on-night"
-                  >
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="md:col-span-3">
-            <h2 className="font-sans text-micro font-medium uppercase text-on-night-muted">Offices</h2>
-            <ul className="mt-6 flex flex-col gap-6">
+        <nav aria-label="Footer" className="mt-14 grid grid-cols-2 gap-x-6 gap-y-10 border-t border-paper/15 pt-10 md:mt-16 md:grid-cols-4">
+          {COLUMNS.map((column) => (
+            <div key={column.title}>
+              <h2 className="text-title font-semibold">{column.title}</h2>
+              <ul className="mt-4 flex flex-col gap-2.5 text-small">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <ColumnLink link={link} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <div>
+            <h2 className="text-title font-semibold">Offices</h2>
+            <ul className="mt-4 flex flex-col gap-3 text-small">
               {OFFICES.map((office) => (
-                <li key={office.city} className="flex flex-col gap-1 text-small">
-                  <span className="text-on-night">
-                    {office.city} <span className="text-on-night-muted">· {office.district}</span>
+                <li key={office.city} className="flex flex-col">
+                  <span>
+                    {office.city} <span className="text-sky">· {office.district}</span>
                   </span>
-                  <span className="text-on-night-muted">{office.address}</span>
-                  <a
-                    href={`tel:${office.phone.replace(/\s/g, "")}`}
-                    className="w-fit text-on-night-muted transition-colors duration-500 ease-settle hover:text-on-night"
-                  >
+                  <a href={`tel:${office.phone.replace(/\s/g, "")}`} className={`w-fit font-mono text-[0.75rem] ${LINK}`}>
                     {office.phone}
                   </a>
                 </li>
               ))}
             </ul>
           </div>
-        </div>
+        </nav>
 
-        <div aria-hidden className="mt-24 select-none leading-none text-on-night/90 md:mt-32">
-          <Wordmark label={false} className="w-full [&>svg]:h-auto [&>svg]:w-full" />
-        </div>
-
-        <div className="mt-10 flex flex-col gap-3 border-t border-on-night/10 pt-6 text-[0.75rem] text-on-night-muted">
-          <p>
-            Photography by <span className="tabular">{PHOTOGRAPHER_COUNT}</span>{" "}
-            {PHOTOGRAPHER_COUNT === 1 ? "contributor" : "contributors"} on{" "}
-            <a href={UNSPLASH_HREF} className={CREDIT_LINK}>
-              Unsplash
-            </a>
-            {" · "}
-            <Link href="/credits" className={CREDIT_LINK}>
-              Credits
-            </Link>
-          </p>
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-            <p>© {new Date().getFullYear()} 4OUR Estate. Licensed real estate brokerage under Republic Act No. 9646.</p>
-            <p>Makati · BGC · Cebu</p>
+        <div className="mt-14 flex flex-col gap-4 text-[0.75rem] text-sky md:mt-16 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-1">
+            <p className="font-mono uppercase tracking-[0.08em] text-paper">4OUR Estate Inc.</p>
+            <p>
+              Licensed real estate brokerage under Republic Act No. 9646 <span aria-hidden>·</span> © {new Date().getFullYear()}
+            </p>
+          </div>
+          <div className="flex flex-col gap-1 md:items-end">
+            <p>
+              Photography by <span className="tabular">{PHOTOGRAPHER_COUNT}</span>{" "}
+              {PHOTOGRAPHER_COUNT === 1 ? "contributor" : "contributors"} on{" "}
+              <a href={UNSPLASH_HREF} className={`underline ${LINK}`}>
+                Unsplash
+              </a>
+              {" · "}
+              <Link href="/credits" className={`underline ${LINK}`}>
+                Credits
+              </Link>
+            </p>
+            <p aria-hidden className="font-mono">
+              14.5547° N, 121.0244° E <span className="text-paper">{"// built in Makati"}</span>
+            </p>
           </div>
         </div>
       </Container>
+
+      {HORIZON && (
+        <div aria-hidden className="relative mt-10 h-24 [mask-image:linear-gradient(180deg,transparent,#000_55%)] md:h-36">
+          <DitherImage
+            src={photoUrl(HORIZON, 1600)}
+            alt=""
+            sizes="100vw"
+            reveal="always"
+            ink="#cfe9f1"
+            paper="#1d44c8"
+            cell={3}
+            contrast={1.8}
+            className="absolute inset-0"
+          />
+        </div>
+      )}
     </footer>
   );
 }

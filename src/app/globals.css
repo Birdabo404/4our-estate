@@ -38,6 +38,12 @@
   --color-sky-soft: #e6f4f8;
   --color-sky-deep: #1f5f7a;
 
+  /*
+   * Bay: Manila Bay at full saturation, the footer field. Paper, sky and sun
+   * read on it; orange does not, so orange stays a fill with ink on top.
+   */
+  --color-bay: #1d44c8;
+
   /* A third data colour for charts only. */
   --color-sun: #f3d34a;
 

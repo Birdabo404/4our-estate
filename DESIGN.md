@@ -25,7 +25,7 @@ Off-white paper, warm ink, Kahel orange and a Manila-morning sky. The tokens liv
 | `ink` | #151411 | Headings, body, primary buttons, solid chips |
 | `ink-soft` | #3e3c36 | Secondary copy |
 | `ink-muted` | #66635a | Meta, captions, labels |
-| `night` | #121110 | Footer, search bar, data and map panels |
+| `night` | #121110 | Search bar, data and map panels, toasts |
 | `night-raised` | #1e1d1a | Panels on night |
 | `on-night` | #f2f0ea | Text on night |
 | `on-night-muted` | #a5a299 | Meta on night |
@@ -35,7 +35,8 @@ Off-white paper, warm ink, Kahel orange and a Manila-morning sky. The tokens liv
 | `sky` | #cfe9f1 | Hero and page-header fields |
 | `sky-soft` | #e6f4f8 | Quiet bands, chips |
 | `sky-deep` | #1f5f7a | Dither ink, meters, light-on-dark chips |
-| `sun` | #f3d34a | Chart bars and review states only |
+| `sun` | #f3d34a | Chart bars, review states, focus ring on bay |
+| `bay` | #1d44c8 | Manila Bay cobalt. The footer field. Paper, sky and sun read on it; orange only as a fill |
 | `positive` | #256b42 | Published, answered |
 | `danger` | #b42318 | Errors |
 
@@ -61,8 +62,11 @@ Computed by `npx tsx scripts/design/check-tokens.ts`, which parses `globals.css`
 | `ink` #151411 | `sun` #f3d34a | 12.48:1 | 4.5:1 pass | Labels on review and chart fills |
 | `paper` #f4f2ec | `sky-deep` #1f5f7a | 6.30:1 | 4.5:1 pass | Light text on deep sky |
 | `paper` #f4f2ec | `ink` #151411 | 16.45:1 | 4.5:1 pass | Primary button label |
-| `on-night` #f2f0ea | `night` #121110 | 16.55:1 | 4.5:1 pass | Footer and overlays |
-| `on-night-muted` #a5a299 | `night` #121110 | 7.39:1 | 4.5:1 pass | Footer meta |
+| `paper` #f4f2ec | `bay` #1d44c8 | 6.91:1 | 4.5:1 pass | Footer copy |
+| `sky` #cfe9f1 | `bay` #1d44c8 | 6.11:1 | 4.5:1 pass | Footer meta |
+| `sun` #f3d34a | `bay` #1d44c8 | 5.24:1 | 3:1 pass | Focus ring on bay |
+| `on-night` #f2f0ea | `night` #121110 | 16.55:1 | 4.5:1 pass | Overlays and dark panels |
+| `on-night-muted` #a5a299 | `night` #121110 | 7.39:1 | 4.5:1 pass | Meta on night |
 | `accent-soft` #ff8a5c | `night` #121110 | 8.12:1 | 4.5:1 pass | Accent on night |
 | `accent` #ff5a1f | `night` #121110 | 6.05:1 | 3:1 pass | Focus ring on night |
 | `positive` #256b42 | `paper` #f4f2ec | 5.75:1 | 4.5:1 pass | Positive status |
@@ -185,7 +189,7 @@ Further rules:
 - **Property page** opens on a sky header with a breadcrumb, the title, location and price, then a photo mosaic. Chapters below are numbered with ink chips. Key facts are a ruled grid of condensed figures, and the location block pairs the address with a night "map" card.
 - **Dashboards** sit in a sunken frame with a sidebar (wordmark, role chip, one quick action, icon nav, account card) and a paper sheet with a mono path breadcrumb. Shared widgets live in `src/components/dashboard/widgets.tsx`: `StatCard` (paper, accent, night and sky tones with condensed count-ups), `Card`, `StackedBar`, `BarChart`, `MeterRow`, `DataTable` and `EmptyNote`. Charts are categorical bars drawn in HTML with `role="img"` and a text label.
 - **Navigation** is fixed. It is transparent over any region marked `data-nav-surface="image"` and settles into a blurred paper bar after scrolling. On mobile, a full-height curtain lists the links and office phone numbers.
-- **Footer** is night. It carries a statement line with an orange highlighted word, explore links, offices, credits and the full-width wordmark.
+- **Footer** is a bay-blue sheet with rounded top corners that tucks over the end of the page. The top row has the wordmark, a one-line statement with an orange word chip, and two calls to action. Below sit four columns (Browse, Members, Company, Offices), then the brokerage licence and the photography credit with a mono coordinates line. It ends on a dithered sea horizon in sky on bay. Inside the footer the focus ring is sun, because orange fails on blue.
 
 ## Imagery
 
