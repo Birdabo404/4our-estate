@@ -133,6 +133,7 @@ export function GalleryColumn({ rows, className }: { rows: readonly GalleryRow[]
 
   useGSAP(
     () => {
+      if (!root.current) return;
       const mm = gsap.matchMedia();
       mm.add(`${MEDIA.motionOk} and ${MEDIA.desktop}`, () => {
         for (const frame of gsap.utils.toArray<HTMLElement>("[data-rows] [data-reveal]")) {
