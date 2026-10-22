@@ -12,6 +12,7 @@ const ACCOUNTS = [
   { role: "Buyer", email: "camille.uy@4our.estate" },
   { role: "Buyer", email: "joaquin.tan@4our.estate" },
   { role: "Buyer", email: "bea.lim@4our.estate" },
+  { role: "Buyer", email: "clyde.lontoc@4our.estate" },
 ] as const;
 
 export function DemoAccounts({ onUse }: { onUse?: (account: { email: string; password: string }) => void }) {

@@ -76,7 +76,7 @@ Every account uses the password `Estate!2026`.
 | --- | --- |
 | Admin | `admin@4our.estate` |
 | Agent | `isabel.santos@4our.estate`, `mateo.cruz@4our.estate`, `ana.reyes@4our.estate`, `rafael.delacruz@4our.estate`, `sofia.navarro@4our.estate` |
-| Buyer | `camille.uy@4our.estate`, `joaquin.tan@4our.estate`, `bea.lim@4our.estate` |
+| Buyer | `camille.uy@4our.estate`, `joaquin.tan@4our.estate`, `bea.lim@4our.estate`, `clyde.lontoc@4our.estate` |
 
 The login page also lists these in a collapsible "Exploring? Use a demo account" note.
 
@@ -192,7 +192,7 @@ erDiagram
 | `favorites` | (`userId`, `propertyId`) primary key |
 | `inquiries` | `propertyId`, `buyerId` (null for guests), `name`, `email`, `phone`, `message`, `preferredViewingDate`, `status` (new, contacted, closed) |
 
-The seed loads 24 listings across Makati, BGC, Alabang, Tagaytay, Nuvali, Cebu, Mactan, Siargao, Boracay, El Nido, La Union and Baguio at 2026 PHP prices, plus 9 accounts, favorites and inquiries. It is idempotent, so running it twice changes nothing.
+The seed loads 24 listings across Makati, BGC, Alabang, Tagaytay, Nuvali, Cebu, Mactan, Siargao, Boracay, El Nido, La Union and Baguio at 2026 PHP prices, plus 10 accounts, favorites and inquiries. It is idempotent, so running it twice changes nothing.
 
 ### Data access and sample requests
 
