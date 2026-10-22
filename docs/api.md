@@ -26,7 +26,7 @@ npm run start:dev
 
 `npm run start:dev` generates the Prisma client, then watches `api/src`. The process listens on `0.0.0.0` and `PORT`.
 
-Seed again whenever you want the same nine accounts and 24 listings. The second run updates rows in place and does not insert duplicates. The demo password is `Estate!2026`.
+Seed again whenever you want the same 10 accounts and 24 listings. The second run updates rows in place and does not insert duplicates. The demo password is `Estate!2026`.
 
 ```bash
 cd api
@@ -349,6 +349,7 @@ An agent moving their own draft to `sold`:
 | `camille.uy@4our.estate` | buyer |
 | `joaquin.tan@4our.estate` | buyer |
 | `bea.lim@4our.estate` | buyer |
+| `clyde.lontoc@4our.estate` | buyer |
 
 ## Deploy to Render
 

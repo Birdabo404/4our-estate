@@ -68,16 +68,32 @@ const SWATCHES: ReadonlyArray<{ group: string; tokens: ReadonlyArray<{ name: str
   {
     group: "Night",
     tokens: [
-      { name: "night", role: "Footer, scrims", against: "on-night" },
+      { name: "night", role: "Search bar, scrims", against: "on-night" },
       { name: "night-raised", role: "Dark panels", against: "on-night" },
       { name: "on-night-muted", role: "Meta on night", against: "night" },
     ],
   },
   {
-    group: "Accent and function",
+    group: "Signal",
     tokens: [
-      { name: "accent", role: "Narra brass. Focus, emphasis", against: "paper" },
-      { name: "accent-soft", role: "Accent on night", against: "night" },
+      { name: "accent", role: "Signal orange. Fills only, ink on top", against: "ink" },
+      { name: "accent-ink", role: "Orange text, links, focus", against: "paper" },
+      { name: "accent-soft", role: "Orange text on night", against: "night" },
+      { name: "sun", role: "Chart bars, review state", against: "ink" },
+    ],
+  },
+  {
+    group: "Sky",
+    tokens: [
+      { name: "sky", role: "Hero and header fields", against: "ink" },
+      { name: "sky-soft", role: "Row hover, quiet bands", against: "ink" },
+      { name: "sky-deep", role: "Dither ink, chart series", against: "paper" },
+      { name: "bay", role: "Footer field", against: "paper" },
+    ],
+  },
+  {
+    group: "Function",
+    tokens: [
       { name: "positive", role: "Published, contacted", against: "paper" },
       { name: "danger", role: "Errors", against: "paper" },
     ],
@@ -85,20 +101,20 @@ const SWATCHES: ReadonlyArray<{ group: string; tokens: ReadonlyArray<{ name: str
 ];
 
 const TYPE_SCALE: ReadonlyArray<{ token: string; sample: string; family: "display" | "sans"; use: string; className: string }> = [
-  { token: "display-1", sample: "Residences of quiet consequence", family: "display", use: "Hero, once per page", className: "text-display-1" },
+  { token: "display-1", sample: "Homes that fit", family: "display", use: "Hero, once per page", className: "text-display-1" },
   { token: "display-2", sample: "The Acacia House", family: "display", use: "Listing titles on detail", className: "text-display-2" },
-  { token: "display-3", sample: "A smaller collection", family: "display", use: "Section headings", className: "text-display-3" },
-  { token: "heading", sample: "Schedule a private viewing", family: "display", use: "Panels, dialogs, feature cards", className: "text-heading" },
-  { token: "title", sample: "Two-bedroom residence at Rockwell", family: "display", use: "Card titles", className: "text-title" },
-  { token: "lead", sample: "Every residence is visited and written about by the agent who will walk you through it.", family: "sans", use: "Intros", className: "text-lead" },
-  { token: "body", sample: "Set on 1,200 sqm of terraced garden, the residence opens to the lake through floor-to-ceiling glass.", family: "sans", use: "Running text", className: "text-body" },
+  { token: "display-3", sample: "Fresh picks from our agents", family: "display", use: "Section headings", className: "text-display-3" },
+  { token: "heading", sample: "Book a viewing", family: "display", use: "Panels, dialogs, feature cards", className: "text-heading" },
+  { token: "title", sample: "Two-bedroom condo at Rockwell", family: "display", use: "Card titles", className: "text-title" },
+  { token: "lead", sample: "Real photos, prices in pesos, and an agent who actually replies.", family: "sans", use: "Intros", className: "text-lead" },
+  { token: "body", sample: "Set on 1,200 sqm of terraced garden, the house opens to the lake through floor-to-ceiling glass.", family: "sans", use: "Running text", className: "text-body" },
   { token: "small", sample: "4 beds · 5 baths · 320 sqm", family: "sans", use: "Facts, labels, buttons", className: "text-small" },
-  { token: "micro", sample: "Forbes Park · For sale", family: "sans", use: "Eyebrows, uppercase only", className: "text-micro uppercase font-medium" },
+  { token: "micro", sample: "Forbes Park / For sale", family: "sans", use: "Mono tags and labels, uppercase", className: "text-micro uppercase" },
 ];
 
 const SPACE_SCALE = [4, 8, 12, 16, 24, 32, 48, 64, 96, 144, 176] as const;
 
-const BUTTON_VARIANTS: readonly ButtonVariant[] = ["primary", "secondary", "ghost"];
+const BUTTON_VARIANTS: readonly ButtonVariant[] = ["primary", "accent", "secondary", "ghost"];
 const BUTTON_SIZES: readonly ButtonSize[] = ["sm", "md", "lg"];
 
 const OWNERSHIP: ReadonlyArray<{ library: string; owns: string; primitives: string }> = [
@@ -147,7 +163,7 @@ export default function StyleguidePage() {
     <>
       <header className="sticky top-0 z-(--z-nav) border-b border-ink/[0.07] bg-paper/85 backdrop-blur-xl">
         <Container width="wide" className="flex h-16 items-center justify-between">
-          <Link href="/" className="rounded-full py-2 text-[1.2rem]" aria-label="4OUR Estate, home">
+          <Link href="/" className="rounded-md py-2 text-[1.2rem]" aria-label="4OUR Estate, home">
             <Wordmark />
           </Link>
           <span className="text-micro font-medium uppercase text-ink-muted">Design system · v1</span>
@@ -157,9 +173,9 @@ export default function StyleguidePage() {
       <main id="main" tabIndex={-1} className="outline-none">
         <Container width="wide" className="pt-20 md:pt-28">
           <Eyebrow>Living reference</Eyebrow>
-          <SplitHeading as="h1" trigger="mount" text="The *quiet* system behind 4OUR Estate." className="mt-8 max-w-[14ch] text-display-2" />
+          <SplitHeading as="h1" trigger="mount" text="The *workbench* behind 4OUR Estate." className="mt-8 max-w-[14ch] text-display-2" />
           <p className="mt-8 max-w-[56ch] text-lead text-ink-soft">
-            Editorial luxury, photography first. This page renders the real components with fixture data, so it doubles as
+            Readable type, real numbers, two colours with jobs. This page renders the real components with fixture data, so it doubles as
             the visual test and the academic record of every design decision.
           </p>
         </Container>
@@ -183,16 +199,16 @@ export default function StyleguidePage() {
               id="principles"
               index={1}
               title="Principles"
-              intro="Archetype: Editorial Luxury. The photograph is the hero, paper and ink set the stage, and one brass accent marks what matters."
+              intro="Archetype: a listings tool built by someone who likes houses. Sky and paper for air, ink for structure, one signal orange for the thing to click, and mono type wherever the site shows data."
             >
-              <ol className="grid gap-px overflow-hidden rounded-[1.25rem] bg-ink/10 md:grid-cols-3">
+              <ol className="grid gap-3 md:grid-cols-3">
                 {[
-                  ["Photography leads", "Images run large, unboxed, and slow. UI recedes to make room."],
-                  ["Quiet confidence", "One accent, soft contrast, no badges shouting. Hierarchy comes from scale and space."],
-                  ["Motion with mass", "Things settle like heavy paper. Nothing bounces, nothing loops for attention."],
+                  ["Readable first", "Grotesk headings, plain copy, mono for numbers. No type that is only there to look expensive."],
+                  ["Show the data", "Specs, prices, counts and coordinates sit in the open, in tables and tags, so buyers can compare."],
+                  ["Light touch motion", "Hover states, a ticker, a dither that clears to the photo. Nothing loops for attention."],
                 ].map(([title, body], i) => (
-                  <Reveal as="li" index={i} key={title} className="flex flex-col gap-3 bg-paper p-8">
-                    <span className="font-display text-heading italic text-accent">{i + 1}</span>
+                  <Reveal as="li" index={i} key={title} className="flex flex-col gap-3 rounded-panel bg-paper-raised p-6 ring-1 ring-ink/10">
+                    <span className="grid size-8 place-items-center rounded-[0.3rem] bg-accent font-mono text-small font-semibold text-ink">{i + 1}</span>
                     <h3 className="text-title">{title}</h3>
                     <p className="text-small text-ink-soft">{body}</p>
                   </Reveal>
@@ -206,7 +222,7 @@ export default function StyleguidePage() {
               title="Palette"
               intro={
                 <>
-                  Warm paper, espresso ink, and a single Narra brass accent. Ratios below are computed live from{" "}
+                  Warm paper, near-black ink, a sky field and one signal orange. Ratios below are computed live from{" "}
                   <code className="text-small">globals.css</code> against each colour&apos;s intended partner. Every text pairing
                   clears WCAG AA.
                 </>
@@ -222,7 +238,7 @@ export default function StyleguidePage() {
                         return (
                           <li key={t.name} className="flex flex-col gap-3">
                             <div
-                              className="flex aspect-[4/3] items-end rounded-[1rem] p-4 ring-1 ring-inset ring-ink/[0.08]"
+                              className="flex aspect-[4/3] items-end rounded-md p-4 ring-1 ring-inset ring-ink/[0.08]"
                               style={{ background: hex(t.name), color: hex(t.against) }}
                             >
                               <span className="font-display text-[2rem] leading-none">Aa</span>
@@ -247,22 +263,22 @@ export default function StyleguidePage() {
               id="type"
               index={3}
               title="Typography"
-              intro="Bodoni Moda for display, Jost for everything you read. Didone over Futura is the pairing of the great fashion mastheads: high contrast for presence, geometric calm for reading. Bodoni's optical size is pinned near 30 so hairlines survive at hero sizes."
+              intro="Bricolage Grotesque for display, Hanken Grotesk for reading, JetBrains Mono for tags, specs and data. Bricolage's width axis gives the condensed stat numerals; emphasis inside a heading is a highlighter mark, never italics."
             >
               <div className="grid gap-6 md:grid-cols-2">
                 <Panel coreClassName="flex flex-col gap-4">
-                  <span className="text-micro font-medium uppercase text-ink-muted">Display · Bodoni Moda</span>
-                  <span className="font-display text-[4.5rem] leading-none">
-                    Aa <em className="text-accent">Ff</em> ₱48
+                  <span className="text-micro uppercase text-ink-muted">Display · Bricolage Grotesque</span>
+                  <span className="font-display text-[4.5rem] font-semibold leading-none tracking-[-0.04em]">
+                    Aa <em>Ff</em> <span className="condensed font-bold">₱48</span>
                   </span>
-                  <span className="text-small text-ink-muted">Weights 400 to 500. Italic for one emphasised word per heading.</span>
+                  <span className="text-small text-ink-muted">Weight 600 for headings, 700 condensed for big numbers. One marked word per heading.</span>
                 </Panel>
                 <Panel coreClassName="flex flex-col gap-4">
-                  <span className="text-micro font-medium uppercase text-ink-muted">Text · Jost</span>
-                  <span className="font-sans text-[4.5rem] font-light leading-none">
-                    Aa <span className="font-medium">Gg</span> 320
+                  <span className="text-micro uppercase text-ink-muted">Text · Hanken Grotesk / Mono · JetBrains Mono</span>
+                  <span className="font-sans text-[4.5rem] leading-none">
+                    Aa <span className="font-mono text-[0.6em]">320 m²</span>
                   </span>
-                  <span className="text-small text-ink-muted">Weights 300 to 500. Uppercase only at micro size with 0.24em tracking.</span>
+                  <span className="text-small text-ink-muted">Hanken 400 to 600 for copy. Mono at micro size for labels, specs, prices per sqm and paths.</span>
                 </Panel>
               </div>
               <ul className="mt-14 flex flex-col">
@@ -282,23 +298,23 @@ export default function StyleguidePage() {
               id="space"
               index={4}
               title="Space and form"
-              intro="A 4px base grid with macro whitespace: sections breathe at 96 to 176px. Radii stay restrained on photography (3px) and soften on interactive UI. Shadows are layered, warm, and diffused."
+              intro="A 4px base grid. Radii stay small and square-ish: 6px on photos, 8px on fields and buttons, 14px on panels. Hover states lean on a hard ink offset shadow rather than lifting."
             >
               <div className="grid gap-16 md:grid-cols-2">
                 <ul className="flex flex-col gap-3">
                   {SPACE_SCALE.map((px) => (
                     <li key={px} className="flex items-center gap-5 text-small">
                       <span className="tabular w-12 text-ink-muted">{px}px</span>
-                      <span className="h-2 rounded-full bg-accent/70" style={{ width: px * 1.6 }} />
+                      <span className="h-2 rounded-[2px] bg-accent" style={{ width: px * 1.6 }} />
                     </li>
                   ))}
                 </ul>
                 <div className="grid grid-cols-2 gap-6">
                   {[
-                    ["rounded-photo", "3px · photography", "rounded-photo"],
-                    ["rounded-field", "14px · inputs", "rounded-field"],
-                    ["rounded-panel", "32px · panel shell", "rounded-panel"],
-                    ["rounded-full", "pills, buttons", "rounded-full"],
+                    ["rounded-photo", "6px · photography", "rounded-photo"],
+                    ["rounded-field", "8px · inputs", "rounded-field"],
+                    ["rounded-md", "6px · buttons, tags", "rounded-md"],
+                    ["rounded-panel", "14px · cards, panels", "rounded-panel"],
                   ].map(([name, note, cls]) => (
                     <div key={name} className="flex flex-col gap-3">
                       <div className={cn("aspect-[4/3] bg-paper-raised ring-1 ring-inset ring-ink/10", cls)} />
@@ -309,13 +325,14 @@ export default function StyleguidePage() {
                   ))}
                 </div>
               </div>
-              <div className="mt-16 grid gap-6 md:grid-cols-3">
+              <div className="mt-16 grid gap-6 md:grid-cols-4">
                 {[
                   ["shadow-hairline", "Resting surfaces"],
                   ["shadow-lift", "Buttons, pills"],
                   ["shadow-float", "Panels, overlays, toasts"],
+                  ["shadow-block", "Card and tile hover"],
                 ].map(([cls, note]) => (
-                  <div key={cls} className={cn("flex h-36 flex-col justify-end rounded-[1.25rem] bg-paper-raised p-6", cls)}>
+                  <div key={cls} className={cn("flex h-36 flex-col justify-end rounded-panel bg-paper-raised p-6", cls)}>
                     <span className="text-small font-medium">{cls}</span>
                     <span className="text-small text-ink-muted">{note}</span>
                   </div>
@@ -442,7 +459,7 @@ export default function StyleguidePage() {
                 <div className="flex flex-col gap-6">
                   <PropertyCardSkeleton variant="compact" />
                   <PropertyCardSkeleton variant="compact" />
-                  <Skeleton className="h-24 w-full rounded-[1.25rem]" />
+                  <Skeleton className="h-24 w-full rounded-panel" />
                 </div>
                 <Panel coreClassName="p-0 md:p-0">
                   <EmptyState
@@ -472,7 +489,7 @@ export default function StyleguidePage() {
                 </>
               }
             >
-              <div className="overflow-hidden rounded-[1.25rem] ring-1 ring-ink/10">
+              <div className="overflow-hidden rounded-panel ring-1 ring-ink/10">
                 <table className="w-full text-left text-small">
                   <thead className="bg-paper-raised text-micro uppercase text-ink-muted">
                     <tr>
@@ -495,7 +512,7 @@ export default function StyleguidePage() {
 
               <div className="mt-10 grid gap-4 md:grid-cols-3">
                 {(Object.keys(ease) as Array<keyof typeof ease>).map((name) => (
-                  <div key={name} className="flex flex-col gap-1 rounded-[1rem] bg-paper-raised p-5 text-small ring-1 ring-inset ring-ink/[0.06]">
+                  <div key={name} className="flex flex-col gap-1 rounded-md bg-paper-raised p-5 text-small ring-1 ring-inset ring-ink/[0.06]">
                     <span className="font-medium">ease-{name}</span>
                     <span className="tabular text-ink-muted">cubic-bezier({ease[name].join(", ")})</span>
                   </div>
@@ -537,7 +554,7 @@ export default function StyleguidePage() {
                 <div className="flex flex-col gap-3 md:col-span-4">
                   <span className="text-micro font-medium uppercase text-ink-muted">Reveal · Framer whileInView</span>
                   {["Heavy fade-up", "Six pixels of blur", "Staggered by index"].map((label, i) => (
-                    <Reveal key={label} index={i} className="rounded-[1rem] bg-paper-raised px-6 py-5 text-small ring-1 ring-inset ring-ink/[0.06]">
+                    <Reveal key={label} index={i} className="rounded-md bg-paper-raised px-6 py-5 text-small ring-1 ring-inset ring-ink/[0.06]">
                       {label}
                     </Reveal>
                   ))}

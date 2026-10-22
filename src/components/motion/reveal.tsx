@@ -15,16 +15,14 @@ const TAGS = {
 } as const;
 
 /**
- * A heavy fade-up with a trace of blur, once, as the block enters view.
- * `index` staggers siblings without a wrapper. The blur is the one filter
- * animation allowed in the system: small radius, ordinary blocks only, never
- * on photography.
+ * A short fade-up, once, as the block enters view. `index` staggers siblings
+ * without a wrapper. Kept small on purpose: content should arrive, not perform.
  */
 export function Reveal({
   as = "div",
   index = 0,
   delay = 0,
-  distance = 40,
+  distance = 14,
   className,
   children,
 }: {
@@ -39,10 +37,10 @@ export function Reveal({
   return (
     <Tag
       className={className}
-      initial={{ opacity: 0, y: distance, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)" }}
-      viewport={{ once: true, amount: 0.25, margin: "0px 0px -8% 0px" }}
-      transition={{ duration: duration.reveal, ease: ease.reveal, delay: delay + index * stagger.items }}
+      initial={{ opacity: 0, y: Math.min(distance, 18) }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2, margin: "0px 0px -6% 0px" }}
+      transition={{ duration: duration.slow, ease: ease.reveal, delay: delay + index * (stagger.items / 2) }}
     >
       {children}
     </Tag>

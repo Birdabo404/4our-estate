@@ -172,7 +172,7 @@ async function checkFilters(context: BrowserContext) {
 
   await check("filters: an impossible search shows the editorial empty state", async () => {
     await page.goto("/properties?q=observatory&propertyType=lot&listingType=rent", { waitUntil: "networkidle" });
-    await expect(page.getByRole("heading", { name: "Nothing in the collection matches, yet" })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "No homes match that, yet" })).toBeVisible();
   });
   await page.close();
 }

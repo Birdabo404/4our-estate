@@ -10,11 +10,18 @@ import type { DirectoryUser } from "@/lib/data/types";
 import { Button } from "@/components/ui/button";
 import { Dialog } from "@/components/ui/dialog";
 import { useToast } from "@/components/ui/toast";
+import { cn } from "@/lib/cn";
 
 import { FormAlert } from "./form-alert";
 import { ROLE_LABEL } from "./nav";
 
 type RoleChoice = { user: DirectoryUser; role: Role };
+
+const ROLE_CHIP: Record<Role, string> = {
+  buyer: "bg-sky text-ink",
+  agent: "bg-accent text-ink",
+  admin: "bg-ink text-paper",
+};
 
 export function UserDirectory({ users }: { users: DirectoryUser[] }) {
   const [selected, setSelected] = useState<RoleChoice | null>(null);
@@ -22,17 +29,28 @@ export function UserDirectory({ users }: { users: DirectoryUser[] }) {
 
   return (
     <>
-      <ul aria-label="People">
+      <ul aria-label="People" className="divide-y divide-dashed divide-ink/10 rounded-panel bg-paper-raised ring-1 ring-ink/10">
         {users.map((user) => (
-          <li key={user.id} className="flex flex-col gap-4 border-t border-ink/10 py-7 sm:flex-row sm:items-center sm:justify-between">
-            <div className="min-w-0">
-              <p className="font-display text-title">{user.fullName}</p>
-              <p className="mt-1 truncate text-small text-ink-muted">{user.email}</p>
-              {user.agency ? <p className="mt-1 text-small text-ink-soft">{user.agency}</p> : null}
+          <li key={user.id} className="flex flex-col gap-3 px-4 py-3.5 transition-colors duration-300 ease-settle hover:bg-sky-soft sm:flex-row sm:items-center sm:justify-between md:px-5">
+            <div className="flex min-w-0 items-center gap-3">
+              <span aria-hidden className="grid size-10 shrink-0 place-items-center rounded-md bg-ink font-mono text-[0.75rem] font-semibold text-accent">
+                {user.fullName
+                  .split(/\s+/)
+                  .slice(0, 2)
+                  .map((part) => part[0])
+                  .join("")}
+              </span>
+              <div className="min-w-0">
+                <p className="truncate text-small font-semibold text-ink">{user.fullName}</p>
+                <p className="truncate font-mono text-[0.6875rem] text-ink-muted">
+                  {user.email}
+                  {user.agency ? ` · ${user.agency}` : ""}
+                </p>
+              </div>
             </div>
-            <div className="flex items-center gap-4">
-              <p className="text-small text-ink">{ROLE_LABEL[user.role]}</p>
-              <Button type="button" variant="ghost" size="sm" onClick={() => setSelected({ user, role: user.role })}>
+            <div className="flex items-center gap-3 pl-[3.25rem] sm:pl-0">
+              <p className={cn("rounded-[0.25rem] px-2 py-0.5 font-mono text-[0.6875rem] uppercase", ROLE_CHIP[user.role])}>{ROLE_LABEL[user.role]}</p>
+              <Button type="button" variant="secondary" size="sm" onClick={() => setSelected({ user, role: user.role })}>
                 Change role
               </Button>
             </div>

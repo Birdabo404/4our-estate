@@ -82,4 +82,10 @@ export const ACCOUNTS: SeedAccount[] = [
     fullName: "Bea Lim",
     phone: "+63 919 555 0148",
   },
+  {
+    email: "clyde.lontoc@4our.estate",
+    role: "buyer",
+    fullName: "Clyde Lontoc",
+    phone: "+63 917 555 0155",
+  },
 ];

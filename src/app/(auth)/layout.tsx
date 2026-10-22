@@ -1,22 +1,27 @@
-import Image from "next/image";
 import Link from "next/link";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 
+import { Asterisk } from "@/components/home/stamp";
+import { DitherImage } from "@/components/motion/dither-image";
 import { Wordmark } from "@/components/motion/wordmark";
 import { cn } from "@/lib/cn";
 import { photoUrl, photosBy, type Photo } from "@/lib/photography/catalog";
 
-const SCENES: Record<"login" | "signup", { photo: Photo; kicker: string; line: string }> = {
+type Scene = { photo: Photo; kicker: string; line: string; points: readonly string[] };
+
+const SCENES: Record<"login" | "signup", Scene> = {
   login: {
     photo: photosBy("hero")[2]!,
-    kicker: "Makati to the islands",
-    line: "Blue hour on the hill",
+    kicker: "Members",
+    line: "Your saved homes are right where you left them.",
+    points: ["Saved homes, synced to your account", "Every inquiry and every reply in one place", "Agents: listings and leads on one board"],
   },
   signup: {
     photo: photosBy("hero")[1]!,
-    kicker: "A private collection",
-    line: "Late light on still water",
+    kicker: "Free for buyers",
+    line: "Save homes, message agents, keep track of replies.",
+    points: ["No fees to browse, save or enquire", "Agents list after a short license check", "Your details go only to the agent you message"],
   },
 };
 
@@ -25,29 +30,43 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
   const path = headerList.get("x-4our-pathname") ?? "";
   const compact = path.startsWith("/signup");
   const scene = compact ? SCENES.signup : SCENES.login;
-  const src = photoUrl(scene.photo, 1800);
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
-      <div className="h-64 sm:h-80 lg:sticky lg:top-0 lg:h-dvh">
-        <div className="relative h-full">
-        <Image
-          src={src}
+      <div className="relative h-64 overflow-hidden bg-sky sm:h-80 lg:sticky lg:top-0 lg:h-dvh">
+        <DitherImage
+          src={photoUrl(scene.photo, 1800)}
           alt={scene.photo.alt}
-          fill
-          preload
           sizes="(min-width: 1024px) 50vw, 100vw"
-          className="object-cover"
+          preload
+          reveal="fade-top"
+          paper="#cfe9f1"
+          ink="#1f5f7a"
+          cell={3}
+          className="absolute inset-0"
         />
-        <div
-          aria-hidden
-          className="absolute inset-0 bg-[linear-gradient(180deg,rgb(20_18_15/0.18)_0%,rgb(20_18_15/0.05)_42%,rgb(20_18_15/0.72)_100%)]"
-        />
-        <div className="absolute inset-x-0 bottom-0 p-6 text-white sm:p-10 lg:p-12">
-          <p className="text-micro font-medium uppercase text-white/80">{scene.kicker}</p>
-          <p className="mt-3 max-w-[14ch] font-display text-heading text-white">{scene.line}</p>
-          <p className="mt-4 text-small text-white/75">{scene.photo.photographer}</p>
-        </div>
+        <div aria-hidden className="bg-grid absolute inset-0 [mask-image:linear-gradient(180deg,#000_0%,transparent_45%)]" />
+        <p className="absolute left-5 top-5 rounded-[0.25rem] bg-paper-raised/90 px-2 py-1 font-mono text-[0.6875rem] text-ink-soft sm:left-10 sm:top-8 lg:left-12">
+          {scene.photo.photographer} <span aria-hidden>/</span> unsplash
+        </p>
+        <div className="absolute inset-x-5 bottom-5 sm:inset-x-10 sm:bottom-8 lg:inset-x-12 lg:bottom-12">
+          <div className="inline-block max-w-[30rem] rounded-panel bg-paper-raised px-3 py-2 shadow-float ring-1 ring-ink/10 sm:block sm:p-5 md:p-6">
+            <p className="flex items-center gap-2 text-micro uppercase text-accent-ink">
+              <Asterisk className="size-3.5 text-accent" />
+              {scene.kicker}
+            </p>
+            <p className="mt-3 hidden font-display text-heading font-semibold text-ink sm:block">{scene.line}</p>
+            <ul className="mt-5 hidden flex-col gap-2 border-t border-dashed border-ink/20 pt-4 font-mono text-[0.75rem] text-ink-soft lg:flex">
+              {scene.points.map((point, i) => (
+                <li key={point} className="flex gap-3">
+                  <span aria-hidden className="tabular text-ink-muted">
+                    {String(i + 1).padStart(2, "0")}
+                  </span>
+                  {point}
+                </li>
+              ))}
+            </ul>
+          </div>
         </div>
       </div>
       <div className={cn("flex flex-col px-5 sm:px-10 lg:px-16", compact ? "py-5 lg:py-6" : "py-8 lg:py-10")}>
@@ -57,9 +76,9 @@ export default async function AuthLayout({ children }: { children: ReactNode }) 
           </Link>
           <Link
             href="/"
-            className="text-small text-ink-soft underline decoration-ink/15 underline-offset-4 transition-colors duration-300 ease-settle hover:text-ink"
+            className="font-mono text-[0.75rem] text-ink-soft underline decoration-ink/20 underline-offset-4 transition-colors duration-300 ease-settle hover:text-ink hover:decoration-ink"
           >
-            Back to the site
+            ← back to the site
           </Link>
         </header>
         <main

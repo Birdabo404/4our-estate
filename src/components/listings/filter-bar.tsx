@@ -15,7 +15,7 @@ import { activeChips, CLEAR_ALL } from "./filters";
 function PendingLine() {
   const { pending } = useListingFilters();
   return (
-    <span aria-hidden className="pointer-events-none absolute inset-x-8 bottom-0 h-px overflow-hidden">
+    <span aria-hidden className="pointer-events-none absolute inset-x-3 bottom-0 h-0.5 overflow-hidden">
       <motion.span
         className="absolute inset-0 origin-left bg-accent"
         initial={false}
@@ -26,7 +26,7 @@ function PendingLine() {
   );
 }
 
-const Divider = () => <span aria-hidden className="h-8 w-px shrink-0 bg-ink/10" />;
+const Divider = () => <span aria-hidden className="h-8 w-px shrink-0 bg-white/10" />;
 
 export function FilterBar() {
   const controls = useSelectControls();
@@ -35,49 +35,46 @@ export function FilterBar() {
   const activeCount = activeChips(filters).filter((chip) => chip.id !== "q").length;
 
   return (
-    <div className="sticky top-[5.25rem] z-[calc(var(--z-nav)-1)] md:top-[5.5rem]">
-      <div className="rounded-full bg-ink/[0.035] p-1.5 shadow-float ring-1 ring-ink/[0.06] backdrop-blur-xl">
-        <div className="relative flex items-center gap-1 rounded-full bg-paper-raised/95 p-1 shadow-[inset_0_1px_0_rgb(255_255_255/0.8)]">
-          <KeywordSearch className="min-w-0 flex-1 lg:max-w-[22rem]" />
+    <div className="sticky top-[calc(var(--nav-height)+0.75rem)] z-[calc(var(--z-nav)-1)]">
+      <div className="relative flex items-center gap-1.5 rounded-panel bg-night p-1.5 text-on-night shadow-float ring-1 ring-white/5">
+        <KeywordSearch className="min-w-0 flex-1 lg:max-w-[22rem]" />
 
-          <div className="hidden items-center gap-1 lg:flex lg:flex-1 lg:justify-end">
-            <Divider />
-            <ListingTypeControl className="mx-2 shrink-0" />
-            <Divider />
-            {controls.map((spec) => (
-              <QuietSelect key={spec.id} spec={spec} className="w-[9.5rem] xl:w-[11rem]" />
-            ))}
-          </div>
-
-          <button
-            type="button"
-            onClick={() => setOpen(true)}
-            aria-haspopup="dialog"
-            className="relative flex h-12 shrink-0 items-center gap-2.5 rounded-full bg-ink pl-4 pr-5 text-small font-medium text-paper transition-colors duration-500 ease-settle hover:bg-[#2b2620] lg:hidden"
-          >
-            <Faders aria-hidden size={16} weight="light" />
-            Filters
-            {activeCount > 0 && (
-              <span className="grid size-5 place-items-center rounded-full bg-paper text-[0.6875rem] text-ink tabular">{activeCount}</span>
-            )}
-          </button>
-          <PendingLine />
+        <div className="hidden items-center gap-1 lg:flex lg:flex-1 lg:justify-end">
+          <ListingTypeControl tone="night" className="mx-1.5 shrink-0" />
+          <Divider />
+          {controls.map((spec) => (
+            <QuietSelect key={spec.id} spec={spec} className="w-[9rem] xl:w-[10.5rem]" />
+          ))}
         </div>
+
+        <button
+          type="button"
+          onClick={() => setOpen(true)}
+          aria-haspopup="dialog"
+          className="relative flex h-12 shrink-0 items-center gap-2.5 rounded-md bg-accent pl-4 pr-4 text-small font-semibold text-ink transition-colors duration-300 ease-settle hover:bg-accent-soft lg:hidden"
+        >
+          <Faders aria-hidden size={16} weight="bold" />
+          Filters
+          {activeCount > 0 && (
+            <span className="grid size-5 place-items-center rounded-[0.25rem] bg-ink font-mono text-[0.6875rem] text-paper tabular">{activeCount}</span>
+          )}
+        </button>
+        <PendingLine />
       </div>
 
       <Sheet
         open={open}
         onClose={() => setOpen(false)}
         side="bottom"
-        title="Refine the collection"
-        description="Every change applies at once. The count below updates as you go."
+        title="Filter homes"
+        description="Changes apply right away. The count on the button updates as you go."
         footer={
           <>
             <Button variant="ghost" onClick={() => update(CLEAR_ALL)} disabled={activeCount === 0 && !filters.q}>
               Clear all
             </Button>
             <Button onClick={() => setOpen(false)} icon="arrow-right">
-              {pending ? "Updating" : `Show ${total} ${total === 1 ? "residence" : "residences"}`}
+              {pending ? "Updating" : `Show ${total} ${total === 1 ? "home" : "homes"}`}
             </Button>
           </>
         }
@@ -110,17 +107,18 @@ export function ResultsHeader() {
   return (
     <div className="flex flex-col gap-5">
       <div className="flex flex-wrap items-center justify-between gap-4">
-        <p aria-live="polite" className="text-small text-ink-soft">
-          <span className="tabular font-medium text-ink">{total}</span> {total === 1 ? "residence" : "residences"}
+        <p aria-live="polite" className="font-mono text-[0.8125rem] text-ink-soft">
+          <span className="tabular rounded-[0.25rem] bg-ink px-1.5 py-0.5 font-semibold text-paper">{total}</span>{" "}
+          {total === 1 ? "home matches" : "homes match"}
           <AnimatePresence>
             {pending && (
               <motion.span
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1, transition: tween.settle }}
                 exit={{ opacity: 0, transition: tween.exit }}
-                className="ml-3 text-ink-muted"
+                className="ml-3 text-accent-ink"
               >
-                Updating
+                updating…
               </motion.span>
             )}
           </AnimatePresence>
@@ -143,11 +141,11 @@ export function ResultsHeader() {
                   type="button"
                   onClick={() => update(chip.clear)}
                   aria-label={`Remove filter: ${chip.label}`}
-                  className="group inline-flex h-9 items-center gap-2 rounded-full bg-paper-raised pl-4 pr-2 text-small text-ink ring-1 ring-inset ring-ink/12 transition-[box-shadow,background-color] duration-300 ease-settle hover:ring-ink/30"
+                  className="group inline-flex h-9 items-center gap-2 rounded-md bg-sky pl-3 pr-1.5 text-small font-semibold text-ink ring-1 ring-inset ring-ink/10 transition-[box-shadow,background-color] duration-300 ease-settle hover:ring-ink"
                 >
                   {chip.label}
-                  <span className="grid size-5 place-items-center rounded-full bg-ink/[0.06] text-ink-soft transition-colors duration-300 ease-settle group-hover:bg-ink group-hover:text-paper">
-                    <X aria-hidden size={10} weight="light" />
+                  <span className="grid size-6 place-items-center rounded-[0.25rem] bg-paper-raised text-ink transition-colors duration-300 ease-settle group-hover:bg-ink group-hover:text-paper">
+                    <X aria-hidden size={11} weight="bold" />
                   </span>
                 </button>
               </motion.li>
@@ -157,8 +155,8 @@ export function ResultsHeader() {
                 type="button"
                 onClick={() => update(CLEAR_ALL)}
                 className={cn(
-                  "h-9 rounded-full px-3 text-small text-accent underline decoration-accent/30 underline-offset-4",
-                  "transition-colors duration-300 ease-settle hover:decoration-accent",
+                  "h-9 rounded-md px-3 text-small font-semibold text-accent-ink underline decoration-accent-ink/30 underline-offset-4",
+                  "transition-colors duration-300 ease-settle hover:decoration-accent-ink",
                 )}
               >
                 Clear all

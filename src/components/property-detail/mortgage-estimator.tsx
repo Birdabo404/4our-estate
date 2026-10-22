@@ -84,7 +84,7 @@ function MonthlyFigure({ value }: { value: number }) {
   }, [value, reduced, spring]);
 
   return (
-    <span aria-hidden className="inline-flex items-baseline font-display text-[clamp(2.5rem,1.9rem+1.8vw,3.5rem)] leading-none tracking-[-0.01em] [--opsz:24]">
+    <span aria-hidden className="inline-flex items-baseline font-display text-[clamp(2.5rem,1.9rem+1.8vw,3.5rem)] leading-none tracking-[-0.01em]">
       <span className="mr-[0.06em] text-[0.7em]">₱</span>
       <motion.span className="tabular">{text}</motion.span>
       <span className="ml-2 font-sans text-[0.32em] tracking-[0.04em] text-ink-muted">/mo</span>
@@ -142,7 +142,7 @@ export function MortgageEstimator({ price }: { price: number }) {
           </p>
         </div>
         <div className="flex flex-col gap-4">
-          <div aria-hidden className="flex h-1.5 overflow-hidden rounded-full bg-accent-soft/40">
+          <div aria-hidden className="flex h-2 overflow-hidden rounded-[2px] bg-accent-soft/40">
             <motion.div
               className="h-full w-full origin-left bg-accent"
               initial={false}

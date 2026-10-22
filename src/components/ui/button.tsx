@@ -21,7 +21,7 @@ import type { ComponentProps, PointerEvent, ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { spring } from "@/lib/motion";
 
-export type ButtonVariant = "primary" | "secondary" | "ghost" | "on-image";
+export type ButtonVariant = "primary" | "accent" | "secondary" | "ghost" | "on-image";
 export type ButtonSize = "sm" | "md" | "lg";
 
 /** Icons are named, not passed as components, so Server Components can render buttons. */
@@ -37,27 +37,31 @@ export type ButtonIcon = keyof typeof BUTTON_ICONS;
 
 const VARIANT: Record<ButtonVariant, { shell: string; well: string }> = {
   primary: {
-    shell: "bg-ink text-paper hover:bg-[#2b2620]",
-    well: "bg-paper/12 text-paper",
+    shell: "bg-ink text-paper hover:bg-[#2a2823]",
+    well: "bg-accent text-ink",
+  },
+  accent: {
+    shell: "bg-accent text-ink hover:bg-[#ff6e3a]",
+    well: "bg-ink text-paper",
   },
   secondary: {
-    shell: "bg-paper-raised text-ink shadow-lift ring-1 ring-inset ring-ink/10 hover:ring-ink/20",
+    shell: "bg-paper-raised text-ink ring-1 ring-inset ring-ink/15 hover:ring-ink/60",
     well: "bg-ink text-paper",
   },
   ghost: {
-    shell: "text-ink ring-1 ring-inset ring-ink/15 hover:bg-ink/[0.04] hover:ring-ink/30",
-    well: "bg-ink/[0.06] text-ink",
+    shell: "text-ink ring-1 ring-inset ring-ink/70 hover:bg-ink hover:text-paper",
+    well: "bg-ink/[0.08] text-current",
   },
   "on-image": {
-    shell: "bg-paper text-ink shadow-float hover:bg-white",
-    well: "bg-ink text-paper",
+    shell: "bg-white text-ink shadow-float hover:bg-paper",
+    well: "bg-accent text-ink",
   },
 };
 
 const SIZE: Record<ButtonSize, { shell: string; withIcon: string; well: string; glyph: number }> = {
-  sm: { shell: "h-10 px-5 text-small gap-3", withIcon: "pl-5 pr-1.5", well: "size-7", glyph: 13 },
-  md: { shell: "h-12 px-6 text-small gap-4", withIcon: "pl-6 pr-1.5", well: "size-9", glyph: 15 },
-  lg: { shell: "h-14 px-8 text-body gap-5", withIcon: "pl-8 pr-2", well: "size-10", glyph: 16 },
+  sm: { shell: "h-10 px-4 text-small gap-3", withIcon: "pl-4 pr-1.5", well: "size-7", glyph: 14 },
+  md: { shell: "h-12 px-5 text-small gap-4", withIcon: "pl-5 pr-1.5", well: "size-9", glyph: 16 },
+  lg: { shell: "h-14 px-6 text-body gap-5", withIcon: "pl-6 pr-2", well: "size-10", glyph: 17 },
 };
 
 const shellMotion: Variants = {
@@ -131,16 +135,16 @@ function Inner({ icon, size, variant, children }: Required<Pick<OwnProps, "size"
         transition={spring.ui}
         aria-hidden
         className={cn(
-          "relative grid shrink-0 place-items-center overflow-hidden rounded-full",
+          "relative grid shrink-0 place-items-center overflow-hidden rounded-[0.25rem]",
           well,
           VARIANT[variant].well,
         )}
       >
         <motion.span variants={glyphOut} transition={spring.ui} className="col-start-1 row-start-1">
-          <Glyph size={glyph} weight="light" />
+          <Glyph size={glyph} weight="bold" />
         </motion.span>
         <motion.span variants={glyphIn} transition={spring.ui} className="col-start-1 row-start-1">
-          <Glyph size={glyph} weight="light" />
+          <Glyph size={glyph} weight="bold" />
         </motion.span>
       </motion.span>
     </>
@@ -149,7 +153,7 @@ function Inner({ icon, size, variant, children }: Required<Pick<OwnProps, "size"
 
 function shellClass({ variant, size, icon, className }: Required<Pick<OwnProps, "variant" | "size">> & Pick<OwnProps, "icon" | "className">) {
   return cn(
-    "group relative inline-flex select-none items-center justify-center whitespace-nowrap rounded-full font-sans font-medium tracking-[0.01em]",
+    "group relative inline-flex select-none items-center justify-center whitespace-nowrap rounded-md font-sans font-semibold",
     "transition-[background-color,box-shadow,color] duration-500 ease-settle",
     "disabled:pointer-events-none disabled:opacity-45 aria-disabled:pointer-events-none aria-disabled:opacity-45",
     SIZE[size].shell,

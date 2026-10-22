@@ -102,7 +102,7 @@ function Surface({
             <span className="tabular text-micro font-medium uppercase text-on-night">
               {two(index + 1)} <span className="text-on-night-muted">/ {two(images.length)}</span>
             </span>
-            <span className="hidden truncate font-display text-[1.0625rem] [--opsz:11] text-on-night-muted md:inline">{title}</span>
+            <span className="hidden truncate font-display text-[1.0625rem] text-on-night-muted md:inline">{title}</span>
           </p>
           <button
             type="button"
@@ -110,7 +110,7 @@ function Surface({
             aria-label="Close photographs"
             className="grid size-11 shrink-0 place-items-center rounded-full ring-1 ring-inset ring-white/25 transition-colors duration-300 ease-settle hover:bg-white/10"
           >
-            <X size={16} weight="light" />
+            <X size={16} weight="regular" />
           </button>
         </motion.header>
 
@@ -218,7 +218,7 @@ function StepButton({
         className,
       )}
     >
-      <Glyph size={16} weight="light" />
+      <Glyph size={16} weight="regular" />
     </button>
   );
 }

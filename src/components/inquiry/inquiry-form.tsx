@@ -148,12 +148,12 @@ function InquiryRound({
           <motion.span
             initial={{ scale: 0.7, opacity: 0 }}
             animate={{ scale: 1, opacity: 1, transition: { ...spring.ui, delay: 0.12 } }}
-            className="grid size-12 place-items-center rounded-full text-positive ring-1 ring-inset ring-positive/30"
+            className="grid size-12 place-items-center rounded-md bg-positive text-paper"
           >
-            <Check aria-hidden size={20} weight="light" />
+            <Check aria-hidden size={20} weight="bold" />
           </motion.span>
           <div className="flex flex-col gap-2">
-            <h3 className="font-display text-heading">Your note is with {agent.firstName}</h3>
+            <h3 className="font-display text-heading font-semibold">Your note is with {agent.firstName}</h3>
             <p className="text-body text-ink-soft">
               Expect a reply within one business day{sentTo ? <> at <span className="text-ink">{sentTo}</span></> : null}. Nothing is shared
               beyond the agent who represents {propertyTitle}.
@@ -162,7 +162,7 @@ function InquiryRound({
           <button
             type="button"
             onClick={onAnother}
-            className="text-small text-accent underline decoration-accent/30 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-accent"
+            className="text-small text-accent-ink underline decoration-accent-ink/30 underline-offset-4 transition-colors duration-300 ease-settle hover:decoration-accent-ink"
           >
             Write another note
           </button>
@@ -215,7 +215,7 @@ function InquiryRound({
                   exit={{ opacity: 0, transition: tween.exit }}
                   className="flex items-start gap-3 rounded-field bg-danger/[0.06] px-4 py-3.5 text-small text-danger ring-1 ring-inset ring-danger/20"
                 >
-                  <WarningCircle aria-hidden size={18} weight="light" className="mt-0.5 shrink-0" />
+                  <WarningCircle aria-hidden size={18} weight="regular" className="mt-0.5 shrink-0" />
                   <p>
                     {formError}
                     {agent.phone && (
@@ -243,7 +243,7 @@ function InquiryRound({
                 href={`tel:${agent.phone.replace(/\s/g, "")}`}
                 className="inline-flex items-center gap-2 text-small text-ink-soft transition-colors duration-300 ease-settle hover:text-ink"
               >
-                <Phone aria-hidden size={15} weight="light" />
+                <Phone aria-hidden size={15} weight="regular" />
                 <span className="tabular">{agent.phone}</span>
               </a>
             )}

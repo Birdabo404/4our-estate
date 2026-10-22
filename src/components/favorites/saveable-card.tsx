@@ -7,11 +7,11 @@ import { FavoriteButton } from "./favorite-button";
  * PropertyCard's `action` slot renders inside the image's isolated stacking
  * context, beneath the title link's stretched hit area, so it cannot be
  * clicked. The toggle sits over the card from outside instead. The feature
- * offset mirrors that variant's 8 of 12 columns with a 2.5rem gutter.
+ * offset mirrors that variant's photo, which spans 7 of 12 columns.
  */
 const PLACEMENT: Record<Exclude<PropertyCardVariant, "compact">, string> = {
-  grid: "right-4",
-  feature: "right-4 md:right-[calc((100%-27.5rem)/3+11rem)]",
+  grid: "right-3",
+  feature: "right-3 md:right-[calc(41.6667%+0.75rem)]",
 };
 
 export function SaveableCard({
@@ -26,9 +26,9 @@ export function SaveableCard({
   className?: string;
 }) {
   return (
-    <div className={cn("relative", className)}>
+    <div className={cn("relative h-full", className)}>
       <PropertyCard property={property} variant={variant} priority={priority} />
-      <div className={cn("absolute top-4 z-10", PLACEMENT[variant])}>
+      <div className={cn("absolute top-3 z-10", PLACEMENT[variant])}>
         <FavoriteButton propertyId={property.id} title={property.title} />
       </div>
     </div>

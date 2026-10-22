@@ -140,9 +140,9 @@ function GuestPrompt({ next, onDismiss }: { next: string | null; onDismiss: () =
               type="button"
               onClick={onDismiss}
               aria-label="Dismiss"
-              className="-mr-1 grid size-7 shrink-0 place-items-center rounded-full text-on-night-muted transition-colors duration-300 ease-settle hover:bg-white/10 hover:text-on-night"
+              className="-mr-1 grid size-7 shrink-0 place-items-center rounded-[0.25rem] text-on-night-muted transition-colors duration-300 ease-settle hover:bg-white/10 hover:text-on-night"
             >
-              <X size={13} weight="light" />
+              <X size={13} weight="regular" />
             </button>
           </motion.div>
         )}

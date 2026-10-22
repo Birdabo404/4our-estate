@@ -19,7 +19,7 @@ export default async function BuyerInquiriesPage() {
       <PageHeader
         eyebrow={firstName(member.fullName)}
         title="Inquiries"
-        lede="Notes you have sent about a residence, and where each one stands."
+        lede="Every note you have sent to an agent, and where each one stands."
       />
       <InquiryList
         inquiries={inquiries}
@@ -27,7 +27,7 @@ export default async function BuyerInquiriesPage() {
           <EmptyState
             icon="inquiries"
             title="No inquiries yet"
-            action={<ButtonLink href="/properties">Browse residences</ButtonLink>}
+            action={<ButtonLink href="/properties">Browse homes</ButtonLink>}
           >
             When you write to an agent, the conversation is kept here.
           </EmptyState>

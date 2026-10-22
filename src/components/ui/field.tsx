@@ -116,7 +116,7 @@ export function FieldError({ className, children }: { className?: string; childr
             exit={{ opacity: 0, transition: tween.exit }}
             className={cn("flex items-start gap-2 text-small text-danger", className)}
           >
-            <WarningCircle aria-hidden size={16} weight="light" className="mt-[0.2em] shrink-0" />
+            <WarningCircle aria-hidden size={16} weight="regular" className="mt-[0.2em] shrink-0" />
             <span>{children}</span>
           </motion.p>
         )}
@@ -126,11 +126,11 @@ export function FieldError({ className, children }: { className?: string; childr
 }
 
 const control = cn(
-  "w-full rounded-field bg-paper-raised text-body text-ink ring-1 ring-inset ring-ink/12",
+  "w-full rounded-field bg-paper-raised text-body text-ink ring-1 ring-inset ring-ink/15",
   "placeholder:text-ink-muted",
   "transition-[box-shadow,background-color] duration-300 ease-settle",
   "hover:ring-ink/25",
-  "focus-visible:bg-white focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-[1.5px] focus-visible:ring-accent",
+  "focus-visible:bg-white focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ink",
   "aria-invalid:ring-danger/60 aria-invalid:focus-visible:ring-danger",
   "disabled:cursor-not-allowed disabled:opacity-50",
 );
@@ -152,7 +152,7 @@ export function Select({ className, children, ...props }: ComponentProps<"select
       <CaretDown
         aria-hidden
         size={14}
-        weight="light"
+        weight="regular"
         className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-ink-muted"
       />
     </div>
@@ -178,9 +178,9 @@ export function Checkbox({
           id={id}
           aria-describedby={[wired["aria-describedby"], descriptionId].filter(Boolean).join(" ") || undefined}
           className={cn(
-            "peer size-5 cursor-pointer appearance-none rounded-[0.375rem] bg-paper-raised ring-1 ring-inset ring-ink/25",
+            "peer size-5 cursor-pointer appearance-none rounded-[0.25rem] bg-paper-raised ring-1 ring-inset ring-ink/25",
             "transition-[background-color,box-shadow] duration-300 ease-settle",
-            "checked:bg-ink checked:ring-ink hover:ring-ink/45",
+            "checked:bg-accent checked:ring-ink hover:ring-ink/45",
             "aria-invalid:ring-danger/70",
           )}
         />
@@ -188,7 +188,7 @@ export function Checkbox({
           aria-hidden
           size={12}
           weight="regular"
-          className="pointer-events-none absolute scale-50 text-paper opacity-0 transition-[opacity,transform] duration-300 ease-settle peer-checked:scale-100 peer-checked:opacity-100"
+          className="pointer-events-none absolute scale-50 text-ink opacity-0 transition-[opacity,transform] duration-300 ease-settle peer-checked:scale-100 peer-checked:opacity-100"
         />
       </span>
       <span className="flex flex-col gap-1">
@@ -219,6 +219,7 @@ export function SegmentedControl<V extends string>({
   onValueChange,
   "aria-label": ariaLabel,
   size = "md",
+  tone = "paper",
   className,
 }: {
   name: string;
@@ -228,16 +229,18 @@ export function SegmentedControl<V extends string>({
   onValueChange?: (value: V) => void;
   "aria-label"?: string;
   size?: "sm" | "md";
+  tone?: "paper" | "night";
   className?: string;
 }) {
   const id = useId();
+  const night = tone === "night";
   const [uncontrolled, setUncontrolled] = useState<V | undefined>(defaultValue ?? options[0]?.value);
   const current = value ?? uncontrolled;
   return (
     <div
       role="radiogroup"
       aria-label={ariaLabel}
-      className={cn("inline-flex rounded-full bg-ink/[0.05] p-1 ring-1 ring-inset ring-ink/[0.06]", className)}
+      className={cn("inline-flex rounded-md p-1", night ? "bg-white/10" : "bg-ink/[0.06]", className)}
     >
       {options.map((option) => {
         const checked = option.value === current;
@@ -247,10 +250,16 @@ export function SegmentedControl<V extends string>({
             key={option.value}
             htmlFor={optionId}
             className={cn(
-              "relative cursor-pointer select-none rounded-full font-medium transition-colors duration-300 ease-settle",
-              "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent",
+              "relative cursor-pointer select-none rounded-[0.3rem] font-semibold transition-colors duration-300 ease-settle",
+              "has-[:focus-visible]:outline-2 has-[:focus-visible]:outline-offset-2 has-[:focus-visible]:outline-accent-ink",
               size === "sm" ? "px-4 py-1.5 text-small" : "px-5 py-2.5 text-small",
-              checked ? "text-paper" : "text-ink-soft hover:text-ink",
+              night
+                ? checked
+                  ? "text-ink"
+                  : "text-on-night-muted hover:text-on-night"
+                : checked
+                  ? "text-paper"
+                  : "text-ink-soft hover:text-ink",
             )}
           >
             <input
@@ -270,7 +279,7 @@ export function SegmentedControl<V extends string>({
                 layoutId={`${id}-thumb`}
                 transition={spring.ui}
                 aria-hidden
-                className="absolute inset-0 rounded-full bg-ink shadow-lift"
+                className={cn("absolute inset-0 rounded-[0.3rem]", night ? "bg-accent" : "bg-ink")}
               />
             )}
             <span className="relative">{option.label}</span>
