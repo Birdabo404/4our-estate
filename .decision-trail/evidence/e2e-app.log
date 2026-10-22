@@ -1,0 +1,35 @@
+saved /tmp/shots/fe-app/login-1440.png
+saved /tmp/shots/fe-app/login-390.png
+saved /tmp/shots/fe-app/signup-buyer-1440.png
+saved /tmp/shots/fe-app/signup-buyer-390.png
+saved /tmp/shots/fe-app/signup-agent-1440.png
+saved /tmp/shots/fe-app/signup-agent-390.png
+saved /tmp/shots/fe-app/buyer-saved-1440.png
+saved /tmp/shots/fe-app/buyer-saved-390.png
+saved /tmp/shots/fe-app/buyer-inquiries-1440.png
+saved /tmp/shots/fe-app/buyer-inquiries-390.png
+saved /tmp/shots/fe-app/buyer-profile-1440.png
+saved /tmp/shots/fe-app/buyer-profile-390.png
+saved /tmp/shots/fe-app/agent-overview-1440.png
+saved /tmp/shots/fe-app/agent-overview-390.png
+saved /tmp/shots/fe-app/agent-listings-1440.png
+saved /tmp/shots/fe-app/agent-listings-390.png
+saved /tmp/shots/fe-app/agent-inquiries-1440.png
+saved /tmp/shots/fe-app/agent-inquiries-390.png
+saved /tmp/shots/fe-app/editor-errors-1440.png
+saved /tmp/shots/fe-app/editor-errors-390.png
+saved /tmp/shots/fe-app/confirm-archive-1440.png
+saved /tmp/shots/fe-app/confirm-archive-390.png
+saved /tmp/shots/fe-app/admin-overview-1440.png
+saved /tmp/shots/fe-app/admin-overview-390.png
+saved /tmp/shots/fe-app/admin-users-1440.png
+saved /tmp/shots/fe-app/admin-users-390.png
+saved /tmp/shots/fe-app/admin-moderation-1440.png
+saved /tmp/shots/fe-app/admin-moderation-390.png
+published e2e-casa-mvgyou5c
+DELETE 0
+DELETE 1
+cleanup removed property d6070929-336d-4424-9e7d-e8757256d1f0
+DELETE 2
+cleanup removed e2e.buyer.mvgyou5c@4our.test and e2e.agent.mvgyou5c@4our.test
+e2e passed

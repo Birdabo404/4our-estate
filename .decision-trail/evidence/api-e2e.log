@@ -1,0 +1,29 @@
+
+ RUN  v4.1.12 /workspace/api
+
+Loaded Prisma config from prisma.config.ts.
+
+Prisma schema loaded from prisma/schema.prisma.
+Datasource "db": PostgreSQL database "estate_test", schema "public" at "localhost:5432"
+
+1 migration found in prisma/migrations
+
+
+No pending migrations to apply.
+TRUNCATE TABLE
+Loaded Prisma config from prisma.config.ts.
+
+Running seed command `tsx prisma/seed.ts` ...
+users ensured: 9
+properties inserted: 24, updated: 0, unchanged: 0
+image sets replaced: 24, unchanged: 0
+inquiries written: 6, unchanged: 0
+favorites written: 7, unchanged: 0
+
+🌱  The seed command has been executed.
+
+ Test Files  2 passed (2)
+      Tests  18 passed (18)
+   Start at  15:00:43
+   Duration  5.45s (transform 235ms, setup 0ms, import 824ms, tests 4.46s, environment 0ms)
+

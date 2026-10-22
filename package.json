@@ -6,17 +6,27 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "db:up": "docker compose up -d postgres",
+    "api:dev": "npm --prefix api run start:dev",
+    "api:test": "npm --prefix api run test:e2e",
+    "db:migrate": "npm --prefix api run db:migrate",
+    "db:seed": "npm --prefix api run db:seed",
+    "e2e:public": "node --env-file=.env.local --import tsx scripts/e2e/public.ts",
+    "e2e:app": "node --env-file=.env.local --import tsx scripts/e2e/app.ts"
   },
   "dependencies": {
+    "@gsap/react": "^2.1.2",
     "@phosphor-icons/react": "^2.1.10",
-    "@supabase/ssr": "^0.12.7",
-    "@supabase/supabase-js": "^2.118.0",
+    "@reduxjs/toolkit": "^2.13.0",
+    "animejs": "^4.5.0",
     "clsx": "^2.1.1",
     "framer-motion": "^14.4.0",
+    "gsap": "^3.15.0",
     "next": "16.4.2",
     "react": "19.3.0",
     "react-dom": "19.3.0",
+    "react-redux": "^9.3.0",
     "tailwind-merge": "^3.7.0",
     "zod": "^4.6.7"
   },
@@ -28,7 +38,6 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.4.2",
-    "supabase": "^2.121.0",
     "tailwindcss": "^4",
     "tsx": "^4.23.15",
     "typescript": "^5"

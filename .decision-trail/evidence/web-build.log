@@ -1,0 +1,45 @@
+▲ Next.js 16.4.2 (Turbopack)
+- Environments: .env.local
+✓ Running next.config.ts took 23ms
+- Experiments (use with caution):
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 2.6s
+  Running TypeScript ...
+  Finished TypeScript in 4.8s ...
+  Collecting page data using 3 workers ...
+  Generating static pages using 3 workers (0/19) ...
+  Generating static pages using 3 workers (4/19) 
+  Generating static pages using 3 workers (9/19) 
+  Generating static pages using 3 workers (14/19) 
+✓ Generating static pages using 3 workers (19/19) in 371ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ○ /_not-found
+├ ƒ /dashboard
+├ ƒ /dashboard/admin
+├ ƒ /dashboard/admin/moderation
+├ ƒ /dashboard/admin/users
+├ ƒ /dashboard/agent
+├ ƒ /dashboard/agent/inquiries
+├ ƒ /dashboard/agent/listings
+├ ƒ /dashboard/agent/listings/[id]
+├ ƒ /dashboard/agent/listings/new
+├ ƒ /dashboard/buyer
+├ ƒ /dashboard/buyer/inquiries
+├ ƒ /dashboard/buyer/profile
+├ ƒ /login
+├ ƒ /properties
+├ ƒ /properties/[slug]
+├ ƒ /signup
+└ ○ /styleguide
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

@@ -1,0 +1,73 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
+import { contrastRatio, readTokens } from "../../src/lib/contrast";
+import { ease, type EaseName } from "../../src/lib/motion";
+
+type Use = "text" | "large" | "ui";
+
+const MIN_RATIO: Record<Use, number> = { text: 4.5, large: 3, ui: 3 };
+
+const PAIRS: ReadonlyArray<{ fg: string; bg: string; use: Use; role: string }> = [
+  { fg: "ink", bg: "paper", use: "text", role: "Body and headings" },
+  { fg: "ink-soft", bg: "paper", use: "text", role: "Secondary copy" },
+  { fg: "ink-muted", bg: "paper", use: "text", role: "Meta, captions, eyebrows" },
+  { fg: "ink-muted", bg: "paper-raised", use: "text", role: "Meta inside panels" },
+  { fg: "ink-muted", bg: "paper-sunken", use: "text", role: "Meta on sunken wells" },
+  { fg: "accent-ink", bg: "paper", use: "text", role: "Orange text, links" },
+  { fg: "accent-ink", bg: "paper-raised", use: "text", role: "Orange text in panels" },
+  { fg: "accent-ink", bg: "paper", use: "ui", role: "Focus ring on paper" },
+  { fg: "ink", bg: "accent", use: "text", role: "Labels on orange fills" },
+  { fg: "accent", bg: "ink", use: "ui", role: "Orange well on ink buttons" },
+  { fg: "ink", bg: "sky", use: "text", role: "Copy on the sky field" },
+  { fg: "ink-muted", bg: "sky", use: "text", role: "Meta on the sky field" },
+  { fg: "ink-soft", bg: "sky-soft", use: "text", role: "Copy on sky bands" },
+  { fg: "ink", bg: "sun", use: "text", role: "Labels on review and chart fills" },
+  { fg: "paper", bg: "sky-deep", use: "text", role: "Light text on deep sky" },
+  { fg: "paper", bg: "ink", use: "text", role: "Primary button label" },
+  { fg: "paper", bg: "bay", use: "text", role: "Footer copy" },
+  { fg: "sky", bg: "bay", use: "text", role: "Footer meta" },
+  { fg: "sun", bg: "bay", use: "ui", role: "Focus ring on bay" },
+  { fg: "on-night", bg: "night", use: "text", role: "Overlays and dark panels" },
+  { fg: "on-night-muted", bg: "night", use: "text", role: "Meta on night" },
+  { fg: "accent-soft", bg: "night", use: "text", role: "Accent on night" },
+  { fg: "accent", bg: "night", use: "ui", role: "Focus ring on night" },
+  { fg: "positive", bg: "paper", use: "text", role: "Positive status" },
+  { fg: "danger", bg: "paper", use: "text", role: "Field errors" },
+  { fg: "danger", bg: "paper-raised", use: "text", role: "Field errors in panels" },
+];
+
+const tokens = readTokens(readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8"));
+
+function token(name: string): string {
+  const value = tokens.get(name);
+  if (!value) throw new Error(`Missing token --${name} in globals.css`);
+  return value;
+}
+
+const failures: string[] = [];
+
+console.log("| Foreground | Background | Ratio | Needs | Role |");
+console.log("| --- | --- | --- | --- | --- |");
+for (const { fg, bg, use, role } of PAIRS) {
+  const fgHex = token(`color-${fg}`);
+  const bgHex = token(`color-${bg}`);
+  const ratio = contrastRatio(fgHex, bgHex);
+  const needed = MIN_RATIO[use];
+  const pass = ratio >= needed;
+  if (!pass) failures.push(`${fg} on ${bg}: ${ratio.toFixed(2)} < ${needed}`);
+  console.log(
+    `| \`${fg}\` ${fgHex} | \`${bg}\` ${bgHex} | ${ratio.toFixed(2)}:1 | ${needed}:1 ${pass ? "pass" : "FAIL"} | ${role} |`,
+  );
+}
+
+for (const name of Object.keys(ease) as EaseName[]) {
+  const fromCss = token(`ease-${name}`).replace(/\s+/g, "");
+  const fromTs = `cubic-bezier(${ease[name].join(",")})`;
+  if (fromCss !== fromTs) failures.push(`--ease-${name} is ${fromCss}, motion.ts says ${fromTs}`);
+}
+
+if (failures.length > 0) {
+  console.error(`\n${failures.length} token check(s) failed:\n- ${failures.join("\n- ")}`);
+  process.exit(1);
+}
+console.log(`\nAll ${PAIRS.length} contrast pairs pass and ${Object.keys(ease).length} eases match motion.ts.`);
