@@ -128,7 +128,7 @@ export function SiteFooter() {
               </Link>
             </p>
             <p aria-hidden className="font-mono">
-              14.5547° N, 121.0244° E <span className="text-paper">{"// built in Makati"}</span>
+              8°56′53″ N, 125°32′35″ E <span className="text-paper">{"// built in Butuan City"}</span>
             </p>
           </div>
         </div>
